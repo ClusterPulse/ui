@@ -15,6 +15,7 @@ import {
   UsersIcon,
   KeyIcon,
   SignOutAltIcon,
+  SignInAltIcon,
 } from '@patternfly/react-icons';
 import { useQuery } from '@tanstack/react-query';
 import { clusterAPI } from '../services/api';
@@ -42,13 +43,18 @@ export const UserMenu: React.FC = () => {
     return <Spinner size="md" />;
   }
 
-  if (!authStatus?.authenticated || !authStatus?.user) {
+  // Check if user is anonymous
+  const isAnonymous = authStatus?.user?.username === 'anonymous';
+
+  // Not authenticated or anonymous - show login button
+  if (!authStatus?.authenticated || !authStatus?.user || isAnonymous) {
     return (
       <Button
         variant="primary"
+        icon={<SignInAltIcon />}
         onClick={() => window.location.href = '/api/v1/auth/login'}
       >
-        Login
+        {isAnonymous ? 'Login for Full Access' : 'Login'}
       </Button>
     );
   }
