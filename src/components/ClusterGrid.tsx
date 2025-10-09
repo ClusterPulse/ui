@@ -23,7 +23,7 @@ const item = {
   },
 };
 
-export const ClusterGrid: React.FC<ClusterGridProps> = ({ clusters, onRefresh, permissions }) => {
+export const ClusterGrid: React.FC<ClusterGridProps> = ({ clusters, onRefresh }) => {
   const [selectedCluster, setSelectedCluster] = useState<any | null>(null);
   const [nodeModalOpen, setNodeModalOpen] = useState(false);
   const [operatorsViewOpen, setOperatorsViewOpen] = useState(false);
@@ -55,7 +55,6 @@ export const ClusterGrid: React.FC<ClusterGridProps> = ({ clusters, onRefresh, p
                 onRefresh={onRefresh}
                 onNodeClick={() => handleNodeClick(cluster)}
                 onOperatorsClick={() => handleOperatorsClick(cluster)}
-                permissions={permissions}
               />
             </motion.div>
           </GridItem>

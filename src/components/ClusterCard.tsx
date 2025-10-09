@@ -34,6 +34,7 @@ import {
   LayerGroupIcon,
   CubesIcon,
   ClockIcon,
+  LockIcon,
   EyeIcon,
   ExternalLinkAltIcon,
   CodeBranchIcon,
@@ -58,8 +59,112 @@ interface ClusterCardProps {
   onRefresh: () => void;
   onNodeClick: () => void;
   onOperatorsClick: () => void;
-  permissions?: any; // Keep the prop but don't use it
 }
+
+interface AnonymousClusterCardProps {
+  cluster: any;
+}
+
+const AnonymousClusterCard: React.FC<AnonymousClusterCardProps> = ({ cluster }) => {
+  const displayName = cluster.displayName || cluster.name;
+  const health = cluster.status?.health || 'unknown';
+  const status = healthConfig[health as keyof typeof healthConfig] || healthConfig.unknown;
+  const StatusIcon = status.icon;
+
+  return (
+    <motion.div
+      whileHover={{ y: -4 }}
+      transition={{ type: 'spring', stiffness: 300 }}
+    >
+      <Card className={clsx('cluster-card', `cluster-card--${health}`, 'cluster-card--anonymous')}>
+        <CardHeader>
+          <Flex alignItems={{ default: 'alignItemsCenter' }} justifyContent={{ default: 'justifyContentSpaceBetween' }}>
+            <FlexItem>
+              <Flex alignItems={{ default: 'alignItemsCenter' }}>
+                <FlexItem>
+                  <OpenShiftIcon className="cluster-icon" />
+                </FlexItem>
+                <FlexItem>
+                  <CardTitle className="cluster-title">
+                    {displayName}
+                  </CardTitle>
+                  {cluster.name !== displayName && (
+                    <div className="cluster-name pf-v5-u-font-size-sm pf-v5-u-color-200">
+                      {cluster.name}
+                    </div>
+                  )}
+                </FlexItem>
+              </Flex>
+            </FlexItem>
+            <FlexItem>
+              <Badge className={`status-badge status-badge--${status.color}`}>
+                <StatusIcon className="pf-v5-u-mr-xs" />
+                {status.label}
+              </Badge>
+            </FlexItem>
+          </Flex>
+        </CardHeader>
+
+        <CardBody>
+          <Flex
+            direction={{ default: 'column' }}
+            spaceItems={{ default: 'spaceItemsMd' }}
+            alignItems={{ default: 'alignItemsCenter' }}
+            style={{ padding: '2rem 1rem', textAlign: 'center' }}
+          >
+            <FlexItem>
+              <LockIcon style={{ 
+                fontSize: '3rem', 
+                color: 'var(--pf-v5-global--Color--200)', 
+                opacity: 0.4 
+              }} />
+            </FlexItem>
+            <FlexItem>
+              <div style={{ 
+                color: 'var(--pf-v5-global--Color--200)', 
+                fontSize: '0.875rem',
+                maxWidth: '280px'
+              }}>
+                Authentication required to view detailed cluster information
+              </div>
+            </FlexItem>
+            <FlexItem>
+              <div style={{ 
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '0.5rem',
+                justifyContent: 'center',
+                color: 'var(--pf-v5-global--Color--300)', 
+                fontSize: '0.75rem'
+              }}>
+                <span>Metrics</span>
+                <span>•</span>
+                <span>Nodes</span>
+                <span>•</span>
+                <span>Operators</span>
+                <span>•</span>
+                <span>Namespaces</span>
+              </div>
+            </FlexItem>
+          </Flex>
+        </CardBody>
+
+        {cluster.status?.last_check && (
+          <CardFooter>
+            <Flex alignItems={{ default: 'alignItemsCenter' }}>
+              <FlexItem>
+                <span className="last-check" style={{ fontSize: '0.75rem', color: 'var(--pf-v5-global--Color--200)' }}>
+                  <ClockIcon className="pf-v5-u-mr-xs" style={{ fontSize: '0.75rem' }} />
+                  Last checked: {new Date(cluster.status.last_check).toLocaleTimeString()}
+                </span>
+              </FlexItem>
+            </Flex>
+          </CardFooter>
+        )}
+      </Card>
+    </motion.div>
+  );
+};
 
 const healthConfig = {
   healthy: {
@@ -97,6 +202,11 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
   onNodeClick,
   onOperatorsClick,
 }) => {
+  // Render anonymous view if flag is set
+  if (cluster.anonymous_view) {
+    return <AnonymousClusterCard cluster={cluster} />;
+  }
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
@@ -177,7 +287,6 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
       >
         <Card className={clsx('cluster-card', `cluster-card--${health}`)}>
           <CardHeader>
-            {/* FIXED: Use custom layout instead of Flex to ensure proper positioning */}
             <div style={{ 
               display: 'grid', 
               gridTemplateColumns: '1fr auto',
@@ -188,16 +297,15 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
               <div style={{ 
                 display: 'flex', 
                 alignItems: 'center',
-                minWidth: 0, // Allow text truncation
+                minWidth: 0,
                 overflow: 'hidden'
               }}>
-                {/* Icon wrapper to prevent shrinking */}
                 <div style={{ flexShrink: 0 }}>
                   <OpenShiftIcon className="cluster-icon" />
                 </div>
                 <div style={{ 
                   overflow: 'hidden',
-                  minWidth: 0 // Enable text truncation
+                  minWidth: 0
                 }}>
                   <CardTitle 
                     className="cluster-title" 
@@ -206,7 +314,7 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap'
                     }}
-                    title={displayName} // Show full name on hover
+                    title={displayName}
                   >
                     {displayName}
                   </CardTitle>
@@ -218,7 +326,7 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap'
                       }}
-                      title={clusterName} // Show full name on hover
+                      title={clusterName}
                     >
                       {clusterName}
                     </div>
@@ -226,7 +334,7 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
                 </div>
               </div>
               
-              {/* Right side: Status badge and dropdown (stacked vertically) */}
+              {/* Right side: Status badge and dropdown */}
               <div style={{ 
                 display: 'flex', 
                 flexDirection: 'column',
@@ -243,7 +351,7 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
                   onOpenChange={(isOpen: boolean) => setIsDropdownOpen(isOpen)}
                   popperProps={{
                     position: 'right',
-                    appendTo: () => document.body, // Ensure dropdown is appended to body
+                    appendTo: () => document.body,
                   }}
                   toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
                     <MenuToggle
@@ -265,7 +373,7 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
               </div>
             </div>
 
-            {/* Line 2: Version, Channel | Console Link */}
+            {/* Version, Channel, Console Link Row */}
             {(cluster.version || cluster.channel || cluster.console_url) && (
               <Flex 
                 alignItems={{ default: 'alignItemsCenter' }} 
@@ -273,61 +381,25 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
                 style={{ marginTop: '8px' }}
               >
                 <FlexItem>
-                  <Flex spaceItems={{ default: 'spaceItemsMd' }}>
+                  <Flex spaceItems={{ default: 'spaceItemsSm' }}>
                     {cluster.version && (
                       <FlexItem>
-                        <span 
-                          className="pf-v5-u-font-size-sm" 
-                          style={{ 
-                            color: 'var(--pf-v5-global--Color--200)',
-                            display: 'inline-flex',
-                            alignItems: 'center'
-                          }}
-                        >
-                          <TagIcon style={{ marginRight: '4px', fontSize: '0.875rem' }} />
-                          <span style={{ 
-                            padding: '2px 8px',
-                            background: 'var(--pf-v5-global--BackgroundColor--150)',
-                            borderRadius: '12px',
-                            fontSize: '0.75rem',
-                            fontWeight: 500,
-                            textTransform: 'lowercase',
-                            letterSpacing: '0.025em'
-                          }}>
-                            {cluster.version}
-                          </span>
-                        </span>
+                        <Label color="blue" isCompact icon={<TagIcon />}>
+                          {cluster.version}
+                        </Label>
                       </FlexItem>
                     )}
                     {cluster.channel && (
                       <FlexItem>
-                        <span 
-                          className="pf-v5-u-font-size-sm"
-                          style={{ 
-                            color: 'var(--pf-v5-global--Color--200)',
-                            display: 'inline-flex',
-                            alignItems: 'center'
-                          }}
-                        >
-                          <CodeBranchIcon style={{ marginRight: '4px', fontSize: '0.875rem' }} />
-                          <span style={{ 
-                            padding: '2px 8px',
-                            background: 'var(--pf-v5-global--BackgroundColor--150)',
-                            borderRadius: '12px',
-                            fontSize: '0.75rem',
-                            fontWeight: 500,
-                            textTransform: 'lowercase',
-                            letterSpacing: '0.025em'
-                          }}>
-                            {cluster.channel}
-                          </span>
-                        </span>
+                        <Label color="purple" isCompact icon={<CodeBranchIcon />}>
+                          {cluster.channel}
+                        </Label>
                       </FlexItem>
                     )}
                   </Flex>
                 </FlexItem>
-                <FlexItem>
-                  {cluster.console_url && (
+                {cluster.console_url && (
+                  <FlexItem>
                     <Tooltip content={`Open ${displayName} console`}>
                       <Button
                         variant="plain"
@@ -341,20 +413,19 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
                         style={{ 
                           padding: '6px',
                           color: 'var(--pf-v5-global--Color--200)',
-                          transition: 'color 0.2s ease',
                         }}
                       >
                         <ExternalLinkAltIcon style={{ fontSize: '1rem' }} />
                       </Button>
                     </Tooltip>
-                  )}
-                </FlexItem>
+                  </FlexItem>
+                )}
               </Flex>
             )}
           </CardHeader>
           
           <CardBody>
-            {/* Cluster Labels - Separate Section */}
+            {/* Cluster Labels */}
             {cluster.labels && Object.keys(cluster.labels).length > 0 && (
               <LabelGroup numLabels={5} className="cluster-labels" style={{ marginBottom: '12px' }}>
                 {cluster.labels.environment && (
@@ -369,7 +440,7 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
                 )}
                 {Object.entries(cluster.labels)
                   .filter(([key]) => key !== 'environment' && key !== 'region')
-                  .slice(0, 3) // Limit additional labels to keep it compact
+                  .slice(0, 3)
                   .map(([key, value]) => (
                     <Label key={key} isCompact>
                       {value as string}
@@ -581,7 +652,7 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
               </div>
             </div>
 
-            {/* Additional metrics row */}
+            {/* Additional metrics */}
             {(metrics.statefulsets > 0 || metrics.daemonsets > 0) && (
               <div style={{ 
                 marginTop: '8px',
@@ -658,17 +729,7 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
               <DescriptionListGroup>
                 <DescriptionListTerm>Version</DescriptionListTerm>
                 <DescriptionListDescription>
-                  <span style={{ 
-                    padding: '2px 8px',
-                    background: 'var(--pf-v5-global--BackgroundColor--150)',
-                    borderRadius: '12px',
-                    fontSize: '0.75rem',
-                    fontWeight: 500,
-                    textTransform: 'lowercase',
-                    letterSpacing: '0.025em'
-                  }}>
-                    {clusterDetails.version}
-                  </span>
+                  <Label color="blue" isCompact>{clusterDetails.version}</Label>
                 </DescriptionListDescription>
               </DescriptionListGroup>
             )}
@@ -676,17 +737,7 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
               <DescriptionListGroup>
                 <DescriptionListTerm>Channel</DescriptionListTerm>
                 <DescriptionListDescription>
-                  <span style={{ 
-                    padding: '2px 8px',
-                    background: 'var(--pf-v5-global--BackgroundColor--150)',
-                    borderRadius: '12px',
-                    fontSize: '0.75rem',
-                    fontWeight: 500,
-                    textTransform: 'lowercase',
-                    letterSpacing: '0.025em'
-                  }}>
-                    {clusterDetails.channel}
-                  </span>
+                  <Label color="purple" isCompact>{clusterDetails.channel}</Label>
                 </DescriptionListDescription>
               </DescriptionListGroup>
             )}

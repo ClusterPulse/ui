@@ -30,6 +30,7 @@ import { useQuery } from '@tanstack/react-query';
 // Components
 import { ClusterGrid } from './ClusterGrid';
 import { ClusterStats } from './ClusterStats';
+import { LoginBanner } from './LoginBanner';
 import { clusterAPI } from '../services/api';
 
 const container = {
@@ -51,25 +52,58 @@ export const ClusterDashboard: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  // Fetch clusters with new API
+  // Check if public API is available
+  const { data: publicApiAvailable, isLoading: publicApiLoading } = useQuery({
+    queryKey: ['publicApiAvailable'],
+    queryFn: () => clusterAPI.checkPublicApiAvailable(),
+    retry: 1,
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
+
+  // Check authentication status
+  const { data: authStatus, isLoading: authLoading } = useQuery({
+    queryKey: ['authStatus'],
+    queryFn: () => clusterAPI.getAuthStatus(),
+    retry: 1,
+    staleTime: 5 * 60 * 1000,
+    refetchInterval: 5 * 60 * 1000,
+    enabled: !publicApiLoading,
+  });
+
+  const isAuthenticated = authStatus?.authenticated === true;
+  const isAnonymousMode = !isAuthenticated && publicApiAvailable === true;
+
+  // Fetch clusters - use appropriate endpoint based on auth
   const {
     data: clustersData,
-    isLoading,
+    isLoading: clustersLoading,
     error,
     refetch,
   } = useQuery({
-    queryKey: ['clusters'],
-    queryFn: () => clusterAPI.getClusters(),
-    refetchInterval: 30000, // 30 seconds
+    queryKey: ['clusters', isAuthenticated ? 'authenticated' : 'anonymous'],
+    queryFn: async () => {
+      if (isAuthenticated) {
+        return await clusterAPI.getClusters();
+      } else if (isAnonymousMode) {
+        return await clusterAPI.getPublicClusterHealth();
+      }
+      return [];
+    },
+    refetchInterval: isAuthenticated ? 30000 : 60000,
+    enabled: !publicApiLoading && !authLoading && (isAuthenticated || isAnonymousMode),
   });
 
-  const clusters = clustersData || [];
-
-  // Fetch user permissions
+  // Fetch user permissions only when authenticated
   const { data: permissions } = useQuery({
     queryKey: ['permissions'],
     queryFn: () => clusterAPI.getUserPermissions(),
+    enabled: isAuthenticated === true,
+    retry: 1,
+    staleTime: 5 * 60 * 1000,
   });
+
+  const clusters = clustersData || [];
 
   // Filter clusters
   const filteredClusters = useMemo(() => {
@@ -84,6 +118,9 @@ export const ClusterDashboard: React.FC = () => {
       return matchesSearch && matchesStatus;
     });
   }, [clusters, searchValue, statusFilter]);
+
+  // Show loading only for initial load
+  const isLoading = publicApiLoading || authLoading || clustersLoading;
 
   if (isLoading) {
     return (
@@ -115,10 +152,19 @@ export const ClusterDashboard: React.FC = () => {
       animate="show"
       className="cluster-dashboard"
     >
-      {/* Stats Section */}
-      <PageSection variant={PageSectionVariants.default} className="stats-section pf-v5-u-pb-0">
-        <ClusterStats clusters={filteredClusters} />
-      </PageSection>
+      {/* Show login banner for anonymous users */}
+      {isAnonymousMode && (
+        <PageSection variant={PageSectionVariants.default} className="pf-v5-u-pb-0">
+          <LoginBanner />
+        </PageSection>
+      )}
+
+      {/* Stats Section - Only show for authenticated users */}
+      {isAuthenticated && (
+        <PageSection variant={PageSectionVariants.default} className="stats-section pf-v5-u-pb-0">
+          <ClusterStats clusters={filteredClusters} />
+        </PageSection>
+      )}
 
       {/* Toolbar */}
       <PageSection variant={PageSectionVariants.default} className="pf-v5-u-pb-0">
@@ -208,12 +254,18 @@ export const ClusterDashboard: React.FC = () => {
             </Title>
             <EmptyStateBody>
               {clusters.length === 0
-                ? 'No clusters are currently configured. Clusters are managed through Kubernetes Custom Resources.'
+                ? isAnonymousMode 
+                  ? 'No clusters are currently available. Login to see if you have access to more clusters.'
+                  : 'No clusters are currently configured. Clusters are managed through Kubernetes Custom Resources.'
                 : 'Try adjusting your search or filter criteria.'}
             </EmptyStateBody>
           </EmptyState>
         ) : (
-          <ClusterGrid clusters={filteredClusters} onRefresh={refetch} permissions={permissions} />
+          <ClusterGrid 
+            clusters={filteredClusters} 
+            onRefresh={refetch} 
+            permissions={isAuthenticated ? permissions : undefined}
+          />
         )}
       </PageSection>
     </motion.div>

@@ -1633,3 +1633,62 @@
     }
   }
 }
+
+// ========================================
+// ANONYMOUS CLUSTER CARD STYLES
+// ========================================
+.cluster-card--anonymous {
+  .pf-v5-c-card__body {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // Slightly muted appearance for anonymous view
+  opacity: 0.95;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+// ========================================
+// LOGIN BANNER STYLES
+// ========================================
+.pf-v5-c-banner {
+  &.pf-m-info {
+    background: linear-gradient(135deg,
+      rgba(0, 102, 204, 0.08) 0%,
+      rgba(0, 102, 204, 0.12) 100%
+    );
+    border-left: 4px solid var(--pf-v5-global--primary-color--100);
+
+    .pf-v5-c-button {
+      box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
+
+      &:hover {
+        box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+        transform: translateY(-1px);
+      }
+    }
+  }
+}
+
+// Dark theme adjustments for anonymous view
+.pf-v5-theme-dark {
+  .cluster-card--anonymous {
+    .pf-v5-c-card__body {
+      background: rgba(255, 255, 255, 0.02);
+    }
+  }
+
+  .pf-v5-c-banner.pf-m-info {
+    background: linear-gradient(135deg,
+      rgba(0, 102, 204, 0.12) 0%,
+      rgba(0, 102, 204, 0.18) 100%
+    );
+    border-left-color: var(--pf-v5-global--primary-color--200);
+  }
+}
+
