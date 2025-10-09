@@ -52,7 +52,7 @@ export const ClusterDashboard: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  // STEP 1: Check if public API is available FIRST
+  // Check if public API is available
   const { data: publicApiAvailable, isLoading: publicApiLoading } = useQuery({
     queryKey: ['publicApiAvailable'],
     queryFn: () => clusterAPI.checkPublicApiAvailable(),
@@ -61,20 +61,20 @@ export const ClusterDashboard: React.FC = () => {
     gcTime: Infinity,
   });
 
-  // STEP 2: Check authentication status (after we know about public API)
+  // Check authentication status
   const { data: authStatus, isLoading: authLoading } = useQuery({
     queryKey: ['authStatus'],
     queryFn: () => clusterAPI.getAuthStatus(),
     retry: 1,
     staleTime: 5 * 60 * 1000,
     refetchInterval: 5 * 60 * 1000,
-    enabled: !publicApiLoading, // Only check after we know about public API
+    enabled: !publicApiLoading,
   });
 
   const isAuthenticated = authStatus?.authenticated === true;
   const isAnonymousMode = !isAuthenticated && publicApiAvailable === true;
 
-  // STEP 3: Fetch clusters - use appropriate endpoint based on auth
+  // Fetch clusters - use appropriate endpoint based on auth
   const {
     data: clustersData,
     isLoading: clustersLoading,
@@ -94,11 +94,11 @@ export const ClusterDashboard: React.FC = () => {
     enabled: !publicApiLoading && !authLoading && (isAuthenticated || isAnonymousMode),
   });
 
-  // STEP 4: Fetch user permissions ONLY when authenticated
+  // Fetch user permissions only when authenticated
   const { data: permissions } = useQuery({
     queryKey: ['permissions'],
     queryFn: () => clusterAPI.getUserPermissions(),
-    enabled: isAuthenticated === true, // Only fetch if definitely authenticated
+    enabled: isAuthenticated === true,
     retry: 1,
     staleTime: 5 * 60 * 1000,
   });
@@ -118,10 +118,6 @@ export const ClusterDashboard: React.FC = () => {
       return matchesSearch && matchesStatus;
     });
   }, [clusters, searchValue, statusFilter]);
-
-  const handleLogin = () => {
-    clusterAPI.redirectToLogin();
-  };
 
   // Show loading only for initial load
   const isLoading = publicApiLoading || authLoading || clustersLoading;
@@ -159,7 +155,7 @@ export const ClusterDashboard: React.FC = () => {
       {/* Show login banner for anonymous users */}
       {isAnonymousMode && (
         <PageSection variant={PageSectionVariants.default} className="pf-v5-u-pb-0">
-          <LoginBanner onLogin={handleLogin} />
+          <LoginBanner />
         </PageSection>
       )}
 

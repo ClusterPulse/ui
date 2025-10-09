@@ -1,21 +1,16 @@
 import React from 'react';
 import {
   Banner,
-  Button,
   Flex,
   FlexItem,
 } from '@patternfly/react-core';
 import {
-  LockIcon,
   InfoCircleIcon,
+  LockIcon,
 } from '@patternfly/react-icons';
 import { motion } from 'framer-motion';
 
-interface LoginBannerProps {
-  onLogin: () => void;
-}
-
-export const LoginBanner: React.FC<LoginBannerProps> = ({ onLogin }) => {
+export const LoginBanner: React.FC = () => {
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
@@ -23,7 +18,6 @@ export const LoginBanner: React.FC<LoginBannerProps> = ({ onLogin }) => {
       transition={{ duration: 0.3 }}
     >
       <Banner
-        //variant="info"
         style={{
           marginBottom: '1rem',
           borderRadius: '8px',
@@ -32,40 +26,31 @@ export const LoginBanner: React.FC<LoginBannerProps> = ({ onLogin }) => {
       >
         <Flex
           alignItems={{ default: 'alignItemsCenter' }}
-          justifyContent={{ default: 'justifyContentSpaceBetween' }}
-          flexWrap={{ default: 'nowrap' }}
+          spaceItems={{ default: 'spaceItemsSm' }}
         >
           <FlexItem>
-            <Flex
-              alignItems={{ default: 'alignItemsCenter' }}
-              spaceItems={{ default: 'spaceItemsSm' }}
-            >
-              <FlexItem>
-                <InfoCircleIcon style={{ fontSize: '1.25rem' }} />
-              </FlexItem>
-              <FlexItem>
-                <strong>Limited View</strong>
-                <span style={{ marginLeft: '0.5rem' }}>
-                  You're viewing basic cluster health information. Login to access detailed metrics, nodes, operators, and more.
-                </span>
-              </FlexItem>
-            </Flex>
+            <InfoCircleIcon style={{ fontSize: '1.25rem' }} />
           </FlexItem>
           <FlexItem>
-            <Button
-              variant="primary"
-              onClick={onLogin}
-              icon={<LockIcon />}
-              style={{
-                fontWeight: 600,
-                whiteSpace: 'nowrap',
-              }}
-            >
-              Login for Full Access
-            </Button>
+            <strong>Limited View</strong>
+          </FlexItem>
+          <FlexItem>
+            <span style={{ color: 'var(--pf-v5-global--Color--200)' }}>•</span>
+          </FlexItem>
+          <FlexItem>
+            <span style={{ fontSize: '0.875rem' }}>
+              You're viewing basic cluster health. 
+              <LockIcon style={{ 
+                fontSize: '0.75rem', 
+                marginLeft: '0.5rem', 
+                marginRight: '0.25rem',
+                opacity: 0.7 
+              }} />
+              Login in the header to access detailed metrics, nodes, operators, and more.
+            </span>
           </FlexItem>
         </Flex>
       </Banner>
     </motion.div>
   );
-};
+}
