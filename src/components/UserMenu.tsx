@@ -15,6 +15,7 @@ import {
   UsersIcon,
   KeyIcon,
   SignOutAltIcon,
+  SignInAltIcon,
 } from '@patternfly/react-icons';
 import { useQuery } from '@tanstack/react-query';
 import { clusterAPI } from '../services/api';
@@ -25,28 +26,39 @@ export const UserMenu: React.FC = () => {
   const { data: authStatus, isLoading: authLoading } = useQuery({
     queryKey: ['authStatus'],
     queryFn: () => clusterAPI.getAuthStatus(),
-    refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes
+    retry: 1,
+    staleTime: 5 * 60 * 1000,
+    refetchInterval: 5 * 60 * 1000,
   });
 
+  // Only fetch permissions if authenticated
   const { data: permissions } = useQuery({
     queryKey: ['permissions'],
     queryFn: () => clusterAPI.getUserPermissions(),
-    enabled: authStatus?.authenticated,
+    enabled: authStatus?.authenticated === true,
+    retry: 1,
+    staleTime: 5 * 60 * 1000,
   });
 
   const handleLogout = async () => {
     await clusterAPI.logout();
   };
 
+  const handleLogin = () => {
+    clusterAPI.redirectToLogin();
+  };
+
   if (authLoading) {
     return <Spinner size="md" />;
   }
 
+  // Show login button for unauthenticated users
   if (!authStatus?.authenticated || !authStatus?.user) {
     return (
       <Button
         variant="primary"
-        onClick={() => window.location.href = '/api/v1/auth/login'}
+        onClick={handleLogin}
+        icon={<SignInAltIcon />}
       >
         Login
       </Button>

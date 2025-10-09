@@ -34,6 +34,7 @@ import {
   LayerGroupIcon,
   CubesIcon,
   ClockIcon,
+  LockIcon,
   EyeIcon,
   ExternalLinkAltIcon,
   CodeBranchIcon,
@@ -60,6 +61,99 @@ interface ClusterCardProps {
   onOperatorsClick: () => void;
   permissions?: any; // Keep the prop but don't use it
 }
+
+interface AnonymousClusterCardProps {
+  cluster: any;
+  onLogin: () => void;
+}
+
+const AnonymousClusterCard: React.FC<AnonymousClusterCardProps> = ({ cluster, onLogin }) => {
+  const displayName = cluster.displayName || cluster.name;
+  const health = cluster.status?.health || 'unknown';
+  const status = healthConfig[health as keyof typeof healthConfig] || healthConfig.unknown;
+  const StatusIcon = status.icon;
+
+  return (
+    <motion.div
+      whileHover={{ y: -4 }}
+      transition={{ type: 'spring', stiffness: 300 }}
+    >
+      <Card className={clsx('cluster-card', `cluster-card--${health}`, 'cluster-card--anonymous')}>
+        <CardHeader>
+          <Flex alignItems={{ default: 'alignItemsCenter' }} justifyContent={{ default: 'justifyContentSpaceBetween' }}>
+            <FlexItem>
+              <Flex alignItems={{ default: 'alignItemsCenter' }}>
+                <FlexItem>
+                  <OpenShiftIcon className="cluster-icon" />
+                </FlexItem>
+                <FlexItem>
+                  <CardTitle className="cluster-title">
+                    {displayName}
+                  </CardTitle>
+                  {cluster.name !== displayName && (
+                    <div className="cluster-name pf-v5-u-font-size-sm pf-v5-u-color-200">
+                      {cluster.name}
+                    </div>
+                  )}
+                </FlexItem>
+              </Flex>
+            </FlexItem>
+            <FlexItem>
+              <Badge className={`status-badge status-badge--${status.color}`}>
+                <StatusIcon className="pf-v5-u-mr-xs" />
+                {status.label}
+              </Badge>
+            </FlexItem>
+          </Flex>
+        </CardHeader>
+
+        <CardBody>
+          <Flex
+            direction={{ default: 'column' }}
+            spaceItems={{ default: 'spaceItemsMd' }}
+            alignItems={{ default: 'alignItemsCenter' }}
+            style={{ padding: '2rem 1rem', textAlign: 'center' }}
+          >
+            <FlexItem>
+              <LockIcon style={{ fontSize: '2.5rem', color: 'var(--pf-v5-global--Color--200)', opacity: 0.6 }} />
+            </FlexItem>
+            <FlexItem>
+              <div style={{ color: 'var(--pf-v5-global--Color--200)', fontSize: '0.875rem' }}>
+                <strong>Login to view detailed information</strong>
+              </div>
+              <div style={{ color: 'var(--pf-v5-global--Color--300)', fontSize: '0.75rem', marginTop: '0.25rem' }}>
+                Metrics • Nodes • Operators • Namespaces
+              </div>
+            </FlexItem>
+            <FlexItem>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={onLogin}
+                icon={<ExternalLinkAltIcon />}
+              >
+                Login
+              </Button>
+            </FlexItem>
+          </Flex>
+        </CardBody>
+
+        {cluster.status?.last_check && (
+          <CardFooter>
+            <Flex alignItems={{ default: 'alignItemsCenter' }}>
+              <FlexItem>
+                <span className="last-check" style={{ fontSize: '0.75rem', color: 'var(--pf-v5-global--Color--200)' }}>
+                  <ClockIcon className="pf-v5-u-mr-xs" style={{ fontSize: '0.75rem' }} />
+                  Last checked: {new Date(cluster.status.last_check).toLocaleTimeString()}
+                </span>
+              </FlexItem>
+            </Flex>
+          </CardFooter>
+        )}
+      </Card>
+    </motion.div>
+  );
+};
 
 const healthConfig = {
   healthy: {
@@ -97,6 +191,15 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
   onNodeClick,
   onOperatorsClick,
 }) => {
+  if (cluster.anonymous_view) {
+    return (
+      <AnonymousClusterCard 
+        cluster={cluster} 
+        onLogin={() => clusterAPI.redirectToLogin()} 
+      />
+    );
+  }
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);

@@ -1,5 +1,5 @@
 /**
- * API Service - Updated for new RBAC-enabled backend
+ * API Service
  */
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios';
 import toast from 'react-hot-toast';
@@ -8,15 +8,27 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
 
 class APIClient {
   private client: AxiosInstance;
+  private publicClient: AxiosInstance;
 
   constructor() {
+    // Authenticated client
     this.client = axios.create({
       baseURL: API_BASE_URL,
       timeout: 30000,
       headers: {
         'Content-Type': 'application/json',
       },
-      withCredentials: true, // Important for OAuth proxy cookies
+      withCredentials: true,
+    });
+
+    // Public client (no credentials)
+    this.publicClient = axios.create({
+      baseURL: API_BASE_URL,
+      timeout: 30000,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      withCredentials: false,
     });
 
     this.setupInterceptors();
@@ -26,7 +38,6 @@ class APIClient {
     // Request interceptor
     this.client.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
-        // Headers are handled by OAuth proxy, no need for manual tokens
         return config;
       },
       (error: AxiosError) => {
@@ -38,11 +49,21 @@ class APIClient {
     this.client.interceptors.response.use(
       (response) => response,
       (error: AxiosError) => {
+        // Don't show toasts for auth/permissions endpoints - let components handle it
+        const isSilentEndpoint = error.config?.url?.includes('/auth/status') || 
+                                 error.config?.url?.includes('/auth/permissions') ||
+                                 error.config?.url?.includes('/auth/me');
+
         if (error.response?.status === 401) {
-          // Redirect to login if not authenticated
-          window.location.href = '/api/v1/auth/login';
+          // Silently handle 401 for auth endpoints
+          if (!isSilentEndpoint) {
+            console.warn('Authentication required');
+          }
         } else if (error.response?.status === 403) {
-          toast.error('Access denied. You do not have permission to perform this action.');
+          // Silently handle 403 for auth endpoints
+          if (!isSilentEndpoint) {
+            toast.error('Access denied. You do not have permission to perform this action.');
+          }
         } else if (error.response?.status === 500) {
           toast.error('Server error. Please try again later.');
         } else if (!error.response) {
@@ -53,10 +74,35 @@ class APIClient {
     );
   }
 
+  // Check if public API is available
+  async checkPublicApiAvailable() {
+    try {
+      const { data } = await this.publicClient.get('/public/health');
+      return data.anonymous_access_enabled === true;
+    } catch {
+      return false;
+    }
+  }
+
+  // Get public cluster health (no auth required)
+  async getPublicClusterHealth() {
+    const { data } = await this.publicClient.get('/public/clusters/health');
+    return data;
+  }
+
   // Authentication endpoints
   async getAuthStatus() {
-    const { data } = await this.client.get('/auth/status');
-    return data;
+    try {
+      const { data } = await this.client.get('/auth/status');
+      return data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      // If 401 or 403, return unauthenticated status instead of throwing
+      if (axiosError?.response?.status === 401 || axiosError?.response?.status === 403) {
+        return { authenticated: false, user: null, message: 'Not authenticated' };
+      }
+      throw error;
+    }
   }
 
   async getCurrentUser() {
@@ -77,7 +123,12 @@ class APIClient {
     return data;
   }
 
-  // Cluster endpoints
+  // Redirect to login
+  redirectToLogin() {
+    window.location.href = '/api/v1/auth/login';
+  }
+
+  // Cluster endpoints (authenticated)
   async getClusters(includeStatus = true, includeMetrics = true) {
     const { data } = await this.client.get('/clusters', {
       params: {
