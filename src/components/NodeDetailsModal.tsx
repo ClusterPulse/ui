@@ -1,14 +1,17 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import {
   Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
   Button,
   Card,
   CardBody,
   Title,
   EmptyState,
-  EmptyStateIcon,
   EmptyStateBody,
+  EmptyStateFooter,
   Flex,
   FlexItem,
   Spinner,
@@ -21,8 +24,8 @@ import {
   DropdownItem,
   MenuToggle,
   MenuToggleElement,
-  Chip,
-  ChipGroup,
+  Label,
+  LabelGroup,
 } from '@patternfly/react-core';
 import {
   CheckCircleIcon,
@@ -221,7 +224,7 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
           style={{ 
             border: 'none',
             borderRadius: '4px',
-            background: 'var(--pf-v5-global--BackgroundColor--100)',
+            background: 'var(--pf-v6-global--BackgroundColor--100)',
             boxShadow: '0 1px 4px rgba(0, 0, 0, 0.06)',
             marginBottom: '8px',
             overflow: 'visible',
@@ -241,7 +244,7 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                       style={{ 
                         padding: '4px',
                         minWidth: '24px',
-                        color: 'var(--pf-v5-global--Color--200)'
+                        color: 'var(--pf-v6-global--Color--200)'
                       }}
                     >
                       {isExpanded ? <AngleDownIcon /> : <AngleRightIcon />}
@@ -251,7 +254,7 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                   {/* Status Icon */}
                   <FlexItem>
                     <span style={{ 
-                      color: `var(--pf-v5-global--${statusInfo.color}-color--100)`,
+                      color: `var(--pf-v6-global--${statusInfo.color}-color--100)`,
                       fontSize: '1rem'
                     }}>
                       <StatusIcon />
@@ -264,13 +267,13 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                       <strong style={{ 
                         fontSize: '0.875rem',
                         fontWeight: 500,
-                        color: 'var(--pf-v5-global--Color--100)'
+                        color: 'var(--pf-v6-global--Color--100)'
                       }}>
                         {node.name}
                       </strong>
                       <div style={{ 
                         fontSize: '0.75rem',
-                        color: 'var(--pf-v5-global--Color--200)',
+                        color: 'var(--pf-v6-global--Color--200)',
                         marginTop: '2px'
                       }}>
                         {node.roles?.join(', ') || 'No roles'}
@@ -281,9 +284,9 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                   {/* Version Badge */}
                   {node.kubelet_version && (
                     <FlexItem>
-                      <Chip isReadOnly style={{ fontSize: '0.625rem' }}>
+                      <Label isCompact style={{ fontSize: '0.625rem' }}>
                         {node.kubelet_version}
-                      </Chip>
+                      </Label>
                     </FlexItem>
                   )}
                 </Flex>
@@ -298,7 +301,7 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                       <div style={{ textAlign: 'center', minWidth: '60px', cursor: 'help' }}>
                         <div style={{ 
                           fontSize: '0.625rem',
-                          color: 'var(--pf-v5-global--Color--200)',
+                          color: 'var(--pf-v6-global--Color--200)',
                           marginBottom: '4px',
                           textTransform: 'uppercase',
                           letterSpacing: '0.5px'
@@ -308,15 +311,15 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                         <div style={{ 
                           fontSize: '1rem',
                           fontWeight: 500,
-                          color: cpuUsagePercent > 80 ? 'var(--pf-v5-global--danger-color--100)' : 
-                                 cpuUsagePercent > 60 ? 'var(--pf-v5-global--warning-color--100)' : 
-                                 'var(--pf-v5-global--success-color--100)'
+                          color: cpuUsagePercent > 80 ? 'var(--pf-v6-global--danger-color--100)' : 
+                                 cpuUsagePercent > 60 ? 'var(--pf-v6-global--warning-color--100)' : 
+                                 'var(--pf-v6-global--success-color--100)'
                         }}>
                           {cpuUsagePercent}%
                         </div>
                         <div style={{ 
                           fontSize: '0.625rem',
-                          color: 'var(--pf-v5-global--Color--300)'
+                          color: 'var(--pf-v6-global--Color--300)'
                         }}>
                           {(node.cpu_requested || 0).toFixed(1)}/{(node.cpu_allocatable || 0).toFixed(1)}
                         </div>
@@ -330,7 +333,7 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                       <div style={{ textAlign: 'center', minWidth: '60px', cursor: 'help' }}>
                         <div style={{ 
                           fontSize: '0.625rem',
-                          color: 'var(--pf-v5-global--Color--200)',
+                          color: 'var(--pf-v6-global--Color--200)',
                           marginBottom: '4px',
                           textTransform: 'uppercase',
                           letterSpacing: '0.5px'
@@ -340,15 +343,15 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                         <div style={{ 
                           fontSize: '1rem',
                           fontWeight: 500,
-                          color: memoryUsagePercent > 80 ? 'var(--pf-v5-global--danger-color--100)' : 
-                                 memoryUsagePercent > 60 ? 'var(--pf-v5-global--warning-color--100)' : 
-                                 'var(--pf-v5-global--success-color--100)'
+                          color: memoryUsagePercent > 80 ? 'var(--pf-v6-global--danger-color--100)' : 
+                                 memoryUsagePercent > 60 ? 'var(--pf-v6-global--warning-color--100)' : 
+                                 'var(--pf-v6-global--success-color--100)'
                         }}>
                           {memoryUsagePercent}%
                         </div>
                         <div style={{ 
                           fontSize: '0.625rem',
-                          color: 'var(--pf-v5-global--Color--300)'
+                          color: 'var(--pf-v6-global--Color--300)'
                         }}>
                           {formatBytes(node.memory_requested || 0)}
                         </div>
@@ -370,7 +373,7 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                       <div style={{ textAlign: 'center', minWidth: '60px', cursor: 'help' }}>
                         <div style={{ 
                           fontSize: '0.625rem',
-                          color: 'var(--pf-v5-global--Color--200)',
+                          color: 'var(--pf-v6-global--Color--200)',
                           marginBottom: '4px',
                           textTransform: 'uppercase',
                           letterSpacing: '0.5px'
@@ -381,19 +384,19 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                           fontSize: '1rem',
                           fontWeight: 500,
                           color: (node.pods_failed > 0 || node.pods_pending > 0) 
-                            ? 'var(--pf-v5-global--warning-color--100)' 
-                            : 'var(--pf-v5-global--Color--100)'
+                            ? 'var(--pf-v6-global--warning-color--100)' 
+                            : 'var(--pf-v6-global--Color--100)'
                         }}>
                           {node.pods_running || 0}
                         </div>
                         <div style={{ 
                           fontSize: '0.625rem',
-                          color: 'var(--pf-v5-global--Color--300)'
+                          color: 'var(--pf-v6-global--Color--300)'
                         }}>
                           of {podsTotal}
                           {(node.pods_failed > 0 || node.pods_pending > 0) && (
                             <span style={{ 
-                              color: 'var(--pf-v5-global--warning-color--100)',
+                              color: 'var(--pf-v6-global--warning-color--100)',
                               marginLeft: '2px'
                             }}>
                               !
@@ -409,7 +412,7 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                     <div style={{ textAlign: 'center', minWidth: '60px' }}>
                       <div style={{ 
                         fontSize: '0.625rem',
-                        color: 'var(--pf-v5-global--Color--200)',
+                        color: 'var(--pf-v6-global--Color--200)',
                         marginBottom: '4px',
                         textTransform: 'uppercase',
                         letterSpacing: '0.5px'
@@ -419,7 +422,7 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                       <div style={{ 
                         fontSize: '1rem',
                         fontWeight: 500,
-                        color: 'var(--pf-v5-global--Color--100)'
+                        color: 'var(--pf-v6-global--Color--100)'
                       }}>
                         {formatUptime(node.creation_timestamp)}
                       </div>
@@ -442,14 +445,14 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                   <div style={{ 
                     marginTop: '16px',
                     paddingTop: '16px',
-                    borderTop: '1px solid var(--pf-v5-global--BorderColor--100)'
+                    borderTop: '1px solid var(--pf-v6-global--BorderColor--100)'
                   }}>
                     {/* System Info */}
                     <div style={{ marginBottom: '16px' }}>
                       <Title headingLevel="h6" size="md" style={{ 
                         fontSize: '0.75rem',
                         marginBottom: '8px',
-                        color: 'var(--pf-v5-global--Color--200)',
+                        color: 'var(--pf-v6-global--Color--200)',
                         textTransform: 'uppercase',
                         letterSpacing: '0.5px'
                       }}>
@@ -461,26 +464,26 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                         gap: '12px'
                       }}>
                         <div style={{ fontSize: '0.75rem' }}>
-                          <span style={{ color: 'var(--pf-v5-global--Color--200)' }}>OS: </span>
-                          <span style={{ color: 'var(--pf-v5-global--Color--100)' }}>
+                          <span style={{ color: 'var(--pf-v6-global--Color--200)' }}>OS: </span>
+                          <span style={{ color: 'var(--pf-v6-global--Color--100)' }}>
                             {node.os_image || 'Unknown'}
                           </span>
                         </div>
                         <div style={{ fontSize: '0.75rem' }}>
-                          <span style={{ color: 'var(--pf-v5-global--Color--200)' }}>Runtime: </span>
-                          <span style={{ color: 'var(--pf-v5-global--Color--100)' }}>
+                          <span style={{ color: 'var(--pf-v6-global--Color--200)' }}>Runtime: </span>
+                          <span style={{ color: 'var(--pf-v6-global--Color--100)' }}>
                             {node.container_runtime || 'Unknown'}
                           </span>
                         </div>
                         <div style={{ fontSize: '0.75rem' }}>
-                          <span style={{ color: 'var(--pf-v5-global--Color--200)' }}>Kernel: </span>
-                          <span style={{ color: 'var(--pf-v5-global--Color--100)' }}>
+                          <span style={{ color: 'var(--pf-v6-global--Color--200)' }}>Kernel: </span>
+                          <span style={{ color: 'var(--pf-v6-global--Color--100)' }}>
                             {node.kernel_version || 'Unknown'}
                           </span>
                         </div>
                         <div style={{ fontSize: '0.75rem' }}>
-                          <span style={{ color: 'var(--pf-v5-global--Color--200)' }}>Architecture: </span>
-                          <span style={{ color: 'var(--pf-v5-global--Color--100)' }}>
+                          <span style={{ color: 'var(--pf-v6-global--Color--200)' }}>Architecture: </span>
+                          <span style={{ color: 'var(--pf-v6-global--Color--100)' }}>
                             {node.architecture || 'Unknown'}
                           </span>
                         </div>
@@ -493,13 +496,13 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                         <Title headingLevel="h6" size="md" style={{ 
                           fontSize: '0.75rem',
                           marginBottom: '8px',
-                          color: 'var(--pf-v5-global--Color--200)',
+                          color: 'var(--pf-v6-global--Color--200)',
                           textTransform: 'uppercase',
                           letterSpacing: '0.5px'
                         }}>
                           Conditions
                         </Title>
-                        <ChipGroup categoryName="" numChips={10}>
+                        <LabelGroup numLabels={10}>
                           {node.conditions.map((condition: any, idx: number) => {
                             // Pressure conditions should be green when False
                             const isPressureCondition = condition.type?.includes('Pressure') || 
@@ -521,19 +524,19 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                             }
                             
                             return (
-                              <Chip
+                              <Label
                                 key={idx}
-                                isReadOnly
+                                isCompact
                                 style={{ 
                                   fontSize: '0.625rem',
                                   background: backgroundColor
                                 }}
                               >
                                 {condition.type}: {condition.status}
-                              </Chip>
+                              </Label>
                             );
                           })}
-                        </ChipGroup>
+                        </LabelGroup>
                       </div>
                     )}
                   </div>
@@ -556,99 +559,55 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
     return parts.join(', ');
   };
 
+  const modalDescription = loading 
+    ? 'Loading nodes...' 
+    : error 
+      ? 'Error loading nodes' 
+      : nodes.length > 0 
+        ? `${nodes.length} nodes (${getStatusSummary()})` 
+        : '';
+
   return (
     <Modal
       variant={ModalVariant.large}
-      title={`Nodes - ${cluster.displayName || cluster.name}`}
-      description={
-        loading ? 'Loading nodes...' : 
-        error ? 'Error loading nodes' :
-        nodes.length > 0 ? `${nodes.length} nodes (${getStatusSummary()})` : ''
-      }
       isOpen={isOpen}
       onClose={onClose}
-      actions={[
-        <Button key="close" variant="primary" onClick={onClose}>
-          Close
-        </Button>,
-      ]}
+      aria-labelledby="node-details-modal-title"
+      aria-describedby="node-details-modal-body"
     >
-      {/* Minimal Toolbar */}
-      <div style={{ 
-        marginBottom: '16px',
-        padding: '12px 0',
-        background: 'transparent'
-      }}>
-        <Flex>
-          <FlexItem flex={{ default: 'flex_1' }}>
-            <SearchInput
-              placeholder="Search nodes..."
-              value={searchValue}
-              onChange={(_, value) => setSearchValue(value)}
-              onClear={() => setSearchValue('')}
-              style={{ maxWidth: '400px' }}
-            />
-          </FlexItem>
-          <FlexItem>
-            <Flex spaceItems={{ default: 'spaceItemsSm' }}>
-              <FlexItem>
-                <Dropdown
-                  isOpen={isStatusFilterOpen}
-                  onOpenChange={setIsStatusFilterOpen}
-                  toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-                    <MenuToggle
-                      ref={toggleRef}
-                      onClick={() => setIsStatusFilterOpen(!isStatusFilterOpen)}
-                      isExpanded={isStatusFilterOpen}
-                      variant="secondary"
-                      style={{ 
-                        fontSize: '0.875rem',
-                        padding: '6px 12px'
-                      }}
-                    >
-                      <span style={{ marginRight: '4px', fontSize: '0.75rem' }}>
-                        <FilterIcon />
-                      </span>
-                      {statusFilter === 'all' ? 'All Status' : statusFilter}
-                    </MenuToggle>
-                  )}
-                >
-                  <DropdownList>
-                    <DropdownItem
-                      key="all"
-                      onClick={() => {
-                        setStatusFilter('all');
-                        setIsStatusFilterOpen(false);
-                      }}
-                    >
-                      All ({nodes.length})
-                    </DropdownItem>
-                    {Object.entries(statusCounts).map(([status, count]) => (
-                      count > 0 && (
-                        <DropdownItem
-                          key={status}
-                          onClick={() => {
-                            setStatusFilter(status);
-                            setIsStatusFilterOpen(false);
-                          }}
-                        >
-                          {status} ({count})
-                        </DropdownItem>
-                      )
-                    ))}
-                  </DropdownList>
-                </Dropdown>
-              </FlexItem>
-              {uniqueRoles.length > 0 && (
+      <ModalHeader 
+        title={`Nodes - ${cluster.displayName || cluster.name}`} 
+        labelId="node-details-modal-title"
+        description={modalDescription}
+      />
+      <ModalBody id="node-details-modal-body">
+        {/* Minimal Toolbar */}
+        <div style={{ 
+          marginBottom: '16px',
+          padding: '12px 0',
+          background: 'transparent'
+        }}>
+          <Flex>
+            <FlexItem flex={{ default: 'flex_1' }}>
+              <SearchInput
+                placeholder="Search nodes..."
+                value={searchValue}
+                onChange={(_, value) => setSearchValue(value)}
+                onClear={() => setSearchValue('')}
+                style={{ maxWidth: '400px' }}
+              />
+            </FlexItem>
+            <FlexItem>
+              <Flex spaceItems={{ default: 'spaceItemsSm' }}>
                 <FlexItem>
                   <Dropdown
-                    isOpen={isRoleFilterOpen}
-                    onOpenChange={setIsRoleFilterOpen}
+                    isOpen={isStatusFilterOpen}
+                    onOpenChange={setIsStatusFilterOpen}
                     toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
                       <MenuToggle
                         ref={toggleRef}
-                        onClick={() => setIsRoleFilterOpen(!isRoleFilterOpen)}
-                        isExpanded={isRoleFilterOpen}
+                        onClick={() => setIsStatusFilterOpen(!isStatusFilterOpen)}
+                        isExpanded={isStatusFilterOpen}
                         variant="secondary"
                         style={{ 
                           fontSize: '0.875rem',
@@ -656,9 +615,9 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                         }}
                       >
                         <span style={{ marginRight: '4px', fontSize: '0.75rem' }}>
-                          <TagIcon />
+                          <FilterIcon />
                         </span>
-                        {roleFilter === 'all' ? 'All Roles' : roleFilter}
+                        {statusFilter === 'all' ? 'All Status' : statusFilter}
                       </MenuToggle>
                     )}
                   >
@@ -666,59 +625,115 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                       <DropdownItem
                         key="all"
                         onClick={() => {
-                          setRoleFilter('all');
-                          setIsRoleFilterOpen(false);
+                          setStatusFilter('all');
+                          setIsStatusFilterOpen(false);
                         }}
                       >
-                        All Roles
+                        All ({nodes.length})
                       </DropdownItem>
-                      {uniqueRoles.map(role => (
-                        <DropdownItem
-                          key={role}
-                          onClick={() => {
-                            setRoleFilter(role);
-                            setIsRoleFilterOpen(false);
-                          }}
-                        >
-                          {role}
-                        </DropdownItem>
+                      {Object.entries(statusCounts).map(([status, count]) => (
+                        count > 0 && (
+                          <DropdownItem
+                            key={status}
+                            onClick={() => {
+                              setStatusFilter(status);
+                              setIsStatusFilterOpen(false);
+                            }}
+                          >
+                            {status} ({count})
+                          </DropdownItem>
+                        )
                       ))}
                     </DropdownList>
                   </Dropdown>
                 </FlexItem>
-              )}
-            </Flex>
-          </FlexItem>
-        </Flex>
-      </div>
+                {uniqueRoles.length > 0 && (
+                  <FlexItem>
+                    <Dropdown
+                      isOpen={isRoleFilterOpen}
+                      onOpenChange={setIsRoleFilterOpen}
+                      toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                        <MenuToggle
+                          ref={toggleRef}
+                          onClick={() => setIsRoleFilterOpen(!isRoleFilterOpen)}
+                          isExpanded={isRoleFilterOpen}
+                          variant="secondary"
+                          style={{ 
+                            fontSize: '0.875rem',
+                            padding: '6px 12px'
+                          }}
+                        >
+                          <span style={{ marginRight: '4px', fontSize: '0.75rem' }}>
+                            <TagIcon />
+                          </span>
+                          {roleFilter === 'all' ? 'All Roles' : roleFilter}
+                        </MenuToggle>
+                      )}
+                    >
+                      <DropdownList>
+                        <DropdownItem
+                          key="all"
+                          onClick={() => {
+                            setRoleFilter('all');
+                            setIsRoleFilterOpen(false);
+                          }}
+                        >
+                          All Roles
+                        </DropdownItem>
+                        {uniqueRoles.map(role => (
+                          <DropdownItem
+                            key={role}
+                            onClick={() => {
+                              setRoleFilter(role);
+                              setIsRoleFilterOpen(false);
+                            }}
+                          >
+                            {role}
+                          </DropdownItem>
+                        ))}
+                      </DropdownList>
+                    </Dropdown>
+                  </FlexItem>
+                )}
+              </Flex>
+            </FlexItem>
+          </Flex>
+        </div>
 
-      <AnimatePresence mode="wait">
-        {loading ? (
-          <Bullseye style={{ minHeight: '200px' }}>
-            <Spinner size="lg" />
-          </Bullseye>
-        ) : error ? (
-          <Alert variant="danger" title="Failed to load nodes" isInline>
-            {error}
-          </Alert>
-        ) : filteredNodes.length === 0 ? (
-          <EmptyState>
-            <EmptyStateIcon icon={ServerIcon} />
-            <Title headingLevel="h4" size="lg">
-              No nodes found
-            </Title>
-            <EmptyStateBody>
-              {searchValue || statusFilter !== 'all' || roleFilter !== 'all'
-                ? 'No nodes match your search or filter criteria.'
-                : 'No node information is available for this cluster.'}
-            </EmptyStateBody>
-          </EmptyState>
-        ) : (
-          <div>
-            {filteredNodes.map((node) => renderNodeCard(node))}
-          </div>
-        )}
-      </AnimatePresence>
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <Bullseye style={{ minHeight: '200px' }}>
+              <Spinner size="lg" />
+            </Bullseye>
+          ) : error ? (
+            <Alert variant="danger" title="Failed to load nodes" isInline>
+              {error}
+            </Alert>
+          ) : filteredNodes.length === 0 ? (
+            <EmptyState
+              titleText="No nodes found"
+              headingLevel="h4"
+              icon={ServerIcon}
+            >
+              <EmptyStateBody>
+                {searchValue || statusFilter !== 'all' || roleFilter !== 'all'
+                  ? 'No nodes match your search or filter criteria.'
+                  : 'No node information is available for this cluster.'}
+              </EmptyStateBody>
+              <EmptyStateFooter />
+            </EmptyState>
+          ) : (
+            <div>
+              {filteredNodes.map((node) => renderNodeCard(node))}
+            </div>
+          )}
+        </AnimatePresence>
+      </ModalBody>
+      <ModalFooter>
+        <Button key="close" variant="primary" onClick={onClose}>
+          Close
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };

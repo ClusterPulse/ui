@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {
   Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
   Button,
   Grid,
@@ -17,9 +20,8 @@ import {
   Bullseye,
   Spinner,
   EmptyState,
-  EmptyStateIcon,
   EmptyStateBody,
-  Title,
+  EmptyStateFooter,
   SearchInput,
   Toolbar,
   ToolbarContent,
@@ -249,7 +251,7 @@ export const OperatorsView: React.FC<OperatorsViewProps> = ({
                 </Label>
               </Tooltip>
               {operator.install_mode && (
-                <Label isCompact color="cyan">
+                <Label isCompact color="teal">
                   {operator.install_mode}
                 </Label>
               )}
@@ -285,72 +287,80 @@ export const OperatorsView: React.FC<OperatorsViewProps> = ({
     return parts.join(', ');
   };
 
+  const modalDescription = !loading && operators.length > 0 
+    ? `${operators.length} operators installed (${getStatusSummary()})`
+    : '';
+
   return (
     <Modal
       variant={ModalVariant.large}
-      title={`Operators - ${clusterName}`}
-      description={
-        !loading && operators.length > 0 
-          ? `${operators.length} operators installed (${getStatusSummary()})`
-          : ''
-      }
       isOpen={isOpen}
       onClose={onClose}
-      actions={[
+      aria-labelledby="operators-modal-title"
+      aria-describedby="operators-modal-body"
+    >
+      <ModalHeader 
+        title={`Operators - ${clusterName}`} 
+        labelId="operators-modal-title"
+        description={modalDescription}
+      />
+      <ModalBody id="operators-modal-body">
+        <Toolbar style={{ 
+          background: 'transparent',
+          border: 'none',
+          padding: '12px 0',
+          marginBottom: '16px'
+        }}>
+          <ToolbarContent>
+            <ToolbarItem className="pf-v6-u-flex-1">
+              <SearchInput
+                placeholder="Search by name, namespace, or provider..."
+                value={searchValue}
+                onChange={(_, value) => setSearchValue(value)}
+                onClear={() => setSearchValue('')}
+              />
+            </ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
+
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <Bullseye>
+              <Spinner size="xl" />
+            </Bullseye>
+          ) : error ? (
+            <Alert variant="danger" title="Failed to load operators">
+              {error}
+            </Alert>
+          ) : filteredOperators.length === 0 ? (
+            <EmptyState
+              titleText="No operators found"
+              headingLevel="h4"
+              icon={CubesIcon}
+            >
+              <EmptyStateBody>
+                {searchValue
+                  ? 'No operators match your search criteria.'
+                  : 'No operators are available for this cluster.'}
+              </EmptyStateBody>
+              <EmptyStateFooter />
+            </EmptyState>
+          ) : (
+            <Grid hasGutter>
+              {filteredOperators.map(operator => (
+                <GridItem key={operator.name} span={12} md={6} lg={4}>
+                  {renderOperatorCard(operator)}
+                </GridItem>
+              ))}
+            </Grid>
+          )}
+        </AnimatePresence>
+      </ModalBody>
+      <ModalFooter>
         <Button key="close" variant="primary" onClick={onClose}>
           Close
-        </Button>,
-      ]}
-    >
-      <Toolbar style={{ 
-        background: 'transparent',
-        border: 'none',
-        padding: '12px 0',
-        marginBottom: '16px'
-      }}>
-        <ToolbarContent>
-          <ToolbarItem variant="search-filter" className="pf-v5-u-flex-1">
-            <SearchInput
-              placeholder="Search by name, namespace, or provider..."
-              value={searchValue}
-              onChange={(_, value) => setSearchValue(value)}
-              onClear={() => setSearchValue('')}
-            />
-          </ToolbarItem>
-        </ToolbarContent>
-      </Toolbar>
-
-      <AnimatePresence mode="wait">
-        {loading ? (
-          <Bullseye>
-            <Spinner size="xl" />
-          </Bullseye>
-        ) : error ? (
-          <Alert variant="danger" title="Failed to load operators">
-            {error}
-          </Alert>
-        ) : filteredOperators.length === 0 ? (
-          <EmptyState>
-            <EmptyStateIcon icon={CubesIcon} />
-            <Title headingLevel="h4" size="lg">
-              No operators found
-            </Title>
-            <EmptyStateBody>
-              {searchValue
-                ? 'No operators match your search criteria.'
-                : 'No operators are available for this cluster.'}
-            </EmptyStateBody>
-          </EmptyState>
-        ) : (
-          <Grid hasGutter>
-            {filteredOperators.map(operator => (
-              <GridItem key={operator.name} span={12} md={6} lg={4}>
-                {renderOperatorCard(operator)}
-              </GridItem>
-            ))}
-          </Grid>
-        )}
-      </AnimatePresence>
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };

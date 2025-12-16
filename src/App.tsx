@@ -1,13 +1,12 @@
 import React from 'react';
 import {
   Page,
-  PageSection,
-  PageSectionVariants,
-  Button,
   Masthead,
   MastheadMain,
   MastheadBrand,
   MastheadContent,
+  PageSection,
+  Button,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
@@ -62,7 +61,7 @@ const AppContent: React.FC = () => {
   const headerTools = (
     <Toolbar>
       <ToolbarContent>
-        <ToolbarGroup variant="icon-button-group" align={{ default: 'alignRight' }}>
+        <ToolbarGroup align={{ default: 'alignEnd' }}>
           {/* Only show registry status for authenticated users */}
           {isAuthenticated && (
             <>
@@ -73,7 +72,7 @@ const AppContent: React.FC = () => {
                 <div style={{ 
                   width: '1px', 
                   height: '24px', 
-                  background: 'var(--pf-v5-global--BorderColor--100)',
+                  background: 'var(--pf-v6-global--BorderColor--100)',
                   margin: '0 8px'
                 }} />
               </ToolbarItem>
@@ -98,8 +97,8 @@ const AppContent: React.FC = () => {
                 aria-label={isDarkTheme ? 'Switch to light theme' : 'Switch to dark theme'}
                 onClick={toggleTheme}
                 icon={isDarkTheme ? 
-                  <span style={{ color: 'var(--pf-v5-global--palette--gold-400)' }}>☀️</span> : 
-                  <span style={{ color: 'var(--pf-v5-global--palette--blue-300)' }}>🌙</span>
+                  <span style={{ color: 'var(--pf-v6-global--palette--gold-400)' }}>☀️</span> : 
+                  <span style={{ color: 'var(--pf-v6-global--palette--blue-300)' }}>🌙</span>
                 }
               />
             </Tooltip>
@@ -137,8 +136,8 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="app">
-      <Page header={header}>
-        <PageSection variant={PageSectionVariants.light} className="pf-v5-u-p-0">
+      <Page masthead={header}>
+        <PageSection className="pf-v6-u-p-0">
           <AnimatePresence mode="wait">
             <ClusterDashboard />
           </AnimatePresence>
@@ -149,22 +148,22 @@ const AppContent: React.FC = () => {
         toastOptions={{
           duration: 4000,
           style: {
-            background: 'var(--pf-v5-global--BackgroundColor--100)',
-            color: 'var(--pf-v5-global--Color--100)',
-            border: '1px solid var(--pf-v5-global--BorderColor--100)',
-            borderRadius: 'var(--pf-v5-global--BorderRadius--md)',
-            boxShadow: 'var(--pf-v5-global--BoxShadow--lg)',
+            background: 'var(--pf-v6-global--BackgroundColor--100)',
+            color: 'var(--pf-v6-global--Color--100)',
+            border: '1px solid var(--pf-v6-global--BorderColor--100)',
+            borderRadius: 'var(--pf-v6-global--BorderRadius--md)',
+            boxShadow: 'var(--pf-v6-global--BoxShadow--lg)',
           },
           success: {
             iconTheme: {
-              primary: 'var(--pf-v5-global--success-color--100)',
-              secondary: 'var(--pf-v5-global--BackgroundColor--100)',
+              primary: 'var(--pf-v6-global--success-color--100)',
+              secondary: 'var(--pf-v6-global--BackgroundColor--100)',
             },
           },
           error: {
             iconTheme: {
-              primary: 'var(--pf-v5-global--danger-color--100)',
-              secondary: 'var(--pf-v5-global--BackgroundColor--100)',
+              primary: 'var(--pf-v6-global--danger-color--100)',
+              secondary: 'var(--pf-v6-global--BackgroundColor--100)',
             },
           },
         }}
