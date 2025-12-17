@@ -65,14 +65,7 @@ const AppContent: React.FC = () => {
               <ToolbarItem>
                 <RegistryStatus />
               </ToolbarItem>
-              <ToolbarItem>
-                <div style={{ 
-                  width: '1px', 
-                  height: '24px', 
-                  background: 'var(--pf-t--global--border--color--default)',
-                  margin: '0 8px'
-                }} />
-              </ToolbarItem>
+              <ToolbarItem variant="separator" />
             </>
           )}
           <ToolbarItem>
