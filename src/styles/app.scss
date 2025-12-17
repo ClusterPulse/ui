@@ -49,7 +49,6 @@
 
 // Stats bar
 .cluster-stats {
-  margin-bottom: var(--pf-t--global--spacer--md);
   
   .stat-card.pf-v6-c-card {
     --pf-v6-c-card--BorderWidth: 0;
@@ -99,7 +98,6 @@
   background: var(--pf-t--global--background--color--primary--default);
   border-radius: var(--pf-t--global--border--radius--medium);
   padding: var(--pf-t--global--spacer--md) !important;
-  margin-bottom: var(--pf-t--global--spacer--md) !important;
   box-shadow: var(--pf-t--global--box-shadow--sm);
   
   .pf-v6-c-toolbar__content { padding: 0 !important; }

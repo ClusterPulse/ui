@@ -144,18 +144,18 @@ export const ClusterDashboard: React.FC = () => {
       className="cluster-dashboard"
     >
       {isAnonymousMode && (
-        <PageSection className="pf-v6-u-pb-0">
+        <PageSection className="pf-v6-u-pb-sm">
           <LoginBanner />
         </PageSection>
       )}
 
       {isAuthenticated && (
-        <PageSection className="stats-section pf-v6-u-pb-0">
+        <PageSection className="pf-v6-u-pb-sm">
           <ClusterStats clusters={filteredClusters} />
         </PageSection>
       )}
 
-      <PageSection className="pf-v6-u-pb-0">
+      <PageSection className="pf-v6-u-pb-sm pf-v6-u-pt-0">
         <Toolbar id="cluster-toolbar" className="cluster-toolbar">
           <ToolbarContent>
             <ToolbarItem className="pf-v6-u-mr-md">
@@ -232,7 +232,7 @@ export const ClusterDashboard: React.FC = () => {
         </Toolbar>
       </PageSection>
 
-      <PageSection>
+      <PageSection className="pf-v6-u-pt-0">
         {filteredClusters.length === 0 ? (
           <EmptyState
             titleText={clusters.length === 0 ? 'No clusters available' : 'No clusters match your search'}
