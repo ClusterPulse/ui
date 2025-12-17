@@ -51,7 +51,8 @@
 .cluster-stats {
   margin-bottom: var(--pf-t--global--spacer--md);
   
-  .stat-card {
+  .stat-card.pf-v6-c-card {
+    --pf-v6-c-card--BorderWidth: 0;
     background: var(--pf-t--global--background--color--primary--default);
     border-radius: var(--pf-t--global--border--radius--medium);
     box-shadow: var(--pf-t--global--box-shadow--sm);
@@ -85,14 +86,6 @@
       &--teal { background: color-mix(in srgb, #008080 15%, transparent); color: #008080; }
     }
     
-    .stat-divider {
-      width: 1px;
-      height: 32px;
-      background: var(--pf-t--global--border--color--default);
-      margin: 0 var(--pf-t--global--spacer--md);
-      opacity: 0.5;
-    }
-    
     .stat-content {
       .stat-value { font-size: 1.125rem; font-weight: 700; color: var(--pf-t--global--text--color--regular); }
       .stat-title { font-size: 0.625rem; text-transform: uppercase; color: var(--pf-t--global--text--color--subtle); margin-top: 2px; font-weight: 600; letter-spacing: 0.3px; }
@@ -113,7 +106,8 @@
 }
 
 // Cluster cards
-.cluster-card {
+.cluster-card.pf-v6-c-card {
+  --pf-v6-c-card--BorderWidth: 0;
   background: var(--pf-t--global--background--color--primary--default);
   border-radius: var(--pf-t--global--border--radius--medium);
   box-shadow: var(--pf-t--global--box-shadow--sm);
@@ -265,7 +259,8 @@
   }
 }
 
-.node-minimal-card {
+.node-minimal-card.pf-v6-c-card {
+  --pf-v6-c-card--BorderWidth: 0;
   background: var(--pf-t--global--background--color--primary--default);
   border-radius: var(--pf-t--global--border--radius--small);
   box-shadow: var(--pf-t--global--box-shadow--sm);
@@ -296,7 +291,8 @@
 }
 
 // Operator cards
-.operator-card {
+.operator-card.pf-v6-c-card {
+  --pf-v6-c-card--BorderWidth: 0;
   background: var(--pf-t--global--background--color--primary--default);
   border-radius: var(--pf-t--global--border--radius--medium);
   box-shadow: var(--pf-t--global--box-shadow--sm);
@@ -394,7 +390,6 @@
 @media (max-width: 1200px) {
   .cluster-stats .stat-card {
     .pf-v6-l-flex { flex-wrap: wrap !important; }
-    .stat-divider { display: none; }
     .pf-v6-l-flex__item { flex-basis: 25%; margin-bottom: var(--pf-t--global--spacer--sm); }
   }
 }

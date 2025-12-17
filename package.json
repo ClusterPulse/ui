@@ -1,6 +1,6 @@
 {
-  "name": "openshift-cluster-monitor",
-  "version": "0.1.0",
+  "name": "clusterpulse",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "@patternfly/patternfly": "^6.4.0",

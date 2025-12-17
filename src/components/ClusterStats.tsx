@@ -165,9 +165,6 @@ export const ClusterStats: React.FC<ClusterStatsProps> = ({ clusters }) => {
                       </FlexItem>
                     </Flex>
                   </motion.div>
-                  {index < statItems.length - 1 && (
-                    <div className="stat-divider" />
-                  )}
                 </FlexItem>
               );
             })}
