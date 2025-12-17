@@ -18,6 +18,9 @@ import {
   MenuToggleElement,
   Badge,
   Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
   DescriptionList,
   DescriptionListGroup,
@@ -704,124 +707,127 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
       {/* Cluster Details Modal */}
       <Modal
         variant={ModalVariant.medium}
-        title={`Cluster Details - ${displayName}`}
         isOpen={isDetailsModalOpen}
         onClose={() => setIsDetailsModalOpen(false)}
-        actions={[
+        aria-label={`Cluster Details - ${displayName}`}
+      >
+        <ModalHeader title={`Cluster Details - ${displayName}`} />
+        <ModalBody>
+          {isLoadingDetails ? (
+            <Spinner size="xl" />
+          ) : clusterDetails ? (
+            <DescriptionList isHorizontal>
+              <DescriptionListGroup>
+                <DescriptionListTerm>Cluster Name</DescriptionListTerm>
+                <DescriptionListDescription>{clusterDetails.name}</DescriptionListDescription>
+              </DescriptionListGroup>
+              <DescriptionListGroup>
+                <DescriptionListTerm>Display Name</DescriptionListTerm>
+                <DescriptionListDescription>{clusterDetails.spec?.displayName || clusterDetails.name}</DescriptionListDescription>
+              </DescriptionListGroup>
+              {clusterDetails.version && (
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Version</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    <Label color="blue" isCompact>{clusterDetails.version}</Label>
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+              )}
+              {clusterDetails.channel && (
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Channel</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    <Label color="purple" isCompact>{clusterDetails.channel}</Label>
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+              )}
+              <DescriptionListGroup>
+                <DescriptionListTerm>API URL</DescriptionListTerm>
+                <DescriptionListDescription>{clusterDetails.api_url || 'Not available'}</DescriptionListDescription>
+              </DescriptionListGroup>
+              {clusterDetails.console_url && (
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Console URL</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    <a 
+                      href={clusterDetails.console_url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        color: 'var(--pf-v5-global--link--Color)',
+                        textDecoration: 'none'
+                      }}
+                    >
+                      {clusterDetails.console_url}
+                      <ExternalLinkAltIcon className="pf-v5-u-ml-xs" style={{ fontSize: '0.875rem' }} />
+                    </a>
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+              )}
+              <DescriptionListGroup>
+                <DescriptionListTerm>Platform</DescriptionListTerm>
+                <DescriptionListDescription>{clusterDetails.platform || 'OpenShift'}</DescriptionListDescription>
+              </DescriptionListGroup>
+              {clusterDetails.metrics && (
+                <>
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>Total Nodes</DescriptionListTerm>
+                    <DescriptionListDescription>
+                      {clusterDetails.metrics.nodes || 0} ({clusterDetails.metrics.nodes_ready || 0} ready)
+                    </DescriptionListDescription>
+                  </DescriptionListGroup>
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>Namespaces</DescriptionListTerm>
+                    <DescriptionListDescription>{clusterDetails.metrics.namespaces || 0}</DescriptionListDescription>
+                  </DescriptionListGroup>
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>Pods</DescriptionListTerm>
+                    <DescriptionListDescription>
+                      {clusterDetails.metrics.pods || 0} total ({clusterDetails.metrics.pods_running || 0} running)
+                    </DescriptionListDescription>
+                  </DescriptionListGroup>
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>Deployments</DescriptionListTerm>
+                    <DescriptionListDescription>{clusterDetails.metrics.deployments || 0}</DescriptionListDescription>
+                  </DescriptionListGroup>
+                </>
+              )}
+              <DescriptionListGroup>
+                <DescriptionListTerm>Operators</DescriptionListTerm>
+                <DescriptionListDescription>{clusterDetails.operator_count || 0}</DescriptionListDescription>
+              </DescriptionListGroup>
+              {clusterDetails.labels && (
+                <>
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>Environment</DescriptionListTerm>
+                    <DescriptionListDescription>{clusterDetails.labels.environment || 'N/A'}</DescriptionListDescription>
+                  </DescriptionListGroup>
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>Region</DescriptionListTerm>
+                    <DescriptionListDescription>{clusterDetails.labels.region || 'N/A'}</DescriptionListDescription>
+                  </DescriptionListGroup>
+                </>
+              )}
+              <DescriptionListGroup>
+                <DescriptionListTerm>Last Updated</DescriptionListTerm>
+                <DescriptionListDescription>
+                  {clusterDetails.status?.last_check 
+                    ? new Date(clusterDetails.status.last_check).toLocaleString()
+                    : 'Unknown'}
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            </DescriptionList>
+          ) : (
+            <div>No details available</div>
+          )}
+        </ModalBody>
+        <ModalFooter>
           <Button key="close" variant="primary" onClick={() => setIsDetailsModalOpen(false)}>
             Close
-          </Button>,
-        ]}
-      >
-        {isLoadingDetails ? (
-          <Spinner size="xl" />
-        ) : clusterDetails ? (
-          <DescriptionList isHorizontal>
-            <DescriptionListGroup>
-              <DescriptionListTerm>Cluster Name</DescriptionListTerm>
-              <DescriptionListDescription>{clusterDetails.name}</DescriptionListDescription>
-            </DescriptionListGroup>
-            <DescriptionListGroup>
-              <DescriptionListTerm>Display Name</DescriptionListTerm>
-              <DescriptionListDescription>{clusterDetails.spec?.displayName || clusterDetails.name}</DescriptionListDescription>
-            </DescriptionListGroup>
-            {clusterDetails.version && (
-              <DescriptionListGroup>
-                <DescriptionListTerm>Version</DescriptionListTerm>
-                <DescriptionListDescription>
-                  <Label color="blue" isCompact>{clusterDetails.version}</Label>
-                </DescriptionListDescription>
-              </DescriptionListGroup>
-            )}
-            {clusterDetails.channel && (
-              <DescriptionListGroup>
-                <DescriptionListTerm>Channel</DescriptionListTerm>
-                <DescriptionListDescription>
-                  <Label color="purple" isCompact>{clusterDetails.channel}</Label>
-                </DescriptionListDescription>
-              </DescriptionListGroup>
-            )}
-            <DescriptionListGroup>
-              <DescriptionListTerm>API URL</DescriptionListTerm>
-              <DescriptionListDescription>{clusterDetails.api_url || 'Not available'}</DescriptionListDescription>
-            </DescriptionListGroup>
-            {clusterDetails.console_url && (
-              <DescriptionListGroup>
-                <DescriptionListTerm>Console URL</DescriptionListTerm>
-                <DescriptionListDescription>
-                  <a 
-                    href={clusterDetails.console_url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      color: 'var(--pf-v5-global--link--Color)',
-                      textDecoration: 'none'
-                    }}
-                  >
-                    {clusterDetails.console_url}
-                    <ExternalLinkAltIcon className="pf-v5-u-ml-xs" style={{ fontSize: '0.875rem' }} />
-                  </a>
-                </DescriptionListDescription>
-              </DescriptionListGroup>
-            )}
-            <DescriptionListGroup>
-              <DescriptionListTerm>Platform</DescriptionListTerm>
-              <DescriptionListDescription>{clusterDetails.platform || 'OpenShift'}</DescriptionListDescription>
-            </DescriptionListGroup>
-            {clusterDetails.metrics && (
-              <>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>Total Nodes</DescriptionListTerm>
-                  <DescriptionListDescription>
-                    {clusterDetails.metrics.nodes || 0} ({clusterDetails.metrics.nodes_ready || 0} ready)
-                  </DescriptionListDescription>
-                </DescriptionListGroup>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>Namespaces</DescriptionListTerm>
-                  <DescriptionListDescription>{clusterDetails.metrics.namespaces || 0}</DescriptionListDescription>
-                </DescriptionListGroup>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>Pods</DescriptionListTerm>
-                  <DescriptionListDescription>
-                    {clusterDetails.metrics.pods || 0} total ({clusterDetails.metrics.pods_running || 0} running)
-                  </DescriptionListDescription>
-                </DescriptionListGroup>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>Deployments</DescriptionListTerm>
-                  <DescriptionListDescription>{clusterDetails.metrics.deployments || 0}</DescriptionListDescription>
-                </DescriptionListGroup>
-              </>
-            )}
-            <DescriptionListGroup>
-              <DescriptionListTerm>Operators</DescriptionListTerm>
-              <DescriptionListDescription>{clusterDetails.operator_count || 0}</DescriptionListDescription>
-            </DescriptionListGroup>
-            {clusterDetails.labels && (
-              <>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>Environment</DescriptionListTerm>
-                  <DescriptionListDescription>{clusterDetails.labels.environment || 'N/A'}</DescriptionListDescription>
-                </DescriptionListGroup>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>Region</DescriptionListTerm>
-                  <DescriptionListDescription>{clusterDetails.labels.region || 'N/A'}</DescriptionListDescription>
-                </DescriptionListGroup>
-              </>
-            )}
-            <DescriptionListGroup>
-              <DescriptionListTerm>Last Updated</DescriptionListTerm>
-              <DescriptionListDescription>
-                {clusterDetails.status?.last_check 
-                  ? new Date(clusterDetails.status.last_check).toLocaleString()
-                  : 'Unknown'}
-              </DescriptionListDescription>
-            </DescriptionListGroup>
-          </DescriptionList>
-        ) : (
-          <div>No details available</div>
-        )}
+          </Button>
+        </ModalFooter>
       </Modal>
     </>
   );

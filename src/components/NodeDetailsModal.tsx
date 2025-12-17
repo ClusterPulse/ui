@@ -1,13 +1,15 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import {
   Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
   Button,
   Card,
   CardBody,
   Title,
   EmptyState,
-  EmptyStateIcon,
   EmptyStateBody,
   Flex,
   FlexItem,
@@ -21,8 +23,8 @@ import {
   DropdownItem,
   MenuToggle,
   MenuToggleElement,
-  Chip,
-  ChipGroup,
+  Label,
+  LabelGroup,
 } from '@patternfly/react-core';
 import {
   CheckCircleIcon,
@@ -281,9 +283,9 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                   {/* Version Badge */}
                   {node.kubelet_version && (
                     <FlexItem>
-                      <Chip isReadOnly style={{ fontSize: '0.625rem' }}>
+                      <Label isCompact style={{ fontSize: '0.625rem' }}>
                         {node.kubelet_version}
-                      </Chip>
+                      </Label>
                     </FlexItem>
                   )}
                 </Flex>
@@ -499,7 +501,7 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                         }}>
                           Conditions
                         </Title>
-                        <ChipGroup categoryName="" numChips={10}>
+                        <LabelGroup numLabels={10}>
                           {node.conditions.map((condition: any, idx: number) => {
                             // Pressure conditions should be green when False
                             const isPressureCondition = condition.type?.includes('Pressure') || 
@@ -508,32 +510,30 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                                                        condition.type === 'PIDPressure';
                             const isReady = condition.type === 'Ready';
                             
-                            let backgroundColor = 'rgba(0, 0, 0, 0.05)'; // default/unknown
+                            let labelColor: 'green' | 'red' | 'grey' = 'grey';
                             
                             if (condition.status === 'True') {
-                              backgroundColor = isReady ? 'rgba(92, 163, 82, 0.1)' : // Ready=True is good
-                                              isPressureCondition ? 'rgba(201, 25, 11, 0.1)' : // Pressure=True is bad
-                                              'rgba(92, 163, 82, 0.1)'; // Others True is usually good
+                              labelColor = isReady ? 'green' : // Ready=True is good
+                                          isPressureCondition ? 'red' : // Pressure=True is bad
+                                          'green'; // Others True is usually good
                             } else if (condition.status === 'False') {
-                              backgroundColor = isReady ? 'rgba(201, 25, 11, 0.1)' : // Ready=False is bad
-                                              isPressureCondition ? 'rgba(92, 163, 82, 0.1)' : // Pressure=False is good
-                                              'rgba(201, 25, 11, 0.1)'; // Others False is usually bad
+                              labelColor = isReady ? 'red' : // Ready=False is bad
+                                          isPressureCondition ? 'green' : // Pressure=False is good
+                                          'red'; // Others False is usually bad
                             }
                             
                             return (
-                              <Chip
+                              <Label
                                 key={idx}
-                                isReadOnly
-                                style={{ 
-                                  fontSize: '0.625rem',
-                                  background: backgroundColor
-                                }}
+                                isCompact
+                                color={labelColor}
+                                style={{ fontSize: '0.625rem' }}
                               >
                                 {condition.type}: {condition.status}
-                              </Chip>
+                              </Label>
                             );
                           })}
-                        </ChipGroup>
+                        </LabelGroup>
                       </div>
                     )}
                   </div>
@@ -556,99 +556,49 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
     return parts.join(', ');
   };
 
+  const modalDescription = loading ? 'Loading nodes...' : 
+    error ? 'Error loading nodes' :
+    nodes.length > 0 ? `${nodes.length} nodes (${getStatusSummary()})` : '';
+
   return (
     <Modal
       variant={ModalVariant.large}
-      title={`Nodes - ${cluster.displayName || cluster.name}`}
-      description={
-        loading ? 'Loading nodes...' : 
-        error ? 'Error loading nodes' :
-        nodes.length > 0 ? `${nodes.length} nodes (${getStatusSummary()})` : ''
-      }
       isOpen={isOpen}
       onClose={onClose}
-      actions={[
-        <Button key="close" variant="primary" onClick={onClose}>
-          Close
-        </Button>,
-      ]}
+      aria-label={`Nodes - ${cluster.displayName || cluster.name}`}
     >
-      {/* Minimal Toolbar */}
-      <div style={{ 
-        marginBottom: '16px',
-        padding: '12px 0',
-        background: 'transparent'
-      }}>
-        <Flex>
-          <FlexItem flex={{ default: 'flex_1' }}>
-            <SearchInput
-              placeholder="Search nodes..."
-              value={searchValue}
-              onChange={(_, value) => setSearchValue(value)}
-              onClear={() => setSearchValue('')}
-              style={{ maxWidth: '400px' }}
-            />
-          </FlexItem>
-          <FlexItem>
-            <Flex spaceItems={{ default: 'spaceItemsSm' }}>
-              <FlexItem>
-                <Dropdown
-                  isOpen={isStatusFilterOpen}
-                  onOpenChange={setIsStatusFilterOpen}
-                  toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-                    <MenuToggle
-                      ref={toggleRef}
-                      onClick={() => setIsStatusFilterOpen(!isStatusFilterOpen)}
-                      isExpanded={isStatusFilterOpen}
-                      variant="secondary"
-                      style={{ 
-                        fontSize: '0.875rem',
-                        padding: '6px 12px'
-                      }}
-                    >
-                      <span style={{ marginRight: '4px', fontSize: '0.75rem' }}>
-                        <FilterIcon />
-                      </span>
-                      {statusFilter === 'all' ? 'All Status' : statusFilter}
-                    </MenuToggle>
-                  )}
-                >
-                  <DropdownList>
-                    <DropdownItem
-                      key="all"
-                      onClick={() => {
-                        setStatusFilter('all');
-                        setIsStatusFilterOpen(false);
-                      }}
-                    >
-                      All ({nodes.length})
-                    </DropdownItem>
-                    {Object.entries(statusCounts).map(([status, count]) => (
-                      count > 0 && (
-                        <DropdownItem
-                          key={status}
-                          onClick={() => {
-                            setStatusFilter(status);
-                            setIsStatusFilterOpen(false);
-                          }}
-                        >
-                          {status} ({count})
-                        </DropdownItem>
-                      )
-                    ))}
-                  </DropdownList>
-                </Dropdown>
-              </FlexItem>
-              {uniqueRoles.length > 0 && (
+      <ModalHeader 
+        title={`Nodes - ${cluster.displayName || cluster.name}`}
+        description={modalDescription}
+      />
+      <ModalBody>
+        {/* Minimal Toolbar */}
+        <div style={{ 
+          marginBottom: '16px',
+          padding: '12px 0',
+          background: 'transparent'
+        }}>
+          <Flex>
+            <FlexItem flex={{ default: 'flex_1' }}>
+              <SearchInput
+                placeholder="Search nodes..."
+                value={searchValue}
+                onChange={(_, value) => setSearchValue(value)}
+                onClear={() => setSearchValue('')}
+                style={{ maxWidth: '400px' }}
+              />
+            </FlexItem>
+            <FlexItem>
+              <Flex spaceItems={{ default: 'spaceItemsSm' }}>
                 <FlexItem>
                   <Dropdown
-                    isOpen={isRoleFilterOpen}
-                    onOpenChange={setIsRoleFilterOpen}
+                    isOpen={isStatusFilterOpen}
+                    onOpenChange={setIsStatusFilterOpen}
                     toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
                       <MenuToggle
                         ref={toggleRef}
-                        onClick={() => setIsRoleFilterOpen(!isRoleFilterOpen)}
-                        isExpanded={isRoleFilterOpen}
+                        onClick={() => setIsStatusFilterOpen(!isStatusFilterOpen)}
+                        isExpanded={isStatusFilterOpen}
                         variant="secondary"
                         style={{ 
                           fontSize: '0.875rem',
@@ -656,9 +606,9 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                         }}
                       >
                         <span style={{ marginRight: '4px', fontSize: '0.75rem' }}>
-                          <TagIcon />
+                          <FilterIcon />
                         </span>
-                        {roleFilter === 'all' ? 'All Roles' : roleFilter}
+                        {statusFilter === 'all' ? 'All Status' : statusFilter}
                       </MenuToggle>
                     )}
                   >
@@ -666,59 +616,114 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                       <DropdownItem
                         key="all"
                         onClick={() => {
-                          setRoleFilter('all');
-                          setIsRoleFilterOpen(false);
+                          setStatusFilter('all');
+                          setIsStatusFilterOpen(false);
                         }}
                       >
-                        All Roles
+                        All ({nodes.length})
                       </DropdownItem>
-                      {uniqueRoles.map(role => (
-                        <DropdownItem
-                          key={role}
-                          onClick={() => {
-                            setRoleFilter(role);
-                            setIsRoleFilterOpen(false);
-                          }}
-                        >
-                          {role}
-                        </DropdownItem>
+                      {Object.entries(statusCounts).map(([status, count]) => (
+                        count > 0 && (
+                          <DropdownItem
+                            key={status}
+                            onClick={() => {
+                              setStatusFilter(status);
+                              setIsStatusFilterOpen(false);
+                            }}
+                          >
+                            {status} ({count})
+                          </DropdownItem>
+                        )
                       ))}
                     </DropdownList>
                   </Dropdown>
                 </FlexItem>
-              )}
-            </Flex>
-          </FlexItem>
-        </Flex>
-      </div>
+                {uniqueRoles.length > 0 && (
+                  <FlexItem>
+                    <Dropdown
+                      isOpen={isRoleFilterOpen}
+                      onOpenChange={setIsRoleFilterOpen}
+                      toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                        <MenuToggle
+                          ref={toggleRef}
+                          onClick={() => setIsRoleFilterOpen(!isRoleFilterOpen)}
+                          isExpanded={isRoleFilterOpen}
+                          variant="secondary"
+                          style={{ 
+                            fontSize: '0.875rem',
+                            padding: '6px 12px'
+                          }}
+                        >
+                          <span style={{ marginRight: '4px', fontSize: '0.75rem' }}>
+                            <TagIcon />
+                          </span>
+                          {roleFilter === 'all' ? 'All Roles' : roleFilter}
+                        </MenuToggle>
+                      )}
+                    >
+                      <DropdownList>
+                        <DropdownItem
+                          key="all"
+                          onClick={() => {
+                            setRoleFilter('all');
+                            setIsRoleFilterOpen(false);
+                          }}
+                        >
+                          All Roles
+                        </DropdownItem>
+                        {uniqueRoles.map(role => (
+                          <DropdownItem
+                            key={role}
+                            onClick={() => {
+                              setRoleFilter(role);
+                              setIsRoleFilterOpen(false);
+                            }}
+                          >
+                            {role}
+                          </DropdownItem>
+                        ))}
+                      </DropdownList>
+                    </Dropdown>
+                  </FlexItem>
+                )}
+              </Flex>
+            </FlexItem>
+          </Flex>
+        </div>
 
-      <AnimatePresence mode="wait">
-        {loading ? (
-          <Bullseye style={{ minHeight: '200px' }}>
-            <Spinner size="lg" />
-          </Bullseye>
-        ) : error ? (
-          <Alert variant="danger" title="Failed to load nodes" isInline>
-            {error}
-          </Alert>
-        ) : filteredNodes.length === 0 ? (
-          <EmptyState>
-            <EmptyStateIcon icon={ServerIcon} />
-            <Title headingLevel="h4" size="lg">
-              No nodes found
-            </Title>
-            <EmptyStateBody>
-              {searchValue || statusFilter !== 'all' || roleFilter !== 'all'
-                ? 'No nodes match your search or filter criteria.'
-                : 'No node information is available for this cluster.'}
-            </EmptyStateBody>
-          </EmptyState>
-        ) : (
-          <div>
-            {filteredNodes.map((node) => renderNodeCard(node))}
-          </div>
-        )}
-      </AnimatePresence>
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <Bullseye style={{ minHeight: '200px' }}>
+              <Spinner size="lg" />
+            </Bullseye>
+          ) : error ? (
+            <Alert variant="danger" title="Failed to load nodes" isInline>
+              {error}
+            </Alert>
+          ) : filteredNodes.length === 0 ? (
+            <EmptyState
+              titleText="No nodes found"
+              headingLevel="h4"
+              icon={ServerIcon}
+            >
+              <EmptyStateBody>
+                {searchValue || statusFilter !== 'all' || roleFilter !== 'all'
+                  ? 'No nodes match your search or filter criteria.'
+                  : 'No node information is available for this cluster.'}
+              </EmptyStateBody>
+            </EmptyState>
+          ) : (
+            <div>
+              {filteredNodes.map((node) => renderNodeCard(node))}
+            </div>
+          )}
+        </AnimatePresence>
+      </ModalBody>
+      <ModalFooter>
+        <Button key="close" variant="primary" onClick={onClose}>
+          Close
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };

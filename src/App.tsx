@@ -1,13 +1,12 @@
 import React from 'react';
 import {
   Page,
-  PageSection,
-  PageSectionVariants,
-  Button,
   Masthead,
   MastheadMain,
   MastheadBrand,
   MastheadContent,
+  PageSection,
+  Button,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
@@ -62,7 +61,7 @@ const AppContent: React.FC = () => {
   const headerTools = (
     <Toolbar>
       <ToolbarContent>
-        <ToolbarGroup variant="icon-button-group" align={{ default: 'alignRight' }}>
+        <ToolbarGroup align={{ default: 'alignEnd' }}>
           {/* Only show registry status for authenticated users */}
           {isAuthenticated && (
             <>
@@ -116,7 +115,7 @@ const AppContent: React.FC = () => {
     </Toolbar>
   );
 
-  const header = (
+  const masthead = (
     <Masthead>
       <MastheadMain>
         <MastheadBrand>
@@ -137,8 +136,8 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="app">
-      <Page header={header}>
-        <PageSection variant={PageSectionVariants.light} className="pf-v5-u-p-0">
+      <Page masthead={masthead}>
+        <PageSection className="pf-v5-u-p-0">
           <AnimatePresence mode="wait">
             <ClusterDashboard />
           </AnimatePresence>

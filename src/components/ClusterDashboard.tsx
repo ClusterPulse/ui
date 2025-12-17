@@ -1,8 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import {
   PageSection,
-  PageSectionVariants,
-  Title,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
@@ -14,8 +12,8 @@ import {
   MenuToggle,
   MenuToggleElement,
   EmptyState,
-  EmptyStateIcon,
   EmptyStateBody,
+  Title,
   Spinner,
   Alert,
   Bullseye,
@@ -154,23 +152,23 @@ export const ClusterDashboard: React.FC = () => {
     >
       {/* Show login banner for anonymous users */}
       {isAnonymousMode && (
-        <PageSection variant={PageSectionVariants.default} className="pf-v5-u-pb-0">
+        <PageSection className="pf-v5-u-pb-0">
           <LoginBanner />
         </PageSection>
       )}
 
       {/* Stats Section - Only show for authenticated users */}
       {isAuthenticated && (
-        <PageSection variant={PageSectionVariants.default} className="stats-section pf-v5-u-pb-0">
+        <PageSection className="stats-section pf-v5-u-pb-0">
           <ClusterStats clusters={filteredClusters} />
         </PageSection>
       )}
 
       {/* Toolbar */}
-      <PageSection variant={PageSectionVariants.default} className="pf-v5-u-pb-0">
+      <PageSection className="pf-v5-u-pb-0">
         <Toolbar id="cluster-toolbar" className="cluster-toolbar">
           <ToolbarContent>
-            <ToolbarItem variant="search-filter" className="pf-v5-u-mr-md">
+            <ToolbarItem className="pf-v5-u-mr-md">
               <SearchInput
                 aria-label="Search clusters"
                 placeholder="Search clusters..."
@@ -247,11 +245,11 @@ export const ClusterDashboard: React.FC = () => {
       {/* Clusters Grid */}
       <PageSection>
         {filteredClusters.length === 0 ? (
-          <EmptyState>
-            <EmptyStateIcon icon={CubesIcon} />
-            <Title headingLevel="h4" size="lg">
-              {clusters.length === 0 ? 'No clusters available' : 'No clusters match your search'}
-            </Title>
+          <EmptyState
+            titleText={clusters.length === 0 ? 'No clusters available' : 'No clusters match your search'}
+            headingLevel="h4"
+            icon={CubesIcon}
+          >
             <EmptyStateBody>
               {clusters.length === 0
                 ? isAnonymousMode 
