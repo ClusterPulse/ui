@@ -20,6 +20,11 @@
   color: var(--pf-t--global--text--color--regular);
 }
 
+// Masthead - reduce height via PF6 CSS variable
+.pf-v6-c-masthead {
+  --pf-v6-c-masthead--PaddingBlock: var(--pf-t--global--spacer--xs);
+}
+
 .loading-container {
   text-align: center;
   padding: var(--pf-t--global--spacer--2xl);
@@ -28,7 +33,7 @@
 
 // Page sections - compact
 .pf-v6-c-page__main-section {
-  padding-top: var(--pf-t--global--spacer--md) !important;
+  padding-top: var(--pf-t--global--spacer--sm) !important;
   padding-bottom: var(--pf-t--global--spacer--md) !important;
 }
 
