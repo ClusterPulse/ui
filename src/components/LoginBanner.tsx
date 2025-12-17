@@ -20,8 +20,8 @@ export const LoginBanner: React.FC = () => {
       <Banner
         style={{
           marginBottom: '1rem',
-          borderRadius: '8px',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+          borderRadius: 'var(--pf-t--global--border--radius--medium)',
+          boxShadow: 'var(--pf-t--global--box-shadow--sm)',
         }}
       >
         <Flex
@@ -35,7 +35,7 @@ export const LoginBanner: React.FC = () => {
             <strong>Limited View</strong>
           </FlexItem>
           <FlexItem>
-            <span style={{ color: 'var(--pf-v5-global--Color--200)' }}>•</span>
+            <span style={{ color: 'var(--pf-t--global--text--color--subtle)' }}>•</span>
           </FlexItem>
           <FlexItem>
             <span style={{ fontSize: '0.875rem' }}>
@@ -53,4 +53,4 @@ export const LoginBanner: React.FC = () => {
       </Banner>
     </motion.div>
   );
-}
+};

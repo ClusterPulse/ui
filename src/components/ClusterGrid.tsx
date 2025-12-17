@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { ClusterCard } from './ClusterCard';
 import { NodeDetailsModal } from './NodeDetailsModal';
 import { OperatorsView } from './OperatorsView';
@@ -11,13 +11,13 @@ interface ClusterGridProps {
   permissions?: any;
 }
 
-const item = {
+const item: Variants = {
   hidden: { y: 20, opacity: 0 },
   show: {
     y: 0,
     opacity: 1,
     transition: {
-      type: 'spring',
+      type: 'spring' as const,
       stiffness: 100,
     },
   },
@@ -61,7 +61,6 @@ export const ClusterGrid: React.FC<ClusterGridProps> = ({ clusters, onRefresh })
         ))}
       </Grid>
 
-      {/* Modals */}
       <NodeDetailsModal
         isOpen={nodeModalOpen}
         onClose={() => setNodeModalOpen(false)}

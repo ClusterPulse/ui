@@ -4,222 +4,55 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/openshift-logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Monitor your OpenShift clusters in real-time with a modern, RedHat-themed interface" />
+    <meta name="description" content="Monitor your OpenShift clusters in real-time" />
     <meta name="theme-color" content="#ee0000" />
     <meta name="color-scheme" content="light dark" />
-    
-    <!-- Open Graph / Social Media -->
-    <meta property="og:title" content="ClusterPulse" />
-    <meta property="og:description" content="Enterprise-grade K8s/OpenShift cluster monitoring dashboard" />
-    <meta property="og:type" content="website" />
-    
-    <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <!-- Favicons -->
-    <link rel="icon" type="image/png" sizes="32x32" href="/src/assets/favicon32-32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/src/assets/favicon16-16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="manifest" href="/site.webmanifest">
-    
     <title>ClusterPulse</title>
     
-    <!-- Theme initialization script - runs before any content loads -->
+    <!-- PF v6 theme initialization -->
     <script>
       (function() {
-        // Check for saved theme preference or default to system preference
-        const savedTheme = localStorage.getItem('openshift-monitor-theme-v2');
-        let isDark = false;
-        
-        if (savedTheme) {
-          try {
-            const themeData = JSON.parse(savedTheme);
-            isDark = themeData.state?.isDarkTheme || false;
-          } catch (e) {
-            // If parsing fails, check system preference
-            isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          }
-        } else {
-          // No saved preference, use system preference
-          isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const saved = localStorage.getItem('openshift-monitor-theme-v2');
+        let isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (saved) {
+          try { isDark = JSON.parse(saved).state?.isDarkTheme || false; } catch {}
         }
-        
-        // Apply theme immediately
-        const htmlElement = document.documentElement;
-        if (isDark) {
-          htmlElement.classList.add('pf-v5-theme-dark');
-          htmlElement.setAttribute('data-theme', 'dark');
-        } else {
-          htmlElement.classList.remove('pf-v5-theme-dark');
-          htmlElement.setAttribute('data-theme', 'light');
-        }
+        const html = document.documentElement;
+        if (isDark) html.classList.add('pf-v6-theme-dark');
+        html.setAttribute('data-theme', isDark ? 'dark' : 'light');
       })();
     </script>
     
     <style>
-      /* Critical CSS for initial render */
-      :root {
-        font-family: 'Red Hat Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-        color-scheme: light dark;
-      }
-      
-      body {
-        margin: 0;
-        padding: 0;
-        background-color: var(--pf-v5-global--BackgroundColor--100, #f5f5f5);
-        color: var(--pf-v5-global--Color--100, #151515);
-        transition: background-color 0.3s ease, color 0.3s ease;
-      }
-      
-      /* Loading screen */
-      #loading-screen {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: var(--pf-v5-global--BackgroundColor--100, #ffffff);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        transition: opacity 0.3s ease;
-      }
-      
-      #loading-screen.fade-out {
-        opacity: 0;
-        pointer-events: none;
-      }
-      
-      .loading-logo {
-        width: 100px;
-        height: 100px;
-        margin-bottom: 2rem;
-        animation: pulse 2s ease-in-out infinite;
-        /* Ensure the logo is visible in both light and dark themes */
-        filter: var(--logo-filter, none);
-      }
-      
-      .loading-spinner {
-        width: 40px;
-        height: 40px;
-        border: 3px solid var(--pf-v5-global--BorderColor--100, #f0f0f0);
-        border-top: 3px solid var(--pf-v5-global--primary-color--100, #ee0000);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-      }
-      
-      .loading-text {
-        margin-top: 1rem;
-        color: var(--pf-v5-global--Color--200, #4d4d4d);
-        font-size: 0.875rem;
-      }
-      
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-      
-      @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.7; }
-      }
-      
-      /* Dark theme loading screen */
-      .pf-v5-theme-dark body {
-        background-color: var(--pf-v5-global--BackgroundColor--dark--100, #1f1f1f);
-        color: var(--pf-v5-global--Color--dark--100, #ffffff);
-      }
-      
-      .pf-v5-theme-dark #loading-screen {
-        background: var(--pf-v5-global--BackgroundColor--dark--100, #1f1f1f);
-      }
-      
-      .pf-v5-theme-dark .loading-text {
-        color: var(--pf-v5-global--Color--dark--200, #c9c9c9);
-      }
-      
-      .pf-v5-theme-dark .loading-spinner {
-        border-color: var(--pf-v5-global--BorderColor--dark--100, #4d4d4d);
-        border-top-color: var(--pf-v5-global--primary-color--100, #ee0000);
-      }
-      
-      /* Optional: Add filter to logo for better visibility in dark mode */
-      .pf-v5-theme-dark .loading-logo {
-        --logo-filter: brightness(1.2);
-      }
+      :root { font-family: 'Red Hat Text', sans-serif; color-scheme: light dark; }
+      body { margin: 0; background: var(--pf-t--global--background--color--primary--default, #fff); color: var(--pf-t--global--text--color--regular, #151515); }
+      #loading-screen { position: fixed; inset: 0; background: var(--pf-t--global--background--color--primary--default, #fff); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
+      #loading-screen.fade-out { opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+      .loading-logo { width: 100px; height: 100px; margin-bottom: 2rem; animation: pulse 2s ease-in-out infinite; }
+      .loading-spinner { width: 40px; height: 40px; border: 3px solid var(--pf-t--global--border--color--default, #d2d2d2); border-top-color: #ee0000; border-radius: 50%; animation: spin 1s linear infinite; }
+      .loading-text { margin-top: 1rem; color: var(--pf-t--global--text--color--subtle, #6a6e73); font-size: 0.875rem; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
     </style>
   </head>
   <body>
-    <!-- Loading Screen -->
     <div id="loading-screen">
-      <img src="/src/assets/logo.svg" alt="ClusterPulse Logo" class="loading-logo" />
+      <img src="/src/assets/logo.svg" alt="ClusterPulse" class="loading-logo" />
       <div class="loading-spinner"></div>
       <div class="loading-text">Loading ClusterPulse...</div>
     </div>
-    
-    <!-- React Root -->
     <div id="root"></div>
-    
-    <!-- Module Script -->
     <script type="module" src="/src/index.tsx"></script>
-    
-    <!-- Loading Screen Handler -->
     <script>
-      // Hide loading screen when app is ready
       window.addEventListener('load', () => {
         setTimeout(() => {
-          const loadingScreen = document.getElementById('loading-screen');
-          if (loadingScreen) {
-            loadingScreen.classList.add('fade-out');
-            setTimeout(() => {
-              if (loadingScreen.parentNode) {
-                loadingScreen.parentNode.removeChild(loadingScreen);
-              }
-            }, 300);
-          }
+          const ls = document.getElementById('loading-screen');
+          if (ls) { ls.classList.add('fade-out'); setTimeout(() => ls.remove(), 300); }
         }, 500);
       });
-      
-      // Fallback in case load event doesn't fire
-      setTimeout(() => {
-        const loadingScreen = document.getElementById('loading-screen');
-        if (loadingScreen && !loadingScreen.classList.contains('fade-out')) {
-          loadingScreen.classList.add('fade-out');
-          setTimeout(() => {
-            if (loadingScreen.parentNode) {
-              loadingScreen.parentNode.removeChild(loadingScreen);
-            }
-          }, 300);
-        }
-      }, 3000);
     </script>
-    
-    <!-- Noscript -->
-    <noscript>
-      <style>
-        #loading-screen { display: none !important; }
-        .noscript-message {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: 100vh;
-          text-align: center;
-          padding: 2rem;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-          background: var(--pf-v5-global--BackgroundColor--100, #ffffff);
-          color: var(--pf-v5-global--Color--100, #151515);
-        }
-      </style>
-      <div class="noscript-message">
-        <div>
-          <h1>JavaScript Required</h1>
-          <p>ClusterPulse requires JavaScript to be enabled.</p>
-          <p>Please enable JavaScript in your browser settings to continue.</p>
-        </div>
-      </div>
-    </noscript>
+    <noscript><div style="display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;padding:2rem"><div><h1>JavaScript Required</h1><p>ClusterPulse requires JavaScript.</p></div></div></noscript>
   </body>
 </html>

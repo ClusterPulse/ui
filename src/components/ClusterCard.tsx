@@ -18,6 +18,9 @@ import {
   MenuToggleElement,
   Badge,
   Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
   DescriptionList,
   DescriptionListGroup,
@@ -89,7 +92,7 @@ const AnonymousClusterCard: React.FC<AnonymousClusterCardProps> = ({ cluster }) 
                     {displayName}
                   </CardTitle>
                   {cluster.name !== displayName && (
-                    <div className="cluster-name pf-v5-u-font-size-sm pf-v5-u-color-200">
+                    <div className="cluster-name pf-v6-u-font-size-sm pf-v6-u-color-200">
                       {cluster.name}
                     </div>
                   )}
@@ -98,7 +101,7 @@ const AnonymousClusterCard: React.FC<AnonymousClusterCardProps> = ({ cluster }) 
             </FlexItem>
             <FlexItem>
               <Badge className={`status-badge status-badge--${status.color}`}>
-                <StatusIcon className="pf-v5-u-mr-xs" />
+                <StatusIcon className="pf-v6-u-mr-xs" />
                 {status.label}
               </Badge>
             </FlexItem>
@@ -115,13 +118,13 @@ const AnonymousClusterCard: React.FC<AnonymousClusterCardProps> = ({ cluster }) 
             <FlexItem>
               <LockIcon style={{ 
                 fontSize: '3rem', 
-                color: 'var(--pf-v5-global--Color--200)', 
+                color: 'var(--pf-t--global--text--color--subtle)', 
                 opacity: 0.4 
               }} />
             </FlexItem>
             <FlexItem>
               <div style={{ 
-                color: 'var(--pf-v5-global--Color--200)', 
+                color: 'var(--pf-t--global--text--color--subtle)', 
                 fontSize: '0.875rem',
                 maxWidth: '280px'
               }}>
@@ -134,7 +137,7 @@ const AnonymousClusterCard: React.FC<AnonymousClusterCardProps> = ({ cluster }) 
                 flexWrap: 'wrap',
                 gap: '0.5rem',
                 justifyContent: 'center',
-                color: 'var(--pf-v5-global--Color--300)', 
+                color: 'var(--pf-t--global--text--color--subtle)', 
                 fontSize: '0.75rem'
               }}>
                 <span>Metrics</span>
@@ -153,8 +156,8 @@ const AnonymousClusterCard: React.FC<AnonymousClusterCardProps> = ({ cluster }) 
           <CardFooter>
             <Flex alignItems={{ default: 'alignItemsCenter' }}>
               <FlexItem>
-                <span className="last-check" style={{ fontSize: '0.75rem', color: 'var(--pf-v5-global--Color--200)' }}>
-                  <ClockIcon className="pf-v5-u-mr-xs" style={{ fontSize: '0.75rem' }} />
+                <span className="last-check" style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }}>
+                  <ClockIcon className="pf-v6-u-mr-xs" style={{ fontSize: '0.75rem' }} />
                   Last checked: {new Date(cluster.status.last_check).toLocaleTimeString()}
                 </span>
               </FlexItem>
@@ -202,7 +205,6 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
   onNodeClick,
   onOperatorsClick,
 }) => {
-  // Render anonymous view if flag is set
   if (cluster.anonymous_view) {
     return <AnonymousClusterCard cluster={cluster} />;
   }
@@ -272,7 +274,6 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
     </DropdownItem>,
   ];
 
-  // Calculate resource percentages for display
   const cpuUsagePercent = metrics.cpu_usage_percent || 0;
   const memoryUsagePercent = metrics.memory_usage_percent || 0;
   const storageUsagePercent = metrics.storage_capacity > 0 
@@ -293,7 +294,6 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
               gap: '0.5rem',
               alignItems: 'start'
             }}>
-              {/* Left side: Icon and name */}
               <div style={{ 
                 display: 'flex', 
                 alignItems: 'center',
@@ -320,7 +320,7 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
                   </CardTitle>
                   {clusterName !== displayName && (
                     <div 
-                      className="cluster-name pf-v5-u-font-size-sm pf-v5-u-color-200"
+                      className="cluster-name pf-v6-u-font-size-sm pf-v6-u-color-200"
                       style={{ 
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
@@ -334,7 +334,6 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
                 </div>
               </div>
               
-              {/* Right side: Status badge and dropdown */}
               <div style={{ 
                 display: 'flex', 
                 flexDirection: 'column',
@@ -342,7 +341,7 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
                 gap: '0.25rem'
               }}>
                 <Badge className={`status-badge status-badge--${status.color}`}>
-                  <StatusIcon className="pf-v5-u-mr-xs" />
+                  <StatusIcon className="pf-v6-u-mr-xs" />
                   {status.label}
                 </Badge>
                 <Dropdown
@@ -373,7 +372,6 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
               </div>
             </div>
 
-            {/* Version, Channel, Console Link Row */}
             {(cluster.version || cluster.channel || cluster.console_url) && (
               <Flex 
                 alignItems={{ default: 'alignItemsCenter' }} 
@@ -412,7 +410,7 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
                         className="console-link-button"
                         style={{ 
                           padding: '6px',
-                          color: 'var(--pf-v5-global--Color--200)',
+                          color: 'var(--pf-t--global--text--color--subtle)',
                         }}
                       >
                         <ExternalLinkAltIcon style={{ fontSize: '1rem' }} />
@@ -425,7 +423,6 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
           </CardHeader>
           
           <CardBody>
-            {/* Cluster Labels */}
             {cluster.labels && Object.keys(cluster.labels).length > 0 && (
               <LabelGroup numLabels={5} className="cluster-labels" style={{ marginBottom: '12px' }}>
                 {cluster.labels.environment && (
@@ -449,34 +446,32 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
               </LabelGroup>
             )}
 
-            {/* Compact Metrics Grid */}
             <div style={{ 
               display: 'grid', 
               gridTemplateColumns: 'repeat(3, 1fr)', 
               gap: '8px',
               marginBottom: '12px'
             }}>
-              {/* Infrastructure Row */}
               <Tooltip content={`${metrics.nodes_ready || 0} ready, ${metrics.nodes_not_ready || 0} not ready`}>
                 <div 
                   style={{ 
-                    background: 'rgba(0, 0, 0, 0.02)',
+                    background: 'var(--pf-t--global--background--color--secondary--default)',
                     padding: '6px 8px',
-                    borderRadius: '4px',
+                    borderRadius: 'var(--pf-t--global--border--radius--small)',
                     cursor: 'pointer'
                   }}
                   onClick={onNodeClick}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <ServerIcon style={{ fontSize: '0.75rem', color: 'var(--pf-v5-global--Color--200)' }} />
-                    <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-v5-global--Color--200)' }}>
+                    <ServerIcon style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }} />
+                    <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-t--global--text--color--subtle)' }}>
                       Nodes
                     </span>
                   </div>
                   <div style={{ 
                     fontSize: '0.875rem', 
                     fontWeight: 600,
-                    color: metrics.nodes_not_ready > 0 ? 'var(--cluster-degraded)' : 'var(--pf-v5-global--Color--100)'
+                    color: metrics.nodes_not_ready > 0 ? 'var(--cluster-degraded)' : 'var(--pf-t--global--text--color--regular)'
                   }}>
                     {metrics.nodes_ready || 0}/{metrics.nodes || 0}
                   </div>
@@ -485,13 +480,13 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
 
               <Tooltip content={`${metrics.namespaces || 0} total namespaces`}>
                 <div style={{ 
-                  background: 'rgba(0, 0, 0, 0.02)',
+                  background: 'var(--pf-t--global--background--color--secondary--default)',
                   padding: '6px 8px',
-                  borderRadius: '4px'
+                  borderRadius: 'var(--pf-t--global--border--radius--small)'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <LayerGroupIcon style={{ fontSize: '0.75rem', color: 'var(--pf-v5-global--Color--200)' }} />
-                    <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-v5-global--Color--200)' }}>
+                    <LayerGroupIcon style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }} />
+                    <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-t--global--text--color--subtle)' }}>
                       Namespaces
                     </span>
                   </div>
@@ -504,16 +499,16 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
               <Tooltip content="Click to view operators">
                 <div 
                   style={{ 
-                    background: 'rgba(0, 0, 0, 0.02)',
+                    background: 'var(--pf-t--global--background--color--secondary--default)',
                     padding: '6px 8px',
-                    borderRadius: '4px',
+                    borderRadius: 'var(--pf-t--global--border--radius--small)',
                     cursor: 'pointer'
                   }}
                   onClick={onOperatorsClick}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <CubesIcon style={{ fontSize: '0.75rem', color: 'var(--pf-v5-global--Color--200)' }} />
-                    <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-v5-global--Color--200)' }}>
+                    <CubesIcon style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }} />
+                    <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-t--global--text--color--subtle)' }}>
                       Operators
                     </span>
                   </div>
@@ -523,23 +518,22 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
                 </div>
               </Tooltip>
 
-              {/* Workloads Row */}
               <Tooltip content={`Running: ${metrics.pods_running || 0}, Failed: ${metrics.pods_failed || 0}, Pending: ${metrics.pods_pending || 0}`}>
                 <div style={{ 
-                  background: 'rgba(0, 0, 0, 0.02)',
+                  background: 'var(--pf-t--global--background--color--secondary--default)',
                   padding: '6px 8px',
-                  borderRadius: '4px'
+                  borderRadius: 'var(--pf-t--global--border--radius--small)'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <CubeIcon style={{ fontSize: '0.75rem', color: 'var(--pf-v5-global--Color--200)' }} />
-                    <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-v5-global--Color--200)' }}>
+                    <CubeIcon style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }} />
+                    <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-t--global--text--color--subtle)' }}>
                       Pods
                     </span>
                   </div>
                   <div style={{ 
                     fontSize: '0.875rem', 
                     fontWeight: 600,
-                    color: (metrics.pods_failed > 0 || metrics.pods_pending > 5) ? 'var(--cluster-degraded)' : 'var(--pf-v5-global--Color--100)'
+                    color: (metrics.pods_failed > 0 || metrics.pods_pending > 5) ? 'var(--cluster-degraded)' : 'var(--pf-t--global--text--color--regular)'
                   }}>
                     {metrics.pods_running || 0}/{metrics.pods || 0}
                   </div>
@@ -548,13 +542,13 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
 
               <Tooltip content={`${metrics.deployments || 0} deployments`}>
                 <div style={{ 
-                  background: 'rgba(0, 0, 0, 0.02)',
+                  background: 'var(--pf-t--global--background--color--secondary--default)',
                   padding: '6px 8px',
-                  borderRadius: '4px'
+                  borderRadius: 'var(--pf-t--global--border--radius--small)'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <BuildIcon style={{ fontSize: '0.75rem', color: 'var(--pf-v5-global--Color--200)' }} />
-                    <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-v5-global--Color--200)' }}>
+                    <BuildIcon style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }} />
+                    <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-t--global--text--color--subtle)' }}>
                       Deployments
                     </span>
                   </div>
@@ -566,13 +560,13 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
 
               <Tooltip content={`${metrics.services || 0} services`}>
                 <div style={{ 
-                  background: 'rgba(0, 0, 0, 0.02)',
+                  background: 'var(--pf-t--global--background--color--secondary--default)',
                   padding: '6px 8px',
-                  borderRadius: '4px'
+                  borderRadius: 'var(--pf-t--global--border--radius--small)'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <ServiceIcon style={{ fontSize: '0.75rem', color: 'var(--pf-v5-global--Color--200)' }} />
-                    <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-v5-global--Color--200)' }}>
+                    <ServiceIcon style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }} />
+                    <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-t--global--text--color--subtle)' }}>
                       Services
                     </span>
                   </div>
@@ -583,18 +577,16 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
               </Tooltip>
             </div>
 
-            {/* Resource Usage Section */}
             <div style={{ 
-              borderTop: '1px solid rgba(0, 0, 0, 0.05)',
+              borderTop: '1px solid var(--pf-t--global--border--color--default)',
               paddingTop: '8px',
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
               gap: '12px'
             }}>
-              {/* CPU */}
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2px' }}>
-                  <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-v5-global--Color--200)', fontWeight: 600 }}>
+                  <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-t--global--text--color--subtle)', fontWeight: 600 }}>
                     <CpuIcon style={{ marginRight: '2px', fontSize: '0.75rem' }} />
                     CPU
                   </span>
@@ -606,15 +598,14 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
                     {Math.round(cpuUsagePercent)}%
                   </span>
                 </div>
-                <div style={{ fontSize: '0.625rem', color: 'var(--pf-v5-global--Color--300)' }}>
+                <div style={{ fontSize: '0.625rem', color: 'var(--pf-t--global--text--color--subtle)' }}>
                   {Math.round(metrics.cpu_requested || 0)}/{Math.round(metrics.cpu_capacity || 0)} cores
                 </div>
               </div>
 
-              {/* Memory */}
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2px' }}>
-                  <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-v5-global--Color--200)', fontWeight: 600 }}>
+                  <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-t--global--text--color--subtle)', fontWeight: 600 }}>
                     <MemoryIcon style={{ marginRight: '2px', fontSize: '0.75rem' }} />
                     Memory
                   </span>
@@ -626,15 +617,14 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
                     {Math.round(memoryUsagePercent)}%
                   </span>
                 </div>
-                <div style={{ fontSize: '0.625rem', color: 'var(--pf-v5-global--Color--300)' }}>
+                <div style={{ fontSize: '0.625rem', color: 'var(--pf-t--global--text--color--subtle)' }}>
                   {formatBytes(metrics.memory_requested || 0)}/{formatBytes(metrics.memory_capacity || 0)}
                 </div>
               </div>
 
-              {/* Storage */}
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2px' }}>
-                  <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-v5-global--Color--200)', fontWeight: 600 }}>
+                  <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-t--global--text--color--subtle)', fontWeight: 600 }}>
                     <VolumeIcon style={{ marginRight: '2px', fontSize: '0.75rem' }} />
                     Storage
                   </span>
@@ -646,33 +636,32 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
                     {Math.round(storageUsagePercent)}%
                   </span>
                 </div>
-                <div style={{ fontSize: '0.625rem', color: 'var(--pf-v5-global--Color--300)' }}>
+                <div style={{ fontSize: '0.625rem', color: 'var(--pf-t--global--text--color--subtle)' }}>
                   {metrics.pvcs || 0} PVCs
                 </div>
               </div>
             </div>
 
-            {/* Additional metrics */}
             {(metrics.statefulsets > 0 || metrics.daemonsets > 0) && (
               <div style={{ 
                 marginTop: '8px',
                 paddingTop: '8px',
-                borderTop: '1px solid rgba(0, 0, 0, 0.05)',
+                borderTop: '1px solid var(--pf-t--global--border--color--default)',
                 display: 'flex',
                 gap: '16px'
               }}>
                 {metrics.statefulsets > 0 && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <DatabaseIcon style={{ fontSize: '0.75rem', color: 'var(--pf-v5-global--Color--200)' }} />
-                    <span style={{ fontSize: '0.75rem', color: 'var(--pf-v5-global--Color--200)' }}>
+                    <DatabaseIcon style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }} />
+                    <span style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }}>
                       {metrics.statefulsets} StatefulSets
                     </span>
                   </div>
                 )}
                 {metrics.daemonsets > 0 && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <BuildIcon style={{ fontSize: '0.75rem', color: 'var(--pf-v5-global--Color--200)' }} />
-                    <span style={{ fontSize: '0.75rem', color: 'var(--pf-v5-global--Color--200)' }}>
+                    <BuildIcon style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }} />
+                    <span style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }}>
                       {metrics.daemonsets} DaemonSets
                     </span>
                   </div>
@@ -687,11 +676,11 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
                 {cluster.status?.last_check && (
                   <span className="last-check" style={{ 
                     fontSize: '0.75rem',
-                    color: 'var(--pf-v5-global--Color--200)',
+                    color: 'var(--pf-t--global--text--color--subtle)',
                     display: 'inline-flex',
                     alignItems: 'center'
                   }}>
-                    <ClockIcon className="pf-v5-u-mr-xs" style={{ fontSize: '0.75rem' }} />
+                    <ClockIcon className="pf-v6-u-mr-xs" style={{ fontSize: '0.75rem' }} />
                     Last checked: {new Date(cluster.status.last_check).toLocaleTimeString()}
                   </span>
                 )}
@@ -701,127 +690,129 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
         </Card>
       </motion.div>
 
-      {/* Cluster Details Modal */}
       <Modal
         variant={ModalVariant.medium}
-        title={`Cluster Details - ${displayName}`}
         isOpen={isDetailsModalOpen}
         onClose={() => setIsDetailsModalOpen(false)}
-        actions={[
+        aria-label={`Cluster Details - ${displayName}`}
+      >
+        <ModalHeader title={`Cluster Details - ${displayName}`} />
+        <ModalBody>
+          {isLoadingDetails ? (
+            <Spinner size="xl" />
+          ) : clusterDetails ? (
+            <DescriptionList isHorizontal>
+              <DescriptionListGroup>
+                <DescriptionListTerm>Cluster Name</DescriptionListTerm>
+                <DescriptionListDescription>{clusterDetails.name}</DescriptionListDescription>
+              </DescriptionListGroup>
+              <DescriptionListGroup>
+                <DescriptionListTerm>Display Name</DescriptionListTerm>
+                <DescriptionListDescription>{clusterDetails.spec?.displayName || clusterDetails.name}</DescriptionListDescription>
+              </DescriptionListGroup>
+              {clusterDetails.version && (
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Version</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    <Label color="blue" isCompact>{clusterDetails.version}</Label>
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+              )}
+              {clusterDetails.channel && (
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Channel</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    <Label color="purple" isCompact>{clusterDetails.channel}</Label>
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+              )}
+              <DescriptionListGroup>
+                <DescriptionListTerm>API URL</DescriptionListTerm>
+                <DescriptionListDescription>{clusterDetails.api_url || 'Not available'}</DescriptionListDescription>
+              </DescriptionListGroup>
+              {clusterDetails.console_url && (
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Console URL</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    <a 
+                      href={clusterDetails.console_url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        color: 'var(--pf-t--global--text--color--link--default)',
+                        textDecoration: 'none'
+                      }}
+                    >
+                      {clusterDetails.console_url}
+                      <ExternalLinkAltIcon className="pf-v6-u-ml-xs" style={{ fontSize: '0.875rem' }} />
+                    </a>
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+              )}
+              <DescriptionListGroup>
+                <DescriptionListTerm>Platform</DescriptionListTerm>
+                <DescriptionListDescription>{clusterDetails.platform || 'OpenShift'}</DescriptionListDescription>
+              </DescriptionListGroup>
+              {clusterDetails.metrics && (
+                <>
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>Total Nodes</DescriptionListTerm>
+                    <DescriptionListDescription>
+                      {clusterDetails.metrics.nodes || 0} ({clusterDetails.metrics.nodes_ready || 0} ready)
+                    </DescriptionListDescription>
+                  </DescriptionListGroup>
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>Namespaces</DescriptionListTerm>
+                    <DescriptionListDescription>{clusterDetails.metrics.namespaces || 0}</DescriptionListDescription>
+                  </DescriptionListGroup>
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>Pods</DescriptionListTerm>
+                    <DescriptionListDescription>
+                      {clusterDetails.metrics.pods || 0} total ({clusterDetails.metrics.pods_running || 0} running)
+                    </DescriptionListDescription>
+                  </DescriptionListGroup>
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>Deployments</DescriptionListTerm>
+                    <DescriptionListDescription>{clusterDetails.metrics.deployments || 0}</DescriptionListDescription>
+                  </DescriptionListGroup>
+                </>
+              )}
+              <DescriptionListGroup>
+                <DescriptionListTerm>Operators</DescriptionListTerm>
+                <DescriptionListDescription>{clusterDetails.operator_count || 0}</DescriptionListDescription>
+              </DescriptionListGroup>
+              {clusterDetails.labels && (
+                <>
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>Environment</DescriptionListTerm>
+                    <DescriptionListDescription>{clusterDetails.labels.environment || 'N/A'}</DescriptionListDescription>
+                  </DescriptionListGroup>
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>Region</DescriptionListTerm>
+                    <DescriptionListDescription>{clusterDetails.labels.region || 'N/A'}</DescriptionListDescription>
+                  </DescriptionListGroup>
+                </>
+              )}
+              <DescriptionListGroup>
+                <DescriptionListTerm>Last Updated</DescriptionListTerm>
+                <DescriptionListDescription>
+                  {clusterDetails.status?.last_check 
+                    ? new Date(clusterDetails.status.last_check).toLocaleString()
+                    : 'Unknown'}
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            </DescriptionList>
+          ) : (
+            <div>No details available</div>
+          )}
+        </ModalBody>
+        <ModalFooter>
           <Button key="close" variant="primary" onClick={() => setIsDetailsModalOpen(false)}>
             Close
-          </Button>,
-        ]}
-      >
-        {isLoadingDetails ? (
-          <Spinner size="xl" />
-        ) : clusterDetails ? (
-          <DescriptionList isHorizontal>
-            <DescriptionListGroup>
-              <DescriptionListTerm>Cluster Name</DescriptionListTerm>
-              <DescriptionListDescription>{clusterDetails.name}</DescriptionListDescription>
-            </DescriptionListGroup>
-            <DescriptionListGroup>
-              <DescriptionListTerm>Display Name</DescriptionListTerm>
-              <DescriptionListDescription>{clusterDetails.spec?.displayName || clusterDetails.name}</DescriptionListDescription>
-            </DescriptionListGroup>
-            {clusterDetails.version && (
-              <DescriptionListGroup>
-                <DescriptionListTerm>Version</DescriptionListTerm>
-                <DescriptionListDescription>
-                  <Label color="blue" isCompact>{clusterDetails.version}</Label>
-                </DescriptionListDescription>
-              </DescriptionListGroup>
-            )}
-            {clusterDetails.channel && (
-              <DescriptionListGroup>
-                <DescriptionListTerm>Channel</DescriptionListTerm>
-                <DescriptionListDescription>
-                  <Label color="purple" isCompact>{clusterDetails.channel}</Label>
-                </DescriptionListDescription>
-              </DescriptionListGroup>
-            )}
-            <DescriptionListGroup>
-              <DescriptionListTerm>API URL</DescriptionListTerm>
-              <DescriptionListDescription>{clusterDetails.api_url || 'Not available'}</DescriptionListDescription>
-            </DescriptionListGroup>
-            {clusterDetails.console_url && (
-              <DescriptionListGroup>
-                <DescriptionListTerm>Console URL</DescriptionListTerm>
-                <DescriptionListDescription>
-                  <a 
-                    href={clusterDetails.console_url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      color: 'var(--pf-v5-global--link--Color)',
-                      textDecoration: 'none'
-                    }}
-                  >
-                    {clusterDetails.console_url}
-                    <ExternalLinkAltIcon className="pf-v5-u-ml-xs" style={{ fontSize: '0.875rem' }} />
-                  </a>
-                </DescriptionListDescription>
-              </DescriptionListGroup>
-            )}
-            <DescriptionListGroup>
-              <DescriptionListTerm>Platform</DescriptionListTerm>
-              <DescriptionListDescription>{clusterDetails.platform || 'OpenShift'}</DescriptionListDescription>
-            </DescriptionListGroup>
-            {clusterDetails.metrics && (
-              <>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>Total Nodes</DescriptionListTerm>
-                  <DescriptionListDescription>
-                    {clusterDetails.metrics.nodes || 0} ({clusterDetails.metrics.nodes_ready || 0} ready)
-                  </DescriptionListDescription>
-                </DescriptionListGroup>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>Namespaces</DescriptionListTerm>
-                  <DescriptionListDescription>{clusterDetails.metrics.namespaces || 0}</DescriptionListDescription>
-                </DescriptionListGroup>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>Pods</DescriptionListTerm>
-                  <DescriptionListDescription>
-                    {clusterDetails.metrics.pods || 0} total ({clusterDetails.metrics.pods_running || 0} running)
-                  </DescriptionListDescription>
-                </DescriptionListGroup>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>Deployments</DescriptionListTerm>
-                  <DescriptionListDescription>{clusterDetails.metrics.deployments || 0}</DescriptionListDescription>
-                </DescriptionListGroup>
-              </>
-            )}
-            <DescriptionListGroup>
-              <DescriptionListTerm>Operators</DescriptionListTerm>
-              <DescriptionListDescription>{clusterDetails.operator_count || 0}</DescriptionListDescription>
-            </DescriptionListGroup>
-            {clusterDetails.labels && (
-              <>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>Environment</DescriptionListTerm>
-                  <DescriptionListDescription>{clusterDetails.labels.environment || 'N/A'}</DescriptionListDescription>
-                </DescriptionListGroup>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>Region</DescriptionListTerm>
-                  <DescriptionListDescription>{clusterDetails.labels.region || 'N/A'}</DescriptionListDescription>
-                </DescriptionListGroup>
-              </>
-            )}
-            <DescriptionListGroup>
-              <DescriptionListTerm>Last Updated</DescriptionListTerm>
-              <DescriptionListDescription>
-                {clusterDetails.status?.last_check 
-                  ? new Date(clusterDetails.status.last_check).toLocaleString()
-                  : 'Unknown'}
-              </DescriptionListDescription>
-            </DescriptionListGroup>
-          </DescriptionList>
-        ) : (
-          <div>No details available</div>
-        )}
+          </Button>
+        </ModalFooter>
       </Modal>
     </>
   );

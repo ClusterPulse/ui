@@ -1,250 +1,128 @@
 /**
- * Main Application Styles - Space-Optimized Professional Design
+ * PatternFly v6 - Streamlined with Semantic Tokens
+ * Dark mode handled automatically by token system
  */
 
-// Import PatternFly base styles
 @import '@patternfly/react-core/dist/styles/base.css';
 
-// ========================================
-// COLOR PALETTE & VARIABLES
-// ========================================
+// Status colors using semantic tokens
 :root {
-  --cluster-healthy: #5ba352;
-  --cluster-degraded: #f0ab00;
-  --cluster-unhealthy: #c9190b;
-  --cluster-unknown: #8a8d90;
-  --professional-blue: #0066cc;
-  --professional-dark: #151515;
+  --cluster-healthy: var(--pf-t--global--color--status--success--default);
+  --cluster-degraded: var(--pf-t--global--color--status--warning--default);
+  --cluster-unhealthy: var(--pf-t--global--color--status--danger--default);
+  --cluster-unknown: var(--pf-t--global--color--status--disabled--default);
 }
 
-// ========================================
-// GLOBAL APPLICATION STYLES
-// ========================================
+// App container
 .app {
   min-height: 100vh;
-  background: linear-gradient(180deg, 
-    var(--pf-v5-global--BackgroundColor--light--300) 0%, 
-    var(--pf-v5-global--BackgroundColor--100) 100%
-  );
-  color: var(--pf-v5-global--Color--100);
-  transition: all 0.3s ease-in-out;
+  background: var(--pf-t--global--background--color--primary--default);
+  color: var(--pf-t--global--text--color--regular);
 }
 
-// Add subtle background pattern for depth
-.pf-v5-c-page__main {
-  background: transparent;
+// Masthead - reduce height via PF6 CSS variable
+.pf-v6-c-masthead {
+  --pf-v6-c-masthead--PaddingBlock: var(--pf-t--global--spacer--xs);
 }
 
-// Loading states
 .loading-container {
   text-align: center;
-  padding: 3rem;
-  color: var(--pf-v5-global--Color--100);
+  padding: var(--pf-t--global--spacer--2xl);
+  color: var(--pf-t--global--text--color--regular);
 }
 
-// ========================================
-// SPACE-OPTIMIZED PAGE SECTIONS
-// ========================================
-.pf-v5-c-page__main-section {
-  padding-top: 0.75rem !important;
-  padding-bottom: 0.75rem !important;
+// Page sections - compact
+.pf-v6-c-page__main-section {
+  padding-top: var(--pf-t--global--spacer--sm) !important;
+  padding-bottom: var(--pf-t--global--spacer--md) !important;
 }
 
-.pf-v5-c-page__main {
-  .pf-v5-c-page__main-section {
-    &:first-child {
-      padding-top: 0.5rem !important;
-    }
-  }
-}
-
-.pf-v5-c-page__main-breadcrumb {
-  padding-bottom: 0.5rem !important;
-}
-
-// ========================================
-// DASHBOARD STYLES
-// ========================================
+// Dashboard
 .cluster-dashboard {
   .dashboard-header {
-    background: linear-gradient(135deg, var(--pf-v5-global--BackgroundColor--100) 0%, var(--pf-v5-global--BackgroundColor--200) 100%);
-    border-bottom: 2px solid var(--pf-v5-global--BorderColor--100);
-    padding: 1rem 2rem !important;
+    background: var(--pf-t--global--background--color--secondary--default);
+    border-bottom: 1px solid var(--pf-t--global--border--color--default);
+    padding: var(--pf-t--global--spacer--md) var(--pf-t--global--spacer--xl) !important;
     
     h1 {
       margin: 0;
       font-size: 1.5rem;
       font-weight: 300;
-      letter-spacing: -0.5px;
     }
   }
-  
-  .stats-section {
-    background: var(--pf-v5-global--BackgroundColor--100);
-    padding: 0.75rem 2rem;
-  }
 }
 
-.console-link-button:hover {
-  color: var(--pf-v5-global--primary-color--100) !important;
-}
-
-// ========================================
-// COMPACT GLOBAL STATS - SINGLE LINE
-// ========================================
+// Stats bar
 .cluster-stats {
-  margin-bottom: 1rem;
   
-  .pf-v5-l-grid {
-    gap: 0.5rem !important;
-  }
-  
-  .stat-card {
-    background: var(--pf-v5-global--BackgroundColor--100);
-    border: none; // Remove border for floating effect
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.06);
-    padding: 0.75rem !important;
-    margin: 0;
-    transition: all 0.3s ease;
+  .stat-card.pf-v6-c-card {
+    --pf-v6-c-card--BorderWidth: 0;
+    background: var(--pf-t--global--background--color--primary--default);
+    border-radius: var(--pf-t--global--border--radius--medium);
+    box-shadow: var(--pf-t--global--box-shadow--sm);
+    padding: var(--pf-t--global--spacer--md) !important;
+    transition: transform 0.2s, box-shadow 0.2s;
     
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+      box-shadow: var(--pf-t--global--box-shadow--md);
     }
     
-    .pf-v5-c-card__body {
-      padding: 0 !important;
-    }
+    .pf-v6-c-card__body { padding: 0 !important; }
     
     .stat-icon {
       width: 32px;
       height: 32px;
-      border-radius: 8px;
+      border-radius: var(--pf-t--global--border--radius--small);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-right: 0.5rem;
-      background: linear-gradient(135deg, var(--icon-bg) 0%, var(--icon-bg-dark) 100%);
+      margin-right: var(--pf-t--global--spacer--sm);
       
-      svg {
-        width: 18px;
-        height: 18px;
-      }
+      svg { width: 18px; height: 18px; }
       
-      &--green {
-        --icon-bg: rgba(92, 163, 82, 0.1);
-        --icon-bg-dark: rgba(92, 163, 82, 0.2);
-        color: var(--cluster-healthy);
-      }
-      
-      &--orange {
-        --icon-bg: rgba(240, 171, 0, 0.1);
-        --icon-bg-dark: rgba(240, 171, 0, 0.2);
-        color: var(--cluster-degraded);
-      }
-      
-      &--red {
-        --icon-bg: rgba(201, 25, 11, 0.1);
-        --icon-bg-dark: rgba(201, 25, 11, 0.2);
-        color: var(--cluster-unhealthy);
-      }
-      
-      &--blue {
-        --icon-bg: rgba(0, 102, 204, 0.1);
-        --icon-bg-dark: rgba(0, 102, 204, 0.2);
-        color: var(--professional-blue);
-      }
-      
-      &--purple {
-        --icon-bg: rgba(117, 89, 220, 0.1);
-        --icon-bg-dark: rgba(117, 89, 220, 0.2);
-        color: #7559dc;
-      }
-      
-      &--cyan {
-        --icon-bg: rgba(0, 145, 158, 0.1);
-        --icon-bg-dark: rgba(0, 145, 158, 0.2);
-        color: #00919e;
-      }
-      
-      &--teal {
-        --icon-bg: rgba(0, 128, 128, 0.1);
-        --icon-bg-dark: rgba(0, 128, 128, 0.2);
-        color: #008080;
-      }
-    }
-    
-    .stat-divider {
-      width: 1px;
-      height: 32px;
-      background: var(--pf-v5-global--BorderColor--100);
-      margin: 0 1rem;
-      opacity: 0.5;
+      &--green { background: color-mix(in srgb, var(--cluster-healthy) 15%, transparent); color: var(--cluster-healthy); }
+      &--orange { background: color-mix(in srgb, var(--cluster-degraded) 15%, transparent); color: var(--cluster-degraded); }
+      &--red { background: color-mix(in srgb, var(--cluster-unhealthy) 15%, transparent); color: var(--cluster-unhealthy); }
+      &--blue { background: color-mix(in srgb, var(--pf-t--global--color--brand--default) 15%, transparent); color: var(--pf-t--global--color--brand--default); }
+      &--purple { background: color-mix(in srgb, #7559dc 15%, transparent); color: #7559dc; }
+      &--cyan { background: color-mix(in srgb, #009596 15%, transparent); color: #009596; }
+      &--teal { background: color-mix(in srgb, #008080 15%, transparent); color: #008080; }
     }
     
     .stat-content {
-      text-align: left;
-      
-      .stat-value {
-        font-size: 1.125rem;
-        font-weight: 700;
-        line-height: 1;
-        color: var(--pf-v5-global--Color--100);
-      }
-      
-      .stat-title {
-        font-size: 0.625rem;
-        text-transform: uppercase;
-        color: var(--pf-v5-global--Color--200);
-        margin-top: 0.125rem;
-        font-weight: 600;
-        letter-spacing: 0.3px;
-      }
-      
-      .stat-description {
-        font-size: 0.625rem;
-        color: var(--pf-v5-global--Color--300);
-        margin-top: 0.0625rem;
-      }
+      .stat-value { font-size: 1.125rem; font-weight: 700; color: var(--pf-t--global--text--color--regular); }
+      .stat-title { font-size: 0.625rem; text-transform: uppercase; color: var(--pf-t--global--text--color--subtle); margin-top: 2px; font-weight: 600; letter-spacing: 0.3px; }
+      .stat-description { font-size: 0.625rem; color: var(--pf-t--global--text--color--subtle); margin-top: 1px; }
     }
   }
 }
 
-// ========================================
-// COMPACT TOOLBAR
-// ========================================
+// Toolbar
 .cluster-toolbar {
-  background: var(--pf-v5-global--BackgroundColor--100);
-  border: none; // Remove border for floating effect
-  border-radius: 8px;
-  padding: 0.75rem !important;
-  margin-bottom: 1rem !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.06);
+  background: var(--pf-t--global--background--color--primary--default);
+  border-radius: var(--pf-t--global--border--radius--medium);
+  padding: var(--pf-t--global--spacer--md) !important;
+  box-shadow: var(--pf-t--global--box-shadow--sm);
   
-  .pf-v5-c-toolbar__content {
-    padding: 0 !important;
-  }
+  .pf-v6-c-toolbar__content { padding: 0 !important; }
 }
 
-// ========================================
-// SPACE-OPTIMIZED CLUSTER CARDS - FIXED
-// ========================================
-.cluster-card {
-  background: var(--pf-v5-global--BackgroundColor--100);
-  border: none; // Remove border for floating effect
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.06); // Floating effect
-  transition: all 0.2s ease;
+// Cluster cards
+.cluster-card.pf-v6-c-card {
+  --pf-v6-c-card--BorderWidth: 0;
+  background: var(--pf-t--global--background--color--primary--default);
+  border-radius: var(--pf-t--global--border--radius--medium);
+  box-shadow: var(--pf-t--global--box-shadow--sm);
+  transition: transform 0.2s, box-shadow 0.2s;
   position: relative;
-  // Remove overflow: visible to prevent dropdown issues
   
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--pf-t--global--box-shadow--lg);
   }
   
-  // Health indicator as left border accent
+  // Health indicator
   &::after {
     content: '';
     position: absolute;
@@ -252,1443 +130,278 @@
     left: 0;
     bottom: 0;
     width: 3px;
-    border-radius: 7px 0 0 7px;
+    border-radius: var(--pf-t--global--border--radius--medium) 0 0 var(--pf-t--global--border--radius--medium);
   }
   
-  &--healthy::after {
-    background: var(--cluster-healthy);
+  &--healthy::after { background: var(--cluster-healthy); }
+  &--degraded::after { background: var(--cluster-degraded); }
+  &--unhealthy::after { background: var(--cluster-unhealthy); }
+  &--unknown::after { background: var(--cluster-unknown); }
+  
+  .pf-v6-c-card__header {
+    padding: var(--pf-t--global--spacer--md) var(--pf-t--global--spacer--md) !important;
+    border-bottom: 1px solid var(--pf-t--global--border--color--default);
   }
   
-  &--degraded::after {
-    background: var(--cluster-degraded);
+  .pf-v6-c-card__body { padding: var(--pf-t--global--spacer--md) !important; }
+  
+  .pf-v6-c-card__footer {
+    padding: var(--pf-t--global--spacer--sm) var(--pf-t--global--spacer--md) !important;
+    border-top: 1px solid var(--pf-t--global--border--color--default);
+    background: var(--pf-t--global--background--color--secondary--default);
   }
   
-  &--unhealthy::after {
-    background: var(--cluster-unhealthy);
-  }
+  .cluster-icon { width: 24px; height: 24px; margin-right: var(--pf-t--global--spacer--sm); }
+  .cluster-title { font-size: 1rem; font-weight: 600; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cluster-name { font-size: 0.75rem !important; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   
-  &--unknown::after {
-    background: var(--cluster-unknown);
-  }
-  
-  // Compact header with fixed layout
-  .pf-v5-c-card__header {
-    padding: 0.75rem 1rem !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05); // Subtle separator
-    
-    // FIX: Create a fixed layout grid for the header
-    > .pf-v5-l-flex:first-child {
-      display: grid !important;
-      grid-template-columns: 1fr auto !important; // Left side flexible, right side fixed
-      gap: 0.5rem;
-      align-items: start !important;
-      
-      // Left side with icon and name
-      > .pf-v5-l-flex__item:first-child {
-        min-width: 0; // Allow text truncation
-        overflow: hidden;
-        
-        .pf-v5-l-flex {
-          align-items: flex-start !important;
-        }
-      }
-      
-      // Right side with status and dropdown
-      > .pf-v5-l-flex__item:last-child {
-        flex-shrink: 0;
-        
-        .pf-v5-l-flex {
-          flex-direction: column !important;
-          align-items: flex-end !important;
-          gap: 0.25rem !important;
-        }
-      }
-    }
-  }
-  
-  // Compact body
-  .pf-v5-c-card__body {
-    padding: 0.75rem 1rem !important;
-  }
-  
-  // Compact footer
-  .pf-v5-c-card__footer {
-    padding: 0.5rem 1rem !important;
-    border-top: 1px solid rgba(0, 0, 0, 0.05); // Subtle separator
-    background: rgba(0, 0, 0, 0.02); // Very subtle background
-    
-    .last-check {
-      font-size: 0.75rem;
-      color: var(--pf-v5-global--Color--200);
-    }
-  }
-  
-  .cluster-icon {
-    width: 24px;
-    height: 24px;
-    margin-right: 0.5rem;
-  }
-  
-  .cluster-title {
-    font-size: 1rem;
-    font-weight: 600;
-    margin: 0;
-    line-height: 1.2;
-    // FIX: Add text truncation for long names
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 100%; // Use all available space
-  }
-  
-  .cluster-name {
-    font-size: 0.75rem !important;
-    margin-top: 0.125rem;
-    // FIX: Also truncate the secondary name
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 100%;
-  }
-  
-  // Compact labels
   .cluster-labels {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-    
-    .pf-v5-c-label {
-      font-size: 0.75rem;
-      padding: 0.125rem 0.5rem;
-      margin: 0.125rem;
-    }
+    margin: var(--pf-t--global--spacer--sm) 0;
+    .pf-v6-c-label { font-size: 0.75rem; padding: 2px var(--pf-t--global--spacer--sm); margin: 2px; }
   }
   
   .clickable-label {
     cursor: pointer;
-    transition: all 0.2s ease;
-    
-    &:hover {
-      transform: scale(1.05);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+    transition: transform 0.2s;
+    &:hover { transform: scale(1.05); }
   }
   
-  // FIX: Dropdown positioning and z-index
-  .pf-v5-c-dropdown {
-    position: relative; // Changed from static
-    
-    .pf-v5-c-dropdown__menu {
-      position: absolute !important;
-      z-index: 9999 !important; // Very high z-index
-      right: 0 !important;
-      top: calc(100% + 4px) !important; // Small gap below toggle
-      min-width: 150px; // Ensure minimum width
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important; // Enhanced shadow for visibility
-    }
-    
-    // Ensure the toggle button doesn't create stacking context issues
-    .pf-v5-c-menu-toggle {
-      position: relative;
-      z-index: auto;
-    }
-  }
-  
-  // Quick stats row
   .quick-stats {
-    padding: 0.5rem 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05); // Subtle separator
+    padding: var(--pf-t--global--spacer--sm) 0;
+    border-bottom: 1px solid var(--pf-t--global--border--color--default);
     
     .stat-item {
       display: inline-flex;
       align-items: center;
-      gap: 0.25rem;
+      gap: 4px;
       font-size: 0.75rem;
-      color: var(--pf-v5-global--Color--200);
+      color: var(--pf-t--global--text--color--subtle);
       
-      svg {
-        width: 12px;
-        height: 12px;
-      }
-      
-      &.clickable {
-        cursor: pointer;
-        
-        &:hover {
-          color: var(--pf-v5-global--primary-color--100);
-        }
-      }
-      
+      svg { width: 12px; height: 12px; }
+      &.clickable { cursor: pointer; &:hover { color: var(--pf-t--global--color--brand--default); } }
       &.text-green { color: var(--cluster-healthy); }
       &.text-orange { color: var(--cluster-degraded); }
       &.text-red { color: var(--cluster-unhealthy); }
     }
   }
   
-  // Compact resource bars
   .resource-bars {
     .resource-bar {
-      .resource-label {
-        font-size: 0.625rem;
-        text-transform: uppercase;
-        color: var(--pf-v5-global--Color--200);
-        font-weight: 600;
-      }
-      
+      .resource-label { font-size: 0.625rem; text-transform: uppercase; color: var(--pf-t--global--text--color--subtle); font-weight: 600; }
       .resource-value {
         font-size: 0.75rem;
         font-weight: 600;
-        
         &.text-green { color: var(--cluster-healthy); }
         &.text-orange { color: var(--cluster-degraded); }
         &.text-red { color: var(--cluster-unhealthy); }
       }
-      
       .compact-progress {
         height: 4px !important;
-        margin-top: 0.125rem;
-        
-        .pf-v5-c-progress__bar {
-          height: 4px !important;
-        }
-        
-        .pf-v5-c-progress__measure {
-          display: none; // Hide percentage text
-        }
-      }
-    }
-  }
-}
-
-// FIX: Global dropdown menu z-index boost
-.pf-v5-c-dropdown__menu {
-  z-index: 9999 !important;
-  position: absolute !important;
-  background: var(--pf-v5-global--BackgroundColor--100) !important;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
-}
-
-// Ensure the dropdown appears above everything in the grid
-.cluster-grid {
-  position: relative;
-  
-  // Each grid item should not create a new stacking context
-  .pf-v5-l-grid__item {
-    position: relative;
-    z-index: 1;
-    
-    // When dropdown is open, boost that card's z-index
-    &:has(.pf-v5-c-dropdown__menu) {
-      z-index: 100 !important;
-    }
-  }
-}
-
-// Ultra-Compact Info Grid (if you still use the detailed view)
-.cluster-info-grid {
-  margin-top: 0.5rem !important;
-  
-  .pf-v5-l-grid {
-    gap: 0.375rem !important;
-  }
-  
-  .info-box {
-    background: rgba(0, 0, 0, 0.02);
-    padding: 0.375rem 0.5rem;
-    border-radius: 4px;
-    border: none; // Remove border for cleaner look
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-height: 32px;
-    
-    .info-content {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-    
-    .info-label {
-      font-size: 0.625rem;
-      color: var(--pf-v5-global--Color--200);
-      text-transform: uppercase;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-      line-height: 1;
-    }
-    
-    .info-value {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--pf-v5-global--Color--100);
-      line-height: 1.2;
-      margin-top: 0.125rem;
-      
-      .text-green { color: var(--cluster-healthy); }
-      .text-orange { color: var(--cluster-degraded); }
-      .text-red { color: var(--cluster-unhealthy); }
-    }
-    
-    .info-sublabel {
-      font-size: 0.625rem;
-      color: var(--pf-v5-global--Color--300);
-      line-height: 1;
-      margin-top: 0.125rem;
-    }
-    
-    .pf-v5-c-progress {
-      margin-top: 0.25rem !important;
-      height: 4px !important;
-      
-      .pf-v5-c-progress__bar {
-        height: 4px !important;
+        margin-top: 2px;
+        .pf-v6-c-progress__bar { height: 4px !important; }
+        .pf-v6-c-progress__measure { display: none; }
       }
     }
   }
   
-  @media (min-width: 1200px) {
-    .pf-v5-l-grid__item {
-      grid-column: span 4 !important;
-    }
-  }
+  .last-check { font-size: 0.75rem; color: var(--pf-t--global--text--color--subtle); }
 }
 
-// Compact permission indicators
-.permission-indicators {
-  margin-top: 0.5rem !important;
-  
-  .pf-v5-c-label {
-    font-size: 0.625rem;
-    padding: 0.125rem 0.375rem;
-    margin: 0.125rem;
-  }
-}
-
-// ========================================
-// STATUS BADGES
-// ========================================
+// Status badges
 .status-badge {
   font-weight: 500;
-  padding: 0.125rem 0.5rem;
+  padding: 2px var(--pf-t--global--spacer--sm);
   border-radius: 12px;
   font-size: 0.75rem;
   display: inline-flex;
   align-items: center;
   
-  svg {
-    width: 12px;
-    height: 12px;
-    margin-right: 0.25rem;
-  }
+  svg { width: 12px; height: 12px; margin-right: 4px; }
   
-  &--green {
-    background: rgba(92, 163, 82, 0.1);
-    color: var(--cluster-healthy);
-    border: 1px solid rgba(92, 163, 82, 0.2);
-  }
-  
-  &--orange {
-    background: rgba(240, 171, 0, 0.1);
-    color: var(--cluster-degraded);
-    border: 1px solid rgba(240, 171, 0, 0.2);
-  }
-  
-  &--red {
-    background: rgba(201, 25, 11, 0.1);
-    color: var(--cluster-unhealthy);
-    border: 1px solid rgba(201, 25, 11, 0.2);
-  }
-  
-  &--grey {
-    background: rgba(138, 141, 144, 0.1);
-    color: var(--cluster-unknown);
-    border: 1px solid rgba(138, 141, 144, 0.2);
-  }
+  &--green { background: color-mix(in srgb, var(--cluster-healthy) 15%, transparent); color: var(--cluster-healthy); border: 1px solid color-mix(in srgb, var(--cluster-healthy) 30%, transparent); }
+  &--orange { background: color-mix(in srgb, var(--cluster-degraded) 15%, transparent); color: var(--cluster-degraded); border: 1px solid color-mix(in srgb, var(--cluster-degraded) 30%, transparent); }
+  &--red { background: color-mix(in srgb, var(--cluster-unhealthy) 15%, transparent); color: var(--cluster-unhealthy); border: 1px solid color-mix(in srgb, var(--cluster-unhealthy) 30%, transparent); }
+  &--grey { background: color-mix(in srgb, var(--cluster-unknown) 15%, transparent); color: var(--cluster-unknown); border: 1px solid color-mix(in srgb, var(--cluster-unknown) 30%, transparent); }
 }
 
-// ========================================
-// GRID OPTIMIZATION FOR MAXIMUM VISIBILITY
-// ========================================
+// Grid
 .cluster-grid {
-  .pf-v5-l-grid {
-    gap: 1rem !important; // Increased gap for floating cards
-  }
+  .pf-v6-l-grid { gap: var(--pf-t--global--spacer--md) !important; }
   
-  // 3 columns on large screens (1200px+)
-  @media (min-width: 1200px) and (max-width: 1599px) {
-    .pf-v5-l-grid__item {
-      grid-column: span 4 !important;
-    }
-  }
-  
-  // 4 columns on XL screens (1600px+)
-  @media (min-width: 1600px) and (max-width: 1919px) {
-    .pf-v5-l-grid__item {
-      grid-column: span 3 !important;
-    }
-  }
-  
-  // 5 columns on 2XL screens (1920px+)
-  @media (min-width: 1920px) {
-    .pf-v5-l-grid__item {
-      grid-column: span 2 !important;
-      
-      &:nth-child(5n) {
-        grid-column: span 3 !important;
-      }
-    }
-  }
-  
-  // 6 columns on ultra-wide screens (2560px+)
-  @media (min-width: 2560px) {
-    .pf-v5-l-grid__item {
-      grid-column: span 2 !important;
-      
-      &:nth-child(5n) {
-        grid-column: span 2 !important;
-      }
-    }
-  }
+  @media (min-width: 1200px) and (max-width: 1599px) { .pf-v6-l-grid__item { grid-column: span 4 !important; } }
+  @media (min-width: 1600px) and (max-width: 1919px) { .pf-v6-l-grid__item { grid-column: span 3 !important; } }
+  @media (min-width: 1920px) { .pf-v6-l-grid__item { grid-column: span 2 !important; } }
 }
 
-// ========================================
-// MODALS & OVERLAYS
-// ========================================
+// Modals
+.pf-v6-c-backdrop {
+  backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.pf-v6-c-modal-box {
+  background: var(--pf-t--global--background--color--primary--default);
+  color: var(--pf-t--global--text--color--regular);
+  border: 1px solid var(--pf-t--global--border--color--default);
+  box-shadow: var(--pf-t--global--box-shadow--lg);
+  
+  .pf-v6-c-modal-box__header { border-bottom: 1px solid var(--pf-t--global--border--color--default); }
+  .pf-v6-c-modal-box__footer { border-top: 1px solid var(--pf-t--global--border--color--default); }
+}
+
+// Node modal
 .node-modal {
-  .pf-v5-c-modal__box {
-    max-width: 1200px;
-  }
+  .pf-v6-c-modal__box { max-width: 1200px; }
   
   .node-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1rem;
+    gap: var(--pf-t--global--spacer--md);
     max-height: 60vh;
     overflow-y: auto;
   }
-  
-  .node-card {
-    background: #151515; //(--pf-v5-global--BackgroundColor--100);
-    border: none;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    position: relative;
-    
-    &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      width: 3px;
-      border-radius: 7px 0 0 7px;
-    }
-    
-    &--ready::after {
-      background: var(--cluster-healthy);
-    }
-    
-    &--not-ready::after {
-      background: var(--cluster-unhealthy);
-    }
-    
-    .node-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.5rem;
-      
-      .node-name {
-        font-weight: 600;
-        font-size: 0.875rem;
-      }
-      
-      .node-status {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-        font-size: 0.75rem;
-        
-        &--ready {
-          color: var(--cluster-healthy);
-        }
-        
-        &--not-ready {
-          color: var(--cluster-unhealthy);
-        }
-      }
-    }
-  }
 }
 
-// ========================================
-// EMPTY STATES
-// ========================================
-.pf-v5-c-empty-state {
-  padding: 2rem 0 !important;
-  
-  .pf-v5-c-empty-state__icon {
-    color: var(--pf-v5-global--Color--200);
-    margin-bottom: 0.5rem !important;
-    font-size: 2rem !important;
-  }
-}
-
-// ========================================
-// UTILITY CLASSES
-// ========================================
-.text-green { color: var(--cluster-healthy); }
-.text-orange { color: var(--cluster-degraded); }
-.text-red { color: var(--cluster-unhealthy); }
-.text-grey { color: var(--cluster-unknown); }
-
-.warning-badge {
-  background: rgba(240, 171, 0, 0.1);
-  color: var(--cluster-degraded);
-  border: 1px solid rgba(240, 171, 0, 0.2);
-}
-
-.danger-badge {
-  background: rgba(201, 25, 11, 0.1);
-  color: var(--cluster-unhealthy);
-  border: 1px solid rgba(201, 25, 11, 0.2);
-}
-
-// ========================================
-// RESPONSIVE ADJUSTMENTS
-// ========================================
-@media (max-width: 1200px) {
-  .cluster-stats {
-    .stat-card {
-      .pf-v5-l-flex {
-        flex-wrap: wrap !important;
-      }
-      
-      .stat-divider {
-        display: none;
-      }
-      
-      .pf-v5-l-flex__item {
-        flex-basis: 25%;
-        margin-bottom: 0.5rem;
-      }
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .cluster-stats {
-    .stat-card {
-      .pf-v5-l-flex__item {
-        flex-basis: 50%;
-      }
-    }
-  }
-  
-  .cluster-grid {
-    .pf-v5-l-grid__item {
-      grid-column: span 12 !important;
-    }
-  }
-  
-  .cluster-card {
-    .cluster-title {
-      font-size: 0.875rem;
-    }
-    
-    .quick-stats {
-      flex-wrap: wrap;
-      
-      .stat-item {
-        margin: 0.125rem;
-      }
-    }
-  }
-}
-
-// ========================================
-// DARK THEME ADJUSTMENTS
-// ========================================
-.pf-v5-theme-dark {
-  // Dark theme background gradient
-  &.app {
-    background: linear-gradient(180deg, 
-      #1a1d23 0%, 
-      var(--pf-v5-global--BackgroundColor--dark--100) 100%
-    );
-  }
-  
-  .cluster-card,
-  .stat-card,
-  .operator-card,
-  .cluster-toolbar {
-    background: var(--pf-v5-global--BackgroundColor--dark--100);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
-    
-    &:hover {
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.3);
-    }
-    
-    .info-box {
-      background: rgba(255, 255, 255, 0.03);
-      border: none;
-    }
-  }
-  
-  // FIX: Ensure dropdown menus are visible in dark mode
-  .pf-v5-c-dropdown__menu {
-    background: var(--pf-v5-global--BackgroundColor--dark--100) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
-  }
-  
-  // Ensure health indicators remain colored in dark mode
-  .cluster-card {
-    &--healthy::after {
-      background: var(--cluster-healthy) !important;
-    }
-    
-    &--degraded::after {
-      background: var(--cluster-degraded) !important;
-    }
-    
-    &--unhealthy::after {
-      background: var(--cluster-unhealthy) !important;
-    }
-    
-    &--unknown::after {
-      background: var(--cluster-unknown) !important;
-    }
-    
-    .pf-v5-c-card__header {
-      border-bottom-color: rgba(255, 255, 255, 0.05);
-    }
-    
-    .pf-v5-c-card__footer {
-      background: rgba(255, 255, 255, 0.02);
-      border-top-color: rgba(255, 255, 255, 0.05);
-    }
-    
-    .quick-stats {
-      border-bottom-color: rgba(255, 255, 255, 0.05);
-    }
-  }
-  
-  .dashboard-header {
-    background: linear-gradient(135deg, var(--pf-v5-global--BackgroundColor--dark--100) 0%, var(--pf-v5-global--BackgroundColor--dark--200) 100%);
-  }
-  
-  .stat-divider {
-    background: var(--pf-v5-global--BorderColor--dark--100);
-  }
-}
-
-// ========================================
-// ANIMATIONS & TRANSITIONS
-// ========================================
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.cluster-grid > div {
-  animation: fadeIn 0.3s ease-out;
-}
-
-// ========================================
-// FOCUS STATES
-// ========================================
-:focus-visible {
-  outline: 2px solid var(--professional-blue);
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-// ========================================
-// PERFORMANCE OPTIMIZATIONS
-// ========================================
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-// ========================================
-// MODAL STYLES FOR DARK MODE
-// ========================================
-
-/* Modal backdrop improvements for both themes */
-.pf-v5-c-backdrop {
-  /* Light mode backdrop with blur */
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  background-color: rgba(0, 0, 0, 0.5) !important;
-}
-
-/* Dark mode specific modal improvements */
-.pf-v5-theme-dark {
-  /* Enhanced backdrop for dark mode */
-  .pf-v5-c-backdrop {
-    /* Semi-transparent backdrop with blur effect */
-    backdrop-filter: blur(8px) saturate(1.2);
-    -webkit-backdrop-filter: blur(8px) saturate(1.2);
-    background-color: rgba(0, 0, 0, 0.75) !important;
-  }
-
-  /* Modal box styling for better contrast */
-  .pf-v5-c-modal-box {
-    /* Changed from #2b2f36 to neutral dark matching the theme */
-    background-color: #151515 !important;  /* Matches your dark gradient start color */
-    color: var(--pf-v5-global--Color--dark--100) !important;
-
-    /* Subtle border for definition */
-    border: 1px solid rgba(255, 255, 255, 0.08);
-
-    /* Enhanced shadow for depth - removed inset shadow that was causing the light band */
-    box-shadow:
-      0 20px 60px rgba(0, 0, 0, 0.6),
-      0 10px 30px rgba(0, 0, 0, 0.4);
-  }
-
-  /* Modal header styling */
-  .pf-v5-c-modal-box__header {
-    background-color: transparent;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);  /* Made border more subtle */
-    padding: 1.5rem;  /* Ensure consistent padding */
-  }
-
-  /* Modal title */
-  .pf-v5-c-modal-box__title {
-    color: #ffffff !important;
-    font-weight: 500;
-  }
-
-  /* Modal body */
-  .pf-v5-c-modal-box__body {
-    /* Ensure readable text color */
-    color: #e8e8e8 !important;
-    
-    /* Make the body background match the modal for consistency */
-    background-color: transparent;
-
-    /* Style any nested cards or content */
-    .pf-v5-c-card {
-      background-color: rgba(255, 255, 255, 0.03);  /* Slightly lighter than modal background */
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
-  }
-
-  /* Modal footer */
-  .pf-v5-c-modal-box__footer {
-    background-color: transparent;  /* Changed from rgba(255, 255, 255, 0.02) */
-    border-top: 1px solid rgba(255, 255, 255, 0.06);  /* Made border more subtle */
-  }
-
-  /* Close button enhancement */
-  .pf-v5-c-modal-box__close .pf-v5-c-button {
-    color: #b8b8b8 !important;
-
-    &:hover {
-      color: #ffffff !important;
-      background-color: rgba(255, 255, 255, 0.08);
-      border-radius: 4px;
-    }
-  }
-
-  /* Form controls inside modals */
-  .pf-v5-c-modal-box {
-    .pf-v5-c-form-control,
-    .pf-v5-c-text-input-group__text-input,
-    .pf-v5-c-select__toggle {
-      background-color: rgba(0, 0, 0, 0.25);  /* Darker input backgrounds */
-      border-color: rgba(255, 255, 255, 0.15);
-      color: #ffffff;
-
-      &:focus {
-        background-color: rgba(0, 0, 0, 0.35);
-        border-color: var(--pf-v5-global--primary-color--100);
-      }
-    }
-
-    /* Labels and form text */
-    .pf-v5-c-form__label,
-    .pf-v5-c-form__helper-text {
-      color: #d2d2d2;
-    }
-  }
-
-  /* Buttons in modal footer */
-  .pf-v5-c-modal-box__footer {
-    .pf-v5-c-button {
-      &.pf-m-primary {
-        background-color: var(--pf-v5-global--primary-color--100);
-        color: white;
-
-        &:hover {
-          background-color: var(--pf-v5-global--primary-color--200);
-        }
-      }
-
-      &.pf-m-secondary {
-        background-color: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        color: #e8e8e8;
-
-        &:hover {
-          background-color: rgba(255, 255, 255, 0.08);
-          border-color: rgba(255, 255, 255, 0.35);
-        }
-      }
-
-      &.pf-m-link {
-        color: #b8b8b8;
-
-        &:hover {
-          color: #ffffff;
-        }
-      }
-    }
-  }
-
-  /* Node modal specific styles (from your app) */
-  .node-modal {
-    .node-card {
-      background: rgba(255, 255, 255, 0.03);  /* Subtle background */
-      border: 1px solid rgba(255, 255, 255, 0.06);
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.05);
-      }
-
-      /* Keep the health indicator colors visible */
-      &--ready::after {
-        background: var(--cluster-healthy);
-        box-shadow: 0 0 8px rgba(91, 163, 82, 0.3);
-      }
-
-      &--not-ready::after {
-        background: var(--cluster-unhealthy);
-        box-shadow: 0 0 8px rgba(201, 25, 11, 0.3);
-      }
-    }
-  }
-
-  /* Dropdown menus inside modals */
-  .pf-v5-c-modal-box .pf-v5-c-dropdown__menu {
-    background-color: #1a1d23;  /* Match modal background */
-    border: 1px solid rgba(255, 255, 255, 0.08);
-
-    .pf-v5-c-dropdown__menu-item {
-      color: #e8e8e8;
-
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.06);
-      }
-    }
-  }
-
-  /* Alert/notification styles inside modals */
-  .pf-v5-c-modal-box {
-    .pf-v5-c-alert {
-      &.pf-m-info {
-        background-color: rgba(0, 102, 204, 0.12);
-        border-color: rgba(0, 102, 204, 0.25);
-      }
-
-      &.pf-m-success {
-        background-color: rgba(91, 163, 82, 0.12);
-        border-color: rgba(91, 163, 82, 0.25);
-      }
-
-      &.pf-m-warning {
-        background-color: rgba(240, 171, 0, 0.12);
-        border-color: rgba(240, 171, 0, 0.25);
-      }
-
-      &.pf-m-danger {
-        background-color: rgba(201, 25, 11, 0.12);
-        border-color: rgba(201, 25, 11, 0.25);
-      }
-    }
-  }
-
-  /* Table styles inside modals */
-  .pf-v5-c-modal-box {
-    .pf-v5-c-table {
-      background-color: transparent;
-
-      thead {
-        background-color: rgba(255, 255, 255, 0.02);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      }
-
-      tbody tr {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-
-        &:hover {
-          background-color: rgba(255, 255, 255, 0.02);
-        }
-      }
-
-      th, td {
-        color: #e8e8e8;
-      }
-    }
-  }
-
-  /* Loading spinner contrast */
-  .pf-v5-c-modal-box .pf-v5-c-spinner {
-    --pf-v5-c-spinner--Color: var(--pf-v5-global--primary-color--100);
-  }
-}
-
-/* Smooth transitions for modal appearance */
-.pf-v5-c-backdrop,
-.pf-v5-c-modal-box {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Animation for modal entrance */
-@keyframes modalSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.pf-v5-c-modal-box {
-  animation: modalSlideIn 0.3s ease-out;
-}
-
-/* Ensure proper z-index stacking */
-.pf-v5-c-backdrop {
-  z-index: 500;
-}
-
-.pf-v5-c-modal-box {
-  z-index: 501;
-}
-
-// ========================================
-// REGISTRY STATUS STYLES
-// ========================================
-.registry-status {
-  &-button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-
-    &:hover {
-      .pf-v5-c-label {
-        transform: scale(1.05);
-      }
-    }
-  }
-
-  &-modal {
-    .registry-list {
-      max-height: 400px;
-      overflow-y: auto;
-      padding: 0;
-
-      &::-webkit-scrollbar {
-        width: 6px;
-      }
-
-      &::-webkit-scrollbar-track {
-        background: var(--pf-v5-global--BackgroundColor--200);
-      }
-
-      &::-webkit-scrollbar-thumb {
-        background: var(--pf-v5-global--BorderColor--200);
-        border-radius: 3px;
-      }
-    }
-
-    .registry-item {
-      padding: 8px 12px;
-      border-radius: 4px;
-      margin-bottom: 8px;
-      transition: all 0.2s ease;
-
-      &--available {
-        background: rgba(92, 163, 82, 0.05);
-
-        &:hover {
-          background: rgba(92, 163, 82, 0.08);
-        }
-      }
-
-      &--unavailable {
-        background: rgba(201, 25, 11, 0.05);
-        cursor: pointer;
-
-        &:hover {
-          background: rgba(201, 25, 11, 0.1);
-          transform: translateX(2px);
-        }
-      }
-
-      .registry-name {
-        font-weight: 600;
-        color: var(--pf-v5-global--Color--100);
-      }
-
-      .registry-endpoint {
-        font-size: 0.75rem;
-        color: var(--pf-v5-global--Color--200);
-        margin-top: 2px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
-      .registry-status-icon {
-        svg {
-          width: 18px;
-          height: 18px;
-        }
-      }
-    }
-  }
-
-  &-error-modal {
-    .error-details {
-      margin-top: 8px;
-      padding: 12px;
-      background: var(--pf-v5-global--BackgroundColor--200);
-      border-radius: 4px;
-      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-      font-size: 0.875rem;
-      white-space: pre-wrap;
-      word-break: break-word;
-      max-height: 300px;
-      overflow-y: auto;
-
-      &::-webkit-scrollbar {
-        width: 6px;
-      }
-
-      &::-webkit-scrollbar-track {
-        background: transparent;
-      }
-
-      &::-webkit-scrollbar-thumb {
-        background: var(--pf-v5-global--BorderColor--200);
-        border-radius: 3px;
-      }
-    }
-  }
-}
-
-// Dark theme adjustments for registry status
-.pf-v5-theme-dark {
-  .registry-status {
-    &-modal {
-      .registry-item {
-        &--available {
-          background: rgba(92, 163, 82, 0.08);
-
-          &:hover {
-            background: rgba(92, 163, 82, 0.12);
-          }
-        }
-
-        &--unavailable {
-          background: rgba(201, 25, 11, 0.08);
-
-          &:hover {
-            background: rgba(201, 25, 11, 0.15);
-          }
-        }
-      }
-    }
-
-    &-error-modal {
-      .error-details {
-        background: rgba(0, 0, 0, 0.3);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        color: #e8e8e8;
-      }
-    }
-  }
-}
-
-// Responsive adjustments
-@media (max-width: 768px) {
-  .registry-status {
-    &-button {
-      padding: 6px 8px;
-
-      .pf-v5-c-label {
-        font-size: 0.75rem;
-      }
-    }
-  }
-}
-
-// ========================================
-// MINIMALIST NODE DETAILS MODAL STYLES
-// ========================================
-
-.node-minimal-card {
-  background: var(--pf-v5-global--BackgroundColor--100);
-  border: none !important;
-  border-radius: 4px !important;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06) !important;
-  transition: all 0.15s ease;
+.node-minimal-card.pf-v6-c-card {
+  --pf-v6-c-card--BorderWidth: 0;
+  background: var(--pf-t--global--background--color--primary--default);
+  border-radius: var(--pf-t--global--border--radius--small);
+  box-shadow: var(--pf-t--global--box-shadow--sm);
+  margin-bottom: var(--pf-t--global--spacer--sm);
+  transition: box-shadow 0.15s, transform 0.15s;
   
   &:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+    box-shadow: var(--pf-t--global--box-shadow--md);
     transform: translateY(-1px);
   }
   
-  .pf-v5-c-card__body {
-    padding: 16px 20px !important;
-  }
+  .pf-v6-c-card__body { padding: var(--pf-t--global--spacer--md) var(--pf-t--global--spacer--lg) !important; }
   
-  // Clean chip styling
-  .pf-v5-c-chip {
-    background: var(--pf-v5-global--BackgroundColor--150);
-    border: 1px solid var(--pf-v5-global--BorderColor--100);
+  .pf-v6-c-chip {
+    background: var(--pf-t--global--background--color--secondary--default);
+    border: 1px solid var(--pf-t--global--border--color--default);
     font-size: 0.625rem;
-    padding: 2px 8px;
-    height: auto;
-    
-    &.pf-m-overflow {
-      background: transparent;
-      border: 1px dashed var(--pf-v5-global--BorderColor--100);
-    }
+    padding: 2px var(--pf-t--global--spacer--sm);
   }
   
-  // Minimal progress indicators
   .node-resource-metric {
     text-align: center;
     min-width: 60px;
-    
-    .metric-label {
-      font-size: 0.625rem;
-      color: var(--pf-v5-global--Color--200);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 4px;
-    }
-    
-    .metric-value {
-      font-size: 1rem;
-      font-weight: 500;
-      line-height: 1.2;
-    }
-    
-    .metric-detail {
-      font-size: 0.625rem;
-      color: var(--pf-v5-global--Color--300);
-      margin-top: 2px;
-    }
+    .metric-label { font-size: 0.625rem; color: var(--pf-t--global--text--color--subtle); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .metric-value { font-size: 1rem; font-weight: 500; }
+    .metric-detail { font-size: 0.625rem; color: var(--pf-t--global--text--color--subtle); margin-top: 2px; }
   }
 }
 
-// Toolbar styling to match modal background
-.pf-v5-c-modal-box {
-  .node-modal-toolbar {
-    background: transparent !important;
-    border: none !important;
-    padding: 12px 0 !important;
-    margin-bottom: 16px !important;
-    
-    .pf-v5-c-search-input {
-      background: var(--pf-v5-global--BackgroundColor--100);
-      border: 1px solid var(--pf-v5-global--BorderColor--100);
-      border-radius: 4px;
-      
-      &:focus-within {
-        border-color: var(--pf-v5-global--primary-color--100);
-        box-shadow: 0 0 0 1px var(--pf-v5-global--primary-color--100);
-      }
-    }
-    
-    .pf-v5-c-menu-toggle {
-      background: var(--pf-v5-global--BackgroundColor--100);
-      border: 1px solid var(--pf-v5-global--BorderColor--100);
-      font-size: 0.875rem;
-      padding: 6px 12px;
-      
-      &:hover {
-        background: var(--pf-v5-global--BackgroundColor--150);
-      }
-      
-      svg {
-        font-size: 0.75rem;
-        margin-right: 4px;
-      }
-    }
-  }
-}
-
-// Dark theme adjustments for minimalist design
-.pf-v5-theme-dark {
-  .node-minimal-card {
-    background: var(--pf-v5-global--BackgroundColor--dark--100);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2) !important;
-    
-    &:hover {
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
-    }
-    
-    .pf-v5-c-chip {
-      background: rgba(255, 255, 255, 0.03);
-      border-color: rgba(255, 255, 255, 0.08);
-      
-      &.pf-m-overflow {
-        background: transparent;
-        border-color: rgba(255, 255, 255, 0.08);
-      }
-    }
-  }
-  
-  .pf-v5-c-modal-box {
-    .node-modal-toolbar {
-      .pf-v5-c-search-input {
-        background: var(--pf-v5-global--BackgroundColor--dark--100);
-        border-color: rgba(255, 255, 255, 0.08);
-        
-        &:focus-within {
-          border-color: var(--pf-v5-global--primary-color--100);
-        }
-      }
-      
-      .pf-v5-c-menu-toggle {
-        background: var(--pf-v5-global--BackgroundColor--dark--100);
-        border-color: rgba(255, 255, 255, 0.08);
-        
-        &:hover {
-          background: rgba(255, 255, 255, 0.05);
-        }
-      }
-    }
-  }
-}
-
-// Remove excess PatternFly toolbar styling
-.pf-v5-c-toolbar {
-  &.node-toolbar-minimal {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    
-    .pf-v5-c-toolbar__content {
-      padding: 0 !important;
-      background: transparent !important;
-    }
-    
-    .pf-v5-c-toolbar__item {
-      align-items: center;
-    }
-  }
-}
-
-// Simplify dropdown menus
-.pf-v5-c-dropdown__menu {
-  border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid var(--pf-v5-global--BorderColor--100);
-  
-  .pf-v5-c-dropdown__menu-item {
-    font-size: 0.875rem;
-    padding: 8px 12px;
-    
-    &:hover {
-      background: var(--pf-v5-global--BackgroundColor--150);
-    }
-  }
-}
-
-// Minimalist empty state
-.node-details-empty {
-  text-align: center;
-  padding: 2rem 1rem;
-  
-  .pf-v5-c-empty-state__icon {
-    color: var(--pf-v5-global--Color--200);
-    margin-bottom: 1rem;
-    font-size: 2rem;
-  }
-  
-  .pf-v5-c-title {
-    font-weight: 400;
-    color: var(--pf-v5-global--Color--100);
-  }
-  
-  .pf-v5-c-empty-state__body {
-    color: var(--pf-v5-global--Color--200);
-    font-size: 0.875rem;
-  }
-}
-
-// Subtle animations
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.node-minimal-card {
-  animation: fadeIn 0.2s ease-out;
-}
-
-// Clean expand/collapse button
-.node-expand-btn {
-  transition: transform 0.15s ease;
-  padding: 4px;
-  min-width: 24px;
-  color: var(--pf-v5-global--Color--200);
+// Operator cards
+.operator-card.pf-v6-c-card {
+  --pf-v6-c-card--BorderWidth: 0;
+  background: var(--pf-t--global--background--color--primary--default);
+  border-radius: var(--pf-t--global--border--radius--medium);
+  box-shadow: var(--pf-t--global--box-shadow--sm);
+  transition: transform 0.2s, box-shadow 0.2s;
   
   &:hover {
-    background: var(--pf-v5-global--BackgroundColor--150);
-    border-radius: 4px;
-  }
-  
-  &[aria-expanded="true"] svg {
-    transform: rotate(90deg);
+    transform: translateY(-2px);
+    box-shadow: var(--pf-t--global--box-shadow--md);
   }
 }
 
-// Simplified status indicators
-.node-status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  display: inline-block;
+// Registry status
+.registry-status {
+  &-button { display: flex; align-items: center; gap: var(--pf-t--global--spacer--sm); padding: var(--pf-t--global--spacer--sm) var(--pf-t--global--spacer--md); }
   
-  &--ready {
-    background: var(--pf-v5-global--success-color--100);
-  }
-  
-  &--not-ready {
-    background: var(--pf-v5-global--danger-color--100);
-  }
-  
-  &--disabled {
-    background: var(--pf-v5-global--warning-color--100);
-  }
-  
-  &--unknown {
-    background: var(--pf-v5-global--Color--200);
-  }
-}
-
-// Minimalist loading state
-.node-loading-minimal {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 200px;
-  
-  .pf-v5-c-spinner {
-    --pf-v5-c-spinner--Color: var(--pf-v5-global--primary-color--100);
-    --pf-v5-c-spinner--diameter: 32px;
-  }
-}
-
-// Clean dividers
-.node-section-divider {
-  height: 1px;
-  background: var(--pf-v5-global--BorderColor--100);
-  margin: 16px 0;
-  opacity: 0.5;
-}
-
-// Responsive adjustments
-@media (max-width: 768px) {
-  .node-minimal-card {
-    .pf-v5-c-card__body {
-      padding: 12px !important;
-    }
+  &-modal .registry-item {
+    padding: var(--pf-t--global--spacer--sm) var(--pf-t--global--spacer--md);
+    border-radius: var(--pf-t--global--border--radius--small);
+    margin-bottom: var(--pf-t--global--spacer--sm);
+    transition: background 0.2s;
     
-    .node-resource-metric {
-      min-width: 50px;
-      
-      .metric-value {
-        font-size: 0.875rem;
-      }
-    }
+    &--available { background: color-mix(in srgb, var(--cluster-healthy) 8%, transparent); &:hover { background: color-mix(in srgb, var(--cluster-healthy) 12%, transparent); } }
+    &--unavailable { background: color-mix(in srgb, var(--cluster-unhealthy) 8%, transparent); cursor: pointer; &:hover { background: color-mix(in srgb, var(--cluster-unhealthy) 15%, transparent); } }
+    
+    .registry-name { font-weight: 600; color: var(--pf-t--global--text--color--regular); }
+    .registry-endpoint { font-size: 0.75rem; color: var(--pf-t--global--text--color--subtle); margin-top: 2px; }
+  }
+  
+  &-error-modal .error-details {
+    margin-top: var(--pf-t--global--spacer--sm);
+    padding: var(--pf-t--global--spacer--md);
+    background: var(--pf-t--global--background--color--secondary--default);
+    border-radius: var(--pf-t--global--border--radius--small);
+    font-family: monospace;
+    font-size: 0.875rem;
+    white-space: pre-wrap;
+    word-break: break-word;
   }
 }
 
-// ========================================
-// ANONYMOUS CLUSTER CARD STYLES
-// ========================================
+// Anonymous view
 .cluster-card--anonymous {
-  .pf-v5-c-card__body {
+  .pf-v6-c-card__body {
     min-height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-
-  // Slightly muted appearance for anonymous view
   opacity: 0.95;
+  &:hover { opacity: 1; }
+}
 
-  &:hover {
-    opacity: 1;
+// Login banner
+.pf-v6-c-banner.pf-m-info {
+  background: color-mix(in srgb, var(--pf-t--global--color--brand--default) 10%, transparent);
+  border-left: 4px solid var(--pf-t--global--color--brand--default);
+}
+
+// Empty states
+.pf-v6-c-empty-state {
+  padding: var(--pf-t--global--spacer--xl) 0 !important;
+  .pf-v6-c-empty-state__icon { color: var(--pf-t--global--text--color--subtle); margin-bottom: var(--pf-t--global--spacer--sm) !important; }
+}
+
+// Utility classes
+.text-green { color: var(--cluster-healthy); }
+.text-orange { color: var(--cluster-degraded); }
+.text-red { color: var(--cluster-unhealthy); }
+.text-grey { color: var(--cluster-unknown); }
+
+// Console link
+.console-link-button:hover { color: var(--pf-t--global--color--brand--default) !important; }
+
+// Animations
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.cluster-grid > div { animation: fadeIn 0.3s ease-out; }
+
+// Focus states
+:focus-visible {
+  outline: 2px solid var(--pf-t--global--color--brand--default);
+  outline-offset: 2px;
+  border-radius: var(--pf-t--global--border--radius--small);
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+// Responsive
+@media (max-width: 1200px) {
+  .cluster-stats .stat-card {
+    .pf-v6-l-flex { flex-wrap: wrap !important; }
+    .pf-v6-l-flex__item { flex-basis: 25%; margin-bottom: var(--pf-t--global--spacer--sm); }
   }
 }
 
-// ========================================
-// LOGIN BANNER STYLES
-// ========================================
-.pf-v5-c-banner {
-  &.pf-m-info {
-    background: linear-gradient(135deg,
-      rgba(0, 102, 204, 0.08) 0%,
-      rgba(0, 102, 204, 0.12) 100%
-    );
-    border-left: 4px solid var(--pf-v5-global--primary-color--100);
-
-    .pf-v5-c-button {
-      box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
-
-      &:hover {
-        box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
-        transform: translateY(-1px);
-      }
-    }
+@media (max-width: 768px) {
+  .cluster-stats .stat-card .pf-v6-l-flex__item { flex-basis: 50%; }
+  .cluster-grid .pf-v6-l-grid__item { grid-column: span 12 !important; }
+  .cluster-card {
+    .cluster-title { font-size: 0.875rem; }
+    .quick-stats { flex-wrap: wrap; .stat-item { margin: 2px; } }
   }
 }
-
-// Dark theme adjustments for anonymous view
-.pf-v5-theme-dark {
-  .cluster-card--anonymous {
-    .pf-v5-c-card__body {
-      background: rgba(255, 255, 255, 0.02);
-    }
-  }
-
-  .pf-v5-c-banner.pf-m-info {
-    background: linear-gradient(135deg,
-      rgba(0, 102, 204, 0.12) 0%,
-      rgba(0, 102, 204, 0.18) 100%
-    );
-    border-left-color: var(--pf-v5-global--primary-color--200);
-  }
-}
-

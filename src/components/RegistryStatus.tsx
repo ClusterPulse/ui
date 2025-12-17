@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import {
   Button,
   Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   ModalVariant,
   Label,
   Tooltip,
   Spinner,
   EmptyState,
-  EmptyStateIcon,
   EmptyStateBody,
-  Title,
   List,
   ListItem,
   Alert,
@@ -20,7 +21,6 @@ import {
   RegistryIcon,
   CheckCircleIcon,
   ExclamationCircleIcon,
-  DatabaseIcon,
 } from '@patternfly/react-icons';
 import { useQuery } from '@tanstack/react-query';
 import { clusterAPI } from '../services/api';
@@ -38,21 +38,18 @@ export const RegistryStatus: React.FC = () => {
   const [selectedRegistry, setSelectedRegistry] = useState<Registry | null>(null);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
 
-  // Fetch registry status
   const { data: registries = [], isLoading, error } = useQuery<Registry[]>({
     queryKey: ['registries'],
     queryFn: async () => {
       const response = await clusterAPI.getRegistriesStatus();
       return response;
     },
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 30000,
   });
 
-  // Calculate available count
   const availableCount = registries.filter(r => r.available).length;
   const totalCount = registries.length;
 
-  // Determine color based on availability
   const getStatusColor = () => {
     if (totalCount === 0) return 'grey';
     if (availableCount === 0) return 'red';
@@ -72,12 +69,11 @@ export const RegistryStatus: React.FC = () => {
   };
 
   if (error) {
-    return null; // Don't show registry status if there's an error
+    return null;
   }
 
   return (
     <>
-      {/* Status Button in Header */}
       <Tooltip
         content={
           isLoading 
@@ -111,119 +107,142 @@ export const RegistryStatus: React.FC = () => {
         </Button>
       </Tooltip>
 
-      {/* Registry List Modal */}
       <Modal
         variant={ModalVariant.small}
-        title={
-          <Flex alignItems={{ default: 'alignItemsCenter' }}>
-            <FlexItem>
-              <DatabaseIcon className="pf-v5-u-mr-sm" />
-            </FlexItem>
-            <FlexItem>
-              Container Registries
-            </FlexItem>
-          </Flex>
-        }
-        description={`${availableCount} of ${totalCount} registries are available`}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        actions={[
+        aria-label="Container Registries"
+      >
+        <ModalHeader 
+          title="Container Registries"
+          description={`${availableCount} of ${totalCount} registries are available`}
+        />
+        <ModalBody>
+          {registries.length === 0 ? (
+            <EmptyState
+              titleText="No registries configured"
+              headingLevel="h4"
+              icon={RegistryIcon}
+            >
+              <EmptyStateBody>
+                No container registries are currently configured in the system.
+              </EmptyStateBody>
+            </EmptyState>
+          ) : (
+            <List isPlain>
+              {registries.map((registry) => (
+                <ListItem key={registry.name}>
+                  <Flex 
+                    alignItems={{ default: 'alignItemsCenter' }}
+                    justifyContent={{ default: 'justifyContentSpaceBetween' }}
+                    style={{ 
+                      padding: '8px 12px',
+                      borderRadius: 'var(--pf-t--global--border--radius--small)',
+                      background: registry.available 
+                        ? 'color-mix(in srgb, var(--cluster-healthy) 8%, transparent)' 
+                        : 'color-mix(in srgb, var(--cluster-unhealthy) 8%, transparent)',
+                      marginBottom: '8px',
+                      cursor: !registry.available ? 'pointer' : 'default',
+                      transition: 'background 0.2s ease'
+                    }}
+                    onClick={() => handleRegistryClick(registry)}
+                  >
+                    <FlexItem>
+                      <Flex alignItems={{ default: 'alignItemsCenter' }} spaceItems={{ default: 'spaceItemsSm' }}>
+                        <FlexItem>
+                          {registry.available ? (
+                            <CheckCircleIcon color="var(--cluster-healthy)" />
+                          ) : (
+                            <ExclamationCircleIcon color="var(--cluster-unhealthy)" />
+                          )}
+                        </FlexItem>
+                        <FlexItem>
+                          <div>
+                            <strong>{registry.display_name}</strong>
+                            {registry.endpoint && (
+                              <div 
+                                style={{ 
+                                  fontSize: '0.75rem', 
+                                  color: 'var(--pf-t--global--text--color--subtle)',
+                                  marginTop: '2px'
+                                }}
+                              >
+                                {registry.endpoint}
+                              </div>
+                            )}
+                          </div>
+                        </FlexItem>
+                      </Flex>
+                    </FlexItem>
+                    <FlexItem>
+                      <Label 
+                        color={registry.available ? 'green' : 'red'} 
+                        isCompact
+                      >
+                        {registry.available ? 'Available' : 'Unavailable'}
+                      </Label>
+                    </FlexItem>
+                  </Flex>
+                </ListItem>
+              ))}
+            </List>
+          )}
+        </ModalBody>
+        <ModalFooter>
           <Button key="close" variant="primary" onClick={() => setIsModalOpen(false)}>
             Close
-          </Button>,
-        ]}
-      >
-        {registries.length === 0 ? (
-          <EmptyState>
-            <EmptyStateIcon icon={RegistryIcon} />
-            <Title headingLevel="h4" size="lg">
-              No registries configured
-            </Title>
-            <EmptyStateBody>
-              No container registries are currently configured in the system.
-            </EmptyStateBody>
-          </EmptyState>
-        ) : (
-          <List isPlain>
-            {registries.map((registry) => (
-              <ListItem key={registry.name}>
-                <Flex 
-                  alignItems={{ default: 'alignItemsCenter' }}
-                  justifyContent={{ default: 'justifyContentSpaceBetween' }}
-                  style={{ 
-                    padding: '8px 12px',
-                    borderRadius: '4px',
-                    background: registry.available 
-                      ? 'rgba(92, 163, 82, 0.05)' 
-                      : 'rgba(201, 25, 11, 0.05)',
-                    marginBottom: '8px',
-                    cursor: !registry.available ? 'pointer' : 'default',
-                    transition: 'background 0.2s ease'
-                  }}
-                  onClick={() => handleRegistryClick(registry)}
-                  onMouseEnter={(e) => {
-                    if (!registry.available) {
-                      e.currentTarget.style.background = 'rgba(201, 25, 11, 0.1)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = registry.available 
-                      ? 'rgba(92, 163, 82, 0.05)' 
-                      : 'rgba(201, 25, 11, 0.05)';
-                  }}
-                >
-                  <FlexItem>
-                    <Flex alignItems={{ default: 'alignItemsCenter' }} spaceItems={{ default: 'spaceItemsSm' }}>
-                      <FlexItem>
-                        {registry.available ? (
-                          <CheckCircleIcon color="green" />
-                        ) : (
-                          <ExclamationCircleIcon color="red" />
-                        )}
-                      </FlexItem>
-                      <FlexItem>
-                        <div>
-                          <strong>{registry.display_name}</strong>
-                          {registry.endpoint && (
-                            <div 
-                              style={{ 
-                                fontSize: '0.75rem', 
-                                color: 'var(--pf-v5-global--Color--200)',
-                                marginTop: '2px'
-                              }}
-                            >
-                              {registry.endpoint}
-                            </div>
-                          )}
-                        </div>
-                      </FlexItem>
-                    </Flex>
-                  </FlexItem>
-                  <FlexItem>
-                    <Label 
-                      color={registry.available ? 'green' : 'red'} 
-                      isCompact
-                    >
-                      {registry.available ? 'Available' : 'Unavailable'}
-                    </Label>
-                  </FlexItem>
-                </Flex>
-              </ListItem>
-            ))}
-          </List>
-        )}
+          </Button>
+        </ModalFooter>
       </Modal>
 
-      {/* Error Detail Modal */}
       <Modal
         variant={ModalVariant.small}
-        title={`Registry Error - ${selectedRegistry?.display_name}`}
         isOpen={isErrorModalOpen}
         onClose={() => {
           setIsErrorModalOpen(false);
           setSelectedRegistry(null);
         }}
-        actions={[
+        aria-label={`Registry Error - ${selectedRegistry?.display_name}`}
+      >
+        <ModalHeader title={`Registry Error - ${selectedRegistry?.display_name}`} />
+        <ModalBody>
+          {selectedRegistry && (
+            <>
+              <Alert
+                variant="danger"
+                isInline
+                title="Registry Unavailable"
+                className="pf-v6-u-mb-md"
+              />
+              <div>
+                <strong>Registry:</strong> {selectedRegistry.display_name}
+              </div>
+              {selectedRegistry.endpoint && (
+                <div className="pf-v6-u-mt-sm">
+                  <strong>Endpoint:</strong> {selectedRegistry.endpoint}
+                </div>
+              )}
+              <div className="pf-v6-u-mt-md">
+                <strong>Error Details:</strong>
+                <div 
+                  style={{ 
+                    marginTop: '8px',
+                    padding: '12px',
+                    background: 'var(--pf-t--global--background--color--secondary--default)',
+                    borderRadius: 'var(--pf-t--global--border--radius--small)',
+                    fontFamily: 'monospace',
+                    fontSize: '0.875rem',
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word'
+                  }}
+                >
+                  {selectedRegistry.error}
+                </div>
+              </div>
+            </>
+          )}
+        </ModalBody>
+        <ModalFooter>
           <Button 
             key="close" 
             variant="primary" 
@@ -233,44 +252,8 @@ export const RegistryStatus: React.FC = () => {
             }}
           >
             Close
-          </Button>,
-        ]}
-      >
-        {selectedRegistry && (
-          <>
-            <Alert
-              variant="danger"
-              isInline
-              title="Registry Unavailable"
-              className="pf-v5-u-mb-md"
-            />
-            <div>
-              <strong>Registry:</strong> {selectedRegistry.display_name}
-            </div>
-            {selectedRegistry.endpoint && (
-              <div className="pf-v5-u-mt-sm">
-                <strong>Endpoint:</strong> {selectedRegistry.endpoint}
-              </div>
-            )}
-            <div className="pf-v5-u-mt-md">
-              <strong>Error Details:</strong>
-              <div 
-                style={{ 
-                  marginTop: '8px',
-                  padding: '12px',
-                  background: 'var(--pf-v5-global--BackgroundColor--200)',
-                  borderRadius: '4px',
-                  fontFamily: 'monospace',
-                  fontSize: '0.875rem',
-                  whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-word'
-                }}
-              >
-                {selectedRegistry.error}
-              </div>
-            </div>
-          </>
-        )}
+          </Button>
+        </ModalFooter>
       </Modal>
     </>
   );

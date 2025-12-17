@@ -1,13 +1,12 @@
 import React from 'react';
 import {
   Page,
-  PageSection,
-  PageSectionVariants,
-  Button,
   Masthead,
   MastheadMain,
   MastheadBrand,
   MastheadContent,
+  PageSection,
+  Button,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
@@ -33,11 +32,10 @@ import { RegistryStatus } from './components/RegistryStatus';
 import { useThemeStore } from './stores/themeStore';
 import { clusterAPI } from './services/api';
 
-// Create QueryClient with optimized settings
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 1, // Reduced retry for faster failure
+      retry: 1,
       retryDelay: 1000,
       staleTime: 5 * 60 * 1000,
       gcTime: 10 * 60 * 1000,
@@ -49,7 +47,6 @@ const queryClient = new QueryClient({
 const AppContent: React.FC = () => {
   const { isDarkTheme, toggleTheme } = useThemeStore();
 
-  // Check authentication status - but handle errors gracefully
   const { data: authStatus, isLoading: authLoading } = useQuery({
     queryKey: ['authStatus'],
     queryFn: () => clusterAPI.getAuthStatus(),
@@ -62,21 +59,13 @@ const AppContent: React.FC = () => {
   const headerTools = (
     <Toolbar>
       <ToolbarContent>
-        <ToolbarGroup variant="icon-button-group" align={{ default: 'alignRight' }}>
-          {/* Only show registry status for authenticated users */}
+        <ToolbarGroup align={{ default: 'alignEnd' }}>
           {isAuthenticated && (
             <>
               <ToolbarItem>
                 <RegistryStatus />
               </ToolbarItem>
-              <ToolbarItem>
-                <div style={{ 
-                  width: '1px', 
-                  height: '24px', 
-                  background: 'var(--pf-v5-global--BorderColor--100)',
-                  margin: '0 8px'
-                }} />
-              </ToolbarItem>
+              <ToolbarItem variant="separator" />
             </>
           )}
           <ToolbarItem>
@@ -98,8 +87,8 @@ const AppContent: React.FC = () => {
                 aria-label={isDarkTheme ? 'Switch to light theme' : 'Switch to dark theme'}
                 onClick={toggleTheme}
                 icon={isDarkTheme ? 
-                  <span style={{ color: 'var(--pf-v5-global--palette--gold-400)' }}>☀️</span> : 
-                  <span style={{ color: 'var(--pf-v5-global--palette--blue-300)' }}>🌙</span>
+                  <span style={{ color: 'var(--pf-t--global--color--nonstatus--orange--default)' }}>☀️</span> : 
+                  <span style={{ color: 'var(--pf-t--global--color--brand--default)' }}>🌙</span>
                 }
               />
             </Tooltip>
@@ -116,7 +105,7 @@ const AppContent: React.FC = () => {
     </Toolbar>
   );
 
-  const header = (
+  const masthead = (
     <Masthead>
       <MastheadMain>
         <MastheadBrand>
@@ -137,8 +126,8 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="app">
-      <Page header={header}>
-        <PageSection variant={PageSectionVariants.light} className="pf-v5-u-p-0">
+      <Page masthead={masthead}>
+        <PageSection className="pf-v6-u-p-0">
           <AnimatePresence mode="wait">
             <ClusterDashboard />
           </AnimatePresence>
@@ -149,22 +138,22 @@ const AppContent: React.FC = () => {
         toastOptions={{
           duration: 4000,
           style: {
-            background: 'var(--pf-v5-global--BackgroundColor--100)',
-            color: 'var(--pf-v5-global--Color--100)',
-            border: '1px solid var(--pf-v5-global--BorderColor--100)',
-            borderRadius: 'var(--pf-v5-global--BorderRadius--md)',
-            boxShadow: 'var(--pf-v5-global--BoxShadow--lg)',
+            background: 'var(--pf-t--global--background--color--primary--default)',
+            color: 'var(--pf-t--global--text--color--regular)',
+            border: '1px solid var(--pf-t--global--border--color--default)',
+            borderRadius: 'var(--pf-t--global--border--radius--medium)',
+            boxShadow: 'var(--pf-t--global--box-shadow--lg)',
           },
           success: {
             iconTheme: {
-              primary: 'var(--pf-v5-global--success-color--100)',
-              secondary: 'var(--pf-v5-global--BackgroundColor--100)',
+              primary: 'var(--pf-t--global--color--status--success--default)',
+              secondary: 'var(--pf-t--global--background--color--primary--default)',
             },
           },
           error: {
             iconTheme: {
-              primary: 'var(--pf-v5-global--danger-color--100)',
-              secondary: 'var(--pf-v5-global--BackgroundColor--100)',
+              primary: 'var(--pf-t--global--color--status--danger--default)',
+              secondary: 'var(--pf-t--global--background--color--primary--default)',
             },
           },
         }}
