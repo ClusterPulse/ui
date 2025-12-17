@@ -41,7 +41,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { clusterAPI } from '../services/api';
 import toast from 'react-hot-toast';
 
-// Type definitions
 type NodeStatus = 'Ready' | 'NotReady' | 'SchedulingDisabled' | 'Unknown';
 
 interface NodeDetailsModalProps {
@@ -50,7 +49,6 @@ interface NodeDetailsModalProps {
   cluster: any | null;
 }
 
-// Node status configurations
 const nodeStatusConfig: Record<NodeStatus, {
   color: 'green' | 'red' | 'orange' | 'grey';
   icon: React.ComponentType;
@@ -78,7 +76,6 @@ const nodeStatusConfig: Record<NodeStatus, {
   },
 };
 
-// Helper functions
 const formatBytes = (bytes: number): string => {
   if (bytes === 0) return '0 B';
   const k = 1024;
@@ -140,7 +137,6 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
     }
   };
 
-  // Filter nodes based on search and filters
   const filteredNodes = useMemo(() => {
     return nodes.filter(node => {
       const matchesSearch = 
@@ -148,7 +144,6 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
         node.roles?.some((role: string) => role.toLowerCase().includes(searchValue.toLowerCase()));
       
       const matchesStatus = statusFilter === 'all' || node.status === statusFilter;
-      
       const matchesRole = roleFilter === 'all' || 
         node.roles?.some((role: string) => role === roleFilter);
       
@@ -156,7 +151,6 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
     });
   }, [nodes, searchValue, statusFilter, roleFilter]);
 
-  // Count nodes by status
   const statusCounts = useMemo(() => {
     const counts: Record<NodeStatus, number> = {
       Ready: 0,
@@ -177,7 +171,6 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
     return counts;
   }, [nodes]);
 
-  // Get unique roles
   const uniqueRoles = useMemo(() => {
     const roles = new Set<string>();
     nodes.forEach(node => {
@@ -202,7 +195,6 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
     const StatusIcon = statusInfo.icon;
     const isExpanded = expandedNodes.has(node.name);
     
-    // Calculate resource usage percentages based on requested vs allocatable
     const cpuUsagePercent = node.cpu_allocatable > 0 
       ? Math.round(((node.cpu_requested || 0) / node.cpu_allocatable) * 100) 
       : 0;
@@ -222,19 +214,17 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
           className="node-minimal-card"
           style={{ 
             border: 'none',
-            borderRadius: '4px',
-            background: 'var(--pf-v5-global--BackgroundColor--100)',
-            boxShadow: '0 1px 4px rgba(0, 0, 0, 0.06)',
+            borderRadius: 'var(--pf-t--global--border--radius--small)',
+            background: 'var(--pf-t--global--background--color--primary--default)',
+            boxShadow: 'var(--pf-t--global--box-shadow--sm)',
             marginBottom: '8px',
             overflow: 'visible',
           }}
         >
           <CardBody style={{ padding: '16px 20px' }}>
-            {/* Main Row */}
             <Flex alignItems={{ default: 'alignItemsCenter' }} justifyContent={{ default: 'justifyContentSpaceBetween' }}>
               <FlexItem flex={{ default: 'flex_1' }}>
                 <Flex alignItems={{ default: 'alignItemsCenter' }} spaceItems={{ default: 'spaceItemsMd' }}>
-                  {/* Expand/Collapse Button */}
                   <FlexItem>
                     <Button
                       variant="plain"
@@ -243,36 +233,34 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                       style={{ 
                         padding: '4px',
                         minWidth: '24px',
-                        color: 'var(--pf-v5-global--Color--200)'
+                        color: 'var(--pf-t--global--text--color--subtle)'
                       }}
                     >
                       {isExpanded ? <AngleDownIcon /> : <AngleRightIcon />}
                     </Button>
                   </FlexItem>
 
-                  {/* Status Icon */}
                   <FlexItem>
                     <span style={{ 
-                      color: `var(--pf-v5-global--${statusInfo.color}-color--100)`,
+                      color: `var(--cluster-${statusInfo.color === 'green' ? 'healthy' : statusInfo.color === 'red' ? 'unhealthy' : statusInfo.color === 'orange' ? 'degraded' : 'unknown'})`,
                       fontSize: '1rem'
                     }}>
                       <StatusIcon />
                     </span>
                   </FlexItem>
 
-                  {/* Node Name */}
                   <FlexItem>
                     <div>
                       <strong style={{ 
                         fontSize: '0.875rem',
                         fontWeight: 500,
-                        color: 'var(--pf-v5-global--Color--100)'
+                        color: 'var(--pf-t--global--text--color--regular)'
                       }}>
                         {node.name}
                       </strong>
                       <div style={{ 
                         fontSize: '0.75rem',
-                        color: 'var(--pf-v5-global--Color--200)',
+                        color: 'var(--pf-t--global--text--color--subtle)',
                         marginTop: '2px'
                       }}>
                         {node.roles?.join(', ') || 'No roles'}
@@ -280,7 +268,6 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                     </div>
                   </FlexItem>
 
-                  {/* Version Badge */}
                   {node.kubelet_version && (
                     <FlexItem>
                       <Label isCompact style={{ fontSize: '0.625rem' }}>
@@ -291,16 +278,14 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                 </Flex>
               </FlexItem>
 
-              {/* Resource Metrics */}
               <FlexItem>
                 <Flex spaceItems={{ default: 'spaceItemsXl' }}>
-                  {/* CPU */}
                   <FlexItem>
                     <Tooltip content={`CPU Requested: ${(node.cpu_requested || 0).toFixed(1)} / Allocatable: ${(node.cpu_allocatable || 0).toFixed(1)} cores`}>
                       <div style={{ textAlign: 'center', minWidth: '60px', cursor: 'help' }}>
                         <div style={{ 
                           fontSize: '0.625rem',
-                          color: 'var(--pf-v5-global--Color--200)',
+                          color: 'var(--pf-t--global--text--color--subtle)',
                           marginBottom: '4px',
                           textTransform: 'uppercase',
                           letterSpacing: '0.5px'
@@ -310,15 +295,15 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                         <div style={{ 
                           fontSize: '1rem',
                           fontWeight: 500,
-                          color: cpuUsagePercent > 80 ? 'var(--pf-v5-global--danger-color--100)' : 
-                                 cpuUsagePercent > 60 ? 'var(--pf-v5-global--warning-color--100)' : 
-                                 'var(--pf-v5-global--success-color--100)'
+                          color: cpuUsagePercent > 80 ? 'var(--cluster-unhealthy)' : 
+                                 cpuUsagePercent > 60 ? 'var(--cluster-degraded)' : 
+                                 'var(--cluster-healthy)'
                         }}>
                           {cpuUsagePercent}%
                         </div>
                         <div style={{ 
                           fontSize: '0.625rem',
-                          color: 'var(--pf-v5-global--Color--300)'
+                          color: 'var(--pf-t--global--text--color--subtle)'
                         }}>
                           {(node.cpu_requested || 0).toFixed(1)}/{(node.cpu_allocatable || 0).toFixed(1)}
                         </div>
@@ -326,13 +311,12 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                     </Tooltip>
                   </FlexItem>
 
-                  {/* Memory */}
                   <FlexItem>
                     <Tooltip content={`Memory Requested: ${formatBytes(node.memory_requested || 0)} / Allocatable: ${formatBytes(node.memory_allocatable || 0)}`}>
                       <div style={{ textAlign: 'center', minWidth: '60px', cursor: 'help' }}>
                         <div style={{ 
                           fontSize: '0.625rem',
-                          color: 'var(--pf-v5-global--Color--200)',
+                          color: 'var(--pf-t--global--text--color--subtle)',
                           marginBottom: '4px',
                           textTransform: 'uppercase',
                           letterSpacing: '0.5px'
@@ -342,15 +326,15 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                         <div style={{ 
                           fontSize: '1rem',
                           fontWeight: 500,
-                          color: memoryUsagePercent > 80 ? 'var(--pf-v5-global--danger-color--100)' : 
-                                 memoryUsagePercent > 60 ? 'var(--pf-v5-global--warning-color--100)' : 
-                                 'var(--pf-v5-global--success-color--100)'
+                          color: memoryUsagePercent > 80 ? 'var(--cluster-unhealthy)' : 
+                                 memoryUsagePercent > 60 ? 'var(--cluster-degraded)' : 
+                                 'var(--cluster-healthy)'
                         }}>
                           {memoryUsagePercent}%
                         </div>
                         <div style={{ 
                           fontSize: '0.625rem',
-                          color: 'var(--pf-v5-global--Color--300)'
+                          color: 'var(--pf-t--global--text--color--subtle)'
                         }}>
                           {formatBytes(node.memory_requested || 0)}
                         </div>
@@ -358,7 +342,6 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                     </Tooltip>
                   </FlexItem>
 
-                  {/* Pods */}
                   <FlexItem>
                     <Tooltip content={
                       <div>
@@ -372,7 +355,7 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                       <div style={{ textAlign: 'center', minWidth: '60px', cursor: 'help' }}>
                         <div style={{ 
                           fontSize: '0.625rem',
-                          color: 'var(--pf-v5-global--Color--200)',
+                          color: 'var(--pf-t--global--text--color--subtle)',
                           marginBottom: '4px',
                           textTransform: 'uppercase',
                           letterSpacing: '0.5px'
@@ -383,35 +366,26 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                           fontSize: '1rem',
                           fontWeight: 500,
                           color: (node.pods_failed > 0 || node.pods_pending > 0) 
-                            ? 'var(--pf-v5-global--warning-color--100)' 
-                            : 'var(--pf-v5-global--Color--100)'
+                            ? 'var(--cluster-degraded)' 
+                            : 'var(--pf-t--global--text--color--regular)'
                         }}>
                           {node.pods_running || 0}
                         </div>
                         <div style={{ 
                           fontSize: '0.625rem',
-                          color: 'var(--pf-v5-global--Color--300)'
+                          color: 'var(--pf-t--global--text--color--subtle)'
                         }}>
                           of {podsTotal}
-                          {(node.pods_failed > 0 || node.pods_pending > 0) && (
-                            <span style={{ 
-                              color: 'var(--pf-v5-global--warning-color--100)',
-                              marginLeft: '2px'
-                            }}>
-                              !
-                            </span>
-                          )}
                         </div>
                       </div>
                     </Tooltip>
                   </FlexItem>
 
-                  {/* Age */}
                   <FlexItem>
                     <div style={{ textAlign: 'center', minWidth: '60px' }}>
                       <div style={{ 
                         fontSize: '0.625rem',
-                        color: 'var(--pf-v5-global--Color--200)',
+                        color: 'var(--pf-t--global--text--color--subtle)',
                         marginBottom: '4px',
                         textTransform: 'uppercase',
                         letterSpacing: '0.5px'
@@ -421,7 +395,7 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                       <div style={{ 
                         fontSize: '1rem',
                         fontWeight: 500,
-                        color: 'var(--pf-v5-global--Color--100)'
+                        color: 'var(--pf-t--global--text--color--regular)'
                       }}>
                         {formatUptime(node.creation_timestamp)}
                       </div>
@@ -431,7 +405,6 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
               </FlexItem>
             </Flex>
 
-            {/* Expanded Details */}
             <AnimatePresence>
               {isExpanded && (
                 <motion.div
@@ -444,14 +417,13 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                   <div style={{ 
                     marginTop: '16px',
                     paddingTop: '16px',
-                    borderTop: '1px solid var(--pf-v5-global--BorderColor--100)'
+                    borderTop: '1px solid var(--pf-t--global--border--color--default)'
                   }}>
-                    {/* System Info */}
                     <div style={{ marginBottom: '16px' }}>
                       <Title headingLevel="h6" size="md" style={{ 
                         fontSize: '0.75rem',
                         marginBottom: '8px',
-                        color: 'var(--pf-v5-global--Color--200)',
+                        color: 'var(--pf-t--global--text--color--subtle)',
                         textTransform: 'uppercase',
                         letterSpacing: '0.5px'
                       }}>
@@ -463,39 +435,38 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                         gap: '12px'
                       }}>
                         <div style={{ fontSize: '0.75rem' }}>
-                          <span style={{ color: 'var(--pf-v5-global--Color--200)' }}>OS: </span>
-                          <span style={{ color: 'var(--pf-v5-global--Color--100)' }}>
+                          <span style={{ color: 'var(--pf-t--global--text--color--subtle)' }}>OS: </span>
+                          <span style={{ color: 'var(--pf-t--global--text--color--regular)' }}>
                             {node.os_image || 'Unknown'}
                           </span>
                         </div>
                         <div style={{ fontSize: '0.75rem' }}>
-                          <span style={{ color: 'var(--pf-v5-global--Color--200)' }}>Runtime: </span>
-                          <span style={{ color: 'var(--pf-v5-global--Color--100)' }}>
+                          <span style={{ color: 'var(--pf-t--global--text--color--subtle)' }}>Runtime: </span>
+                          <span style={{ color: 'var(--pf-t--global--text--color--regular)' }}>
                             {node.container_runtime || 'Unknown'}
                           </span>
                         </div>
                         <div style={{ fontSize: '0.75rem' }}>
-                          <span style={{ color: 'var(--pf-v5-global--Color--200)' }}>Kernel: </span>
-                          <span style={{ color: 'var(--pf-v5-global--Color--100)' }}>
+                          <span style={{ color: 'var(--pf-t--global--text--color--subtle)' }}>Kernel: </span>
+                          <span style={{ color: 'var(--pf-t--global--text--color--regular)' }}>
                             {node.kernel_version || 'Unknown'}
                           </span>
                         </div>
                         <div style={{ fontSize: '0.75rem' }}>
-                          <span style={{ color: 'var(--pf-v5-global--Color--200)' }}>Architecture: </span>
-                          <span style={{ color: 'var(--pf-v5-global--Color--100)' }}>
+                          <span style={{ color: 'var(--pf-t--global--text--color--subtle)' }}>Architecture: </span>
+                          <span style={{ color: 'var(--pf-t--global--text--color--regular)' }}>
                             {node.architecture || 'Unknown'}
                           </span>
                         </div>
                       </div>
                     </div>
 
-                    {/* Node Conditions */}
                     {node.conditions && node.conditions.length > 0 && (
                       <div style={{ marginBottom: '16px' }}>
                         <Title headingLevel="h6" size="md" style={{ 
                           fontSize: '0.75rem',
                           marginBottom: '8px',
-                          color: 'var(--pf-v5-global--Color--200)',
+                          color: 'var(--pf-t--global--text--color--subtle)',
                           textTransform: 'uppercase',
                           letterSpacing: '0.5px'
                         }}>
@@ -503,7 +474,6 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                         </Title>
                         <LabelGroup numLabels={10}>
                           {node.conditions.map((condition: any, idx: number) => {
-                            // Pressure conditions should be green when False
                             const isPressureCondition = condition.type?.includes('Pressure') || 
                                                        condition.type === 'DiskPressure' ||
                                                        condition.type === 'MemoryPressure' ||
@@ -513,13 +483,13 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
                             let labelColor: 'green' | 'red' | 'grey' = 'grey';
                             
                             if (condition.status === 'True') {
-                              labelColor = isReady ? 'green' : // Ready=True is good
-                                          isPressureCondition ? 'red' : // Pressure=True is bad
-                                          'green'; // Others True is usually good
+                              labelColor = isReady ? 'green' : 
+                                          isPressureCondition ? 'red' : 
+                                          'green';
                             } else if (condition.status === 'False') {
-                              labelColor = isReady ? 'red' : // Ready=False is bad
-                                          isPressureCondition ? 'green' : // Pressure=False is good
-                                          'red'; // Others False is usually bad
+                              labelColor = isReady ? 'red' : 
+                                          isPressureCondition ? 'green' : 
+                                          'red';
                             }
                             
                             return (
@@ -572,7 +542,6 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
         description={modalDescription}
       />
       <ModalBody>
-        {/* Minimal Toolbar */}
         <div style={{ 
           marginBottom: '16px',
           padding: '12px 0',

@@ -38,21 +38,18 @@ export const RegistryStatus: React.FC = () => {
   const [selectedRegistry, setSelectedRegistry] = useState<Registry | null>(null);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
 
-  // Fetch registry status
   const { data: registries = [], isLoading, error } = useQuery<Registry[]>({
     queryKey: ['registries'],
     queryFn: async () => {
       const response = await clusterAPI.getRegistriesStatus();
       return response;
     },
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 30000,
   });
 
-  // Calculate available count
   const availableCount = registries.filter(r => r.available).length;
   const totalCount = registries.length;
 
-  // Determine color based on availability
   const getStatusColor = () => {
     if (totalCount === 0) return 'grey';
     if (availableCount === 0) return 'red';
@@ -72,12 +69,11 @@ export const RegistryStatus: React.FC = () => {
   };
 
   if (error) {
-    return null; // Don't show registry status if there's an error
+    return null;
   }
 
   return (
     <>
-      {/* Status Button in Header */}
       <Tooltip
         content={
           isLoading 
@@ -111,7 +107,6 @@ export const RegistryStatus: React.FC = () => {
         </Button>
       </Tooltip>
 
-      {/* Registry List Modal */}
       <Modal
         variant={ModalVariant.small}
         isOpen={isModalOpen}
@@ -142,33 +137,23 @@ export const RegistryStatus: React.FC = () => {
                     justifyContent={{ default: 'justifyContentSpaceBetween' }}
                     style={{ 
                       padding: '8px 12px',
-                      borderRadius: '4px',
+                      borderRadius: 'var(--pf-t--global--border--radius--small)',
                       background: registry.available 
-                        ? 'rgba(92, 163, 82, 0.05)' 
-                        : 'rgba(201, 25, 11, 0.05)',
+                        ? 'color-mix(in srgb, var(--cluster-healthy) 8%, transparent)' 
+                        : 'color-mix(in srgb, var(--cluster-unhealthy) 8%, transparent)',
                       marginBottom: '8px',
                       cursor: !registry.available ? 'pointer' : 'default',
                       transition: 'background 0.2s ease'
                     }}
                     onClick={() => handleRegistryClick(registry)}
-                    onMouseEnter={(e) => {
-                      if (!registry.available) {
-                        e.currentTarget.style.background = 'rgba(201, 25, 11, 0.1)';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = registry.available 
-                        ? 'rgba(92, 163, 82, 0.05)' 
-                        : 'rgba(201, 25, 11, 0.05)';
-                    }}
                   >
                     <FlexItem>
                       <Flex alignItems={{ default: 'alignItemsCenter' }} spaceItems={{ default: 'spaceItemsSm' }}>
                         <FlexItem>
                           {registry.available ? (
-                            <CheckCircleIcon color="green" />
+                            <CheckCircleIcon color="var(--cluster-healthy)" />
                           ) : (
-                            <ExclamationCircleIcon color="red" />
+                            <ExclamationCircleIcon color="var(--cluster-unhealthy)" />
                           )}
                         </FlexItem>
                         <FlexItem>
@@ -178,7 +163,7 @@ export const RegistryStatus: React.FC = () => {
                               <div 
                                 style={{ 
                                   fontSize: '0.75rem', 
-                                  color: 'var(--pf-v5-global--Color--200)',
+                                  color: 'var(--pf-t--global--text--color--subtle)',
                                   marginTop: '2px'
                                 }}
                               >
@@ -210,7 +195,6 @@ export const RegistryStatus: React.FC = () => {
         </ModalFooter>
       </Modal>
 
-      {/* Error Detail Modal */}
       <Modal
         variant={ModalVariant.small}
         isOpen={isErrorModalOpen}
@@ -228,24 +212,24 @@ export const RegistryStatus: React.FC = () => {
                 variant="danger"
                 isInline
                 title="Registry Unavailable"
-                className="pf-v5-u-mb-md"
+                className="pf-v6-u-mb-md"
               />
               <div>
                 <strong>Registry:</strong> {selectedRegistry.display_name}
               </div>
               {selectedRegistry.endpoint && (
-                <div className="pf-v5-u-mt-sm">
+                <div className="pf-v6-u-mt-sm">
                   <strong>Endpoint:</strong> {selectedRegistry.endpoint}
                 </div>
               )}
-              <div className="pf-v5-u-mt-md">
+              <div className="pf-v6-u-mt-md">
                 <strong>Error Details:</strong>
                 <div 
                   style={{ 
                     marginTop: '8px',
                     padding: '12px',
-                    background: 'var(--pf-v5-global--BackgroundColor--200)',
-                    borderRadius: '4px',
+                    background: 'var(--pf-t--global--background--color--secondary--default)',
+                    borderRadius: 'var(--pf-t--global--border--radius--small)',
                     fontFamily: 'monospace',
                     fontSize: '0.875rem',
                     whiteSpace: 'pre-wrap',

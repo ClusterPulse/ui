@@ -25,7 +25,6 @@ import {
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 
-// Components
 import { ClusterGrid } from './ClusterGrid';
 import { ClusterStats } from './ClusterStats';
 import { LoginBanner } from './LoginBanner';
@@ -50,7 +49,6 @@ export const ClusterDashboard: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  // Check if public API is available
   const { data: publicApiAvailable, isLoading: publicApiLoading } = useQuery({
     queryKey: ['publicApiAvailable'],
     queryFn: () => clusterAPI.checkPublicApiAvailable(),
@@ -59,7 +57,6 @@ export const ClusterDashboard: React.FC = () => {
     gcTime: Infinity,
   });
 
-  // Check authentication status
   const { data: authStatus, isLoading: authLoading } = useQuery({
     queryKey: ['authStatus'],
     queryFn: () => clusterAPI.getAuthStatus(),
@@ -72,7 +69,6 @@ export const ClusterDashboard: React.FC = () => {
   const isAuthenticated = authStatus?.authenticated === true;
   const isAnonymousMode = !isAuthenticated && publicApiAvailable === true;
 
-  // Fetch clusters - use appropriate endpoint based on auth
   const {
     data: clustersData,
     isLoading: clustersLoading,
@@ -92,7 +88,6 @@ export const ClusterDashboard: React.FC = () => {
     enabled: !publicApiLoading && !authLoading && (isAuthenticated || isAnonymousMode),
   });
 
-  // Fetch user permissions only when authenticated
   const { data: permissions } = useQuery({
     queryKey: ['permissions'],
     queryFn: () => clusterAPI.getUserPermissions(),
@@ -103,7 +98,6 @@ export const ClusterDashboard: React.FC = () => {
 
   const clusters = clustersData || [];
 
-  // Filter clusters
   const filteredClusters = useMemo(() => {
     return clusters.filter((cluster: any) => {
       const matchesSearch = 
@@ -117,7 +111,6 @@ export const ClusterDashboard: React.FC = () => {
     });
   }, [clusters, searchValue, statusFilter]);
 
-  // Show loading only for initial load
   const isLoading = publicApiLoading || authLoading || clustersLoading;
 
   if (isLoading) {
@@ -125,7 +118,7 @@ export const ClusterDashboard: React.FC = () => {
       <Bullseye>
         <div className="loading-container">
           <Spinner size="xl" />
-          <Title headingLevel="h4" className="pf-v5-u-mt-md">
+          <Title headingLevel="h4" className="pf-v6-u-mt-md">
             Loading clusters...
           </Title>
         </div>
@@ -150,25 +143,22 @@ export const ClusterDashboard: React.FC = () => {
       animate="show"
       className="cluster-dashboard"
     >
-      {/* Show login banner for anonymous users */}
       {isAnonymousMode && (
-        <PageSection className="pf-v5-u-pb-0">
+        <PageSection className="pf-v6-u-pb-0">
           <LoginBanner />
         </PageSection>
       )}
 
-      {/* Stats Section - Only show for authenticated users */}
       {isAuthenticated && (
-        <PageSection className="stats-section pf-v5-u-pb-0">
+        <PageSection className="stats-section pf-v6-u-pb-0">
           <ClusterStats clusters={filteredClusters} />
         </PageSection>
       )}
 
-      {/* Toolbar */}
-      <PageSection className="pf-v5-u-pb-0">
+      <PageSection className="pf-v6-u-pb-0">
         <Toolbar id="cluster-toolbar" className="cluster-toolbar">
           <ToolbarContent>
-            <ToolbarItem className="pf-v5-u-mr-md">
+            <ToolbarItem className="pf-v6-u-mr-md">
               <SearchInput
                 aria-label="Search clusters"
                 placeholder="Search clusters..."
@@ -242,7 +232,6 @@ export const ClusterDashboard: React.FC = () => {
         </Toolbar>
       </PageSection>
 
-      {/* Clusters Grid */}
       <PageSection>
         {filteredClusters.length === 0 ? (
           <EmptyState

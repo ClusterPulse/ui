@@ -31,7 +31,6 @@ export const UserMenu: React.FC = () => {
     refetchInterval: 5 * 60 * 1000,
   });
 
-  // Only fetch permissions if authenticated
   const { data: permissions } = useQuery({
     queryKey: ['permissions'],
     queryFn: () => clusterAPI.getUserPermissions(),
@@ -52,7 +51,6 @@ export const UserMenu: React.FC = () => {
     return <Spinner size="md" />;
   }
 
-  // Show login button for unauthenticated users
   if (!authStatus?.authenticated || !authStatus?.user) {
     return (
       <Button
@@ -84,12 +82,12 @@ export const UserMenu: React.FC = () => {
     >
       <DropdownList>
         <DropdownItem key="username" isDisabled>
-          <div className="pf-v5-u-font-weight-bold">
-            <UserIcon className="pf-v5-u-mr-sm" />
+          <div className="pf-v6-u-font-weight-bold">
+            <UserIcon className="pf-v6-u-mr-sm" />
             {user.username}
           </div>
           {user.email && (
-            <div className="pf-v5-u-font-size-sm pf-v5-u-color-200">
+            <div className="pf-v6-u-font-size-sm pf-v6-u-color-200">
               {user.email}
             </div>
           )}
@@ -101,12 +99,12 @@ export const UserMenu: React.FC = () => {
           <>
             <DropdownItem key="groups" isDisabled>
               <div>
-                <UsersIcon className="pf-v5-u-mr-sm" />
-                <span className="pf-v5-u-font-weight-bold">Groups ({user.groups.length})</span>
+                <UsersIcon className="pf-v6-u-mr-sm" />
+                <span className="pf-v6-u-font-weight-bold">Groups ({user.groups.length})</span>
               </div>
-              <div className="pf-v5-u-mt-sm">
+              <div className="pf-v6-u-mt-sm">
                 {user.groups.slice(0, 3).map((group: string) => (
-                  <Label key={group} isCompact className="pf-v5-u-mr-xs pf-v5-u-mb-xs">
+                  <Label key={group} isCompact className="pf-v6-u-mr-xs pf-v6-u-mb-xs">
                     {group}
                   </Label>
                 ))}
@@ -123,14 +121,14 @@ export const UserMenu: React.FC = () => {
           <>
             <DropdownItem key="permissions" isDisabled>
               <div>
-                <KeyIcon className="pf-v5-u-mr-sm" />
-                <span className="pf-v5-u-font-weight-bold">Access</span>
+                <KeyIcon className="pf-v6-u-mr-sm" />
+                <span className="pf-v6-u-font-weight-bold">Access</span>
               </div>
-              <div className="pf-v5-u-font-size-sm pf-v5-u-mt-xs">
+              <div className="pf-v6-u-font-size-sm pf-v6-u-mt-xs">
                 {permissions.summary.accessible_clusters} of {permissions.summary.total_clusters} clusters
               </div>
               {permissions.summary.applied_policies > 0 && (
-                <div className="pf-v5-u-font-size-sm">
+                <div className="pf-v6-u-font-size-sm">
                   {permissions.summary.applied_policies} policies applied
                 </div>
               )}

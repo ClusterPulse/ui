@@ -22,7 +22,6 @@ interface ClusterStatsProps {
 
 export const ClusterStats: React.FC<ClusterStatsProps> = ({ clusters }) => {
   const stats = React.useMemo(() => {
-    // Initialize counters
     let healthy = 0;
     let degraded = 0;
     let unhealthy = 0;
@@ -33,9 +32,7 @@ export const ClusterStats: React.FC<ClusterStatsProps> = ({ clusters }) => {
     let totalPods = 0;
     let runningPods = 0;
     
-    // Process each cluster
     clusters.forEach(cluster => {
-      // Count health status
       const health = cluster.status?.health || 'unknown';
       switch(health) {
         case 'healthy': healthy++; break;
@@ -44,7 +41,6 @@ export const ClusterStats: React.FC<ClusterStatsProps> = ({ clusters }) => {
         default: unknown++; break;
       }
       
-      // Count nodes - check both node_summary and metrics
       if (cluster.node_summary) {
         totalNodes += cluster.node_summary.total || 0;
         readyNodes += cluster.node_summary.ready || 0;
@@ -53,7 +49,6 @@ export const ClusterStats: React.FC<ClusterStatsProps> = ({ clusters }) => {
         readyNodes += cluster.metrics.nodes_ready || 0;
       }
       
-      // Count namespaces and pods from metrics
       if (cluster.metrics) {
         totalNamespaces += cluster.metrics.namespaces || 0;
         totalPods += cluster.metrics.pods || 0;

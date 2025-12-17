@@ -61,7 +61,6 @@ export const ClusterGrid: React.FC<ClusterGridProps> = ({ clusters, onRefresh })
         ))}
       </Grid>
 
-      {/* Modals */}
       <NodeDetailsModal
         isOpen={nodeModalOpen}
         onClose={() => setNodeModalOpen(false)}
