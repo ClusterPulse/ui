@@ -81,13 +81,13 @@ export const UserMenu: React.FC = () => {
       )}
     >
       <DropdownList>
-        <DropdownItem key="username" isDisabled>
+        <DropdownItem key="username" component="div" className="pf-v6-u-text-color-regular">
           <div className="pf-v6-u-font-weight-bold">
             <UserIcon className="pf-v6-u-mr-sm" />
             {user.username}
           </div>
           {user.email && (
-            <div className="pf-v6-u-font-size-sm pf-v6-u-color-200">
+            <div className="pf-v6-u-font-size-sm pf-v6-u-text-color-subtle">
               {user.email}
             </div>
           )}
@@ -97,7 +97,7 @@ export const UserMenu: React.FC = () => {
         
         {user.groups && user.groups.length > 0 && (
           <>
-            <DropdownItem key="groups" isDisabled>
+            <DropdownItem key="groups" component="div" className="pf-v6-u-text-color-regular">
               <div>
                 <UsersIcon className="pf-v6-u-mr-sm" />
                 <span className="pf-v6-u-font-weight-bold">Groups ({user.groups.length})</span>
@@ -119,7 +119,7 @@ export const UserMenu: React.FC = () => {
 
         {permissions?.summary && (
           <>
-            <DropdownItem key="permissions" isDisabled>
+            <DropdownItem key="permissions" component="div" className="pf-v6-u-text-color-regular">
               <div>
                 <KeyIcon className="pf-v6-u-mr-sm" />
                 <span className="pf-v6-u-font-weight-bold">Access</span>
