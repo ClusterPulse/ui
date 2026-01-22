@@ -34,7 +34,6 @@ import {
   ExclamationTriangleIcon,
   ExclamationCircleIcon,
   CubeIcon,
-  LayerGroupIcon,
   CubesIcon,
   ClockIcon,
   LockIcon,
@@ -42,13 +41,7 @@ import {
   ExternalLinkAltIcon,
   CodeBranchIcon,
   TagIcon,
-  ServerIcon,
-  DatabaseIcon,
-  ServiceIcon,
-  BuildIcon,
-  VolumeIcon,
-  CpuIcon,
-  MemoryIcon,
+  CogIcon,
 } from '@patternfly/react-icons';
 import { motion } from 'framer-motion';
 import clsx from 'clsx';
@@ -56,12 +49,14 @@ import toast from 'react-hot-toast';
 
 import { clusterAPI } from '../services/api';
 import { OpenShiftIcon } from './icons/OpenShiftIcon';
+import { CustomMetricsSection } from './CustomMetricsSection';
 
 interface ClusterCardProps {
   cluster: any;
   onRefresh: () => void;
   onNodeClick: () => void;
   onOperatorsClick: () => void;
+  onConfigureMetrics: () => void;
 }
 
 interface AnonymousClusterCardProps {
@@ -131,24 +126,6 @@ const AnonymousClusterCard: React.FC<AnonymousClusterCardProps> = ({ cluster }) 
                 Authentication required to view detailed cluster information
               </div>
             </FlexItem>
-            <FlexItem>
-              <div style={{ 
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '0.5rem',
-                justifyContent: 'center',
-                color: 'var(--pf-t--global--text--color--subtle)', 
-                fontSize: '0.75rem'
-              }}>
-                <span>Metrics</span>
-                <span>•</span>
-                <span>Nodes</span>
-                <span>•</span>
-                <span>Operators</span>
-                <span>•</span>
-                <span>Namespaces</span>
-              </div>
-            </FlexItem>
           </Flex>
         </CardBody>
 
@@ -192,18 +169,11 @@ const healthConfig = {
   },
 };
 
-const formatBytes = (bytes: number): string => {
-  if (bytes === 0) return '0 B';
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
-};
-
 export const ClusterCard: React.FC<ClusterCardProps> = ({
   cluster,
   onNodeClick,
   onOperatorsClick,
+  onConfigureMetrics,
 }) => {
   if (cluster.anonymous_view) {
     return <AnonymousClusterCard cluster={cluster} />;
@@ -219,8 +189,6 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
   const health = cluster.status?.health || 'unknown';
   const status = healthConfig[health as keyof typeof healthConfig] || healthConfig.unknown;
   const StatusIcon = status.icon;
-  
-  const metrics = cluster.metrics || {};
 
   const handleViewDetails = async () => {
     setIsLoadingDetails(true);
@@ -272,13 +240,17 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
     >
       View Operators
     </DropdownItem>,
+    <DropdownItem
+      key="configure"
+      icon={<CogIcon />}
+      onClick={() => {
+        onConfigureMetrics();
+        setIsDropdownOpen(false);
+      }}
+    >
+      Configure Metrics
+    </DropdownItem>,
   ];
-
-  const cpuUsagePercent = metrics.cpu_usage_percent || 0;
-  const memoryUsagePercent = metrics.memory_usage_percent || 0;
-  const storageUsagePercent = metrics.storage_capacity > 0 
-    ? (metrics.storage_used / metrics.storage_capacity) * 100 
-    : 0;
 
   return (
     <>
@@ -446,228 +418,11 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
               </LabelGroup>
             )}
 
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(3, 1fr)', 
-              gap: '8px',
-              marginBottom: '12px'
-            }}>
-              <Tooltip content={`${metrics.nodes_ready || 0} ready, ${metrics.nodes_not_ready || 0} not ready`}>
-                <div 
-                  style={{ 
-                    background: 'var(--pf-t--global--background--color--secondary--default)',
-                    padding: '6px 8px',
-                    borderRadius: 'var(--pf-t--global--border--radius--small)',
-                    cursor: 'pointer'
-                  }}
-                  onClick={onNodeClick}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <ServerIcon style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }} />
-                    <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-t--global--text--color--subtle)' }}>
-                      Nodes
-                    </span>
-                  </div>
-                  <div style={{ 
-                    fontSize: '0.875rem', 
-                    fontWeight: 600,
-                    color: metrics.nodes_not_ready > 0 ? 'var(--cluster-degraded)' : 'var(--pf-t--global--text--color--regular)'
-                  }}>
-                    {metrics.nodes_ready || 0}/{metrics.nodes || 0}
-                  </div>
-                </div>
-              </Tooltip>
-
-              <Tooltip content={`${metrics.namespaces || 0} total namespaces`}>
-                <div style={{ 
-                  background: 'var(--pf-t--global--background--color--secondary--default)',
-                  padding: '6px 8px',
-                  borderRadius: 'var(--pf-t--global--border--radius--small)'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <LayerGroupIcon style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }} />
-                    <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-t--global--text--color--subtle)' }}>
-                      Namespaces
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '0.875rem', fontWeight: 600 }}>
-                    {metrics.namespaces || 0}
-                  </div>
-                </div>
-              </Tooltip>
-
-              <Tooltip content="Click to view operators">
-                <div 
-                  style={{ 
-                    background: 'var(--pf-t--global--background--color--secondary--default)',
-                    padding: '6px 8px',
-                    borderRadius: 'var(--pf-t--global--border--radius--small)',
-                    cursor: 'pointer'
-                  }}
-                  onClick={onOperatorsClick}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <CubesIcon style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }} />
-                    <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-t--global--text--color--subtle)' }}>
-                      Operators
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '0.875rem', fontWeight: 600 }}>
-                    {cluster.operator_count || 0}
-                  </div>
-                </div>
-              </Tooltip>
-
-              <Tooltip content={`Running: ${metrics.pods_running || 0}, Failed: ${metrics.pods_failed || 0}, Pending: ${metrics.pods_pending || 0}`}>
-                <div style={{ 
-                  background: 'var(--pf-t--global--background--color--secondary--default)',
-                  padding: '6px 8px',
-                  borderRadius: 'var(--pf-t--global--border--radius--small)'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <CubeIcon style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }} />
-                    <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-t--global--text--color--subtle)' }}>
-                      Pods
-                    </span>
-                  </div>
-                  <div style={{ 
-                    fontSize: '0.875rem', 
-                    fontWeight: 600,
-                    color: (metrics.pods_failed > 0 || metrics.pods_pending > 5) ? 'var(--cluster-degraded)' : 'var(--pf-t--global--text--color--regular)'
-                  }}>
-                    {metrics.pods_running || 0}/{metrics.pods || 0}
-                  </div>
-                </div>
-              </Tooltip>
-
-              <Tooltip content={`${metrics.deployments || 0} deployments`}>
-                <div style={{ 
-                  background: 'var(--pf-t--global--background--color--secondary--default)',
-                  padding: '6px 8px',
-                  borderRadius: 'var(--pf-t--global--border--radius--small)'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <BuildIcon style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }} />
-                    <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-t--global--text--color--subtle)' }}>
-                      Deployments
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '0.875rem', fontWeight: 600 }}>
-                    {metrics.deployments || 0}
-                  </div>
-                </div>
-              </Tooltip>
-
-              <Tooltip content={`${metrics.services || 0} services`}>
-                <div style={{ 
-                  background: 'var(--pf-t--global--background--color--secondary--default)',
-                  padding: '6px 8px',
-                  borderRadius: 'var(--pf-t--global--border--radius--small)'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <ServiceIcon style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }} />
-                    <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-t--global--text--color--subtle)' }}>
-                      Services
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '0.875rem', fontWeight: 600 }}>
-                    {metrics.services || 0}
-                  </div>
-                </div>
-              </Tooltip>
-            </div>
-
-            <div style={{ 
-              borderTop: '1px solid var(--pf-t--global--border--color--default)',
-              paddingTop: '8px',
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '12px'
-            }}>
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2px' }}>
-                  <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-t--global--text--color--subtle)', fontWeight: 600 }}>
-                    <CpuIcon style={{ marginRight: '2px', fontSize: '0.75rem' }} />
-                    CPU
-                  </span>
-                  <span style={{ 
-                    fontSize: '0.75rem', 
-                    fontWeight: 700,
-                    color: cpuUsagePercent < 60 ? 'var(--cluster-healthy)' : cpuUsagePercent < 80 ? 'var(--cluster-degraded)' : 'var(--cluster-unhealthy)'
-                  }}>
-                    {Math.round(cpuUsagePercent)}%
-                  </span>
-                </div>
-                <div style={{ fontSize: '0.625rem', color: 'var(--pf-t--global--text--color--subtle)' }}>
-                  {Math.round(metrics.cpu_requested || 0)}/{Math.round(metrics.cpu_capacity || 0)} cores
-                </div>
-              </div>
-
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2px' }}>
-                  <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-t--global--text--color--subtle)', fontWeight: 600 }}>
-                    <MemoryIcon style={{ marginRight: '2px', fontSize: '0.75rem' }} />
-                    Memory
-                  </span>
-                  <span style={{ 
-                    fontSize: '0.75rem', 
-                    fontWeight: 700,
-                    color: memoryUsagePercent < 60 ? 'var(--cluster-healthy)' : memoryUsagePercent < 80 ? 'var(--cluster-degraded)' : 'var(--cluster-unhealthy)'
-                  }}>
-                    {Math.round(memoryUsagePercent)}%
-                  </span>
-                </div>
-                <div style={{ fontSize: '0.625rem', color: 'var(--pf-t--global--text--color--subtle)' }}>
-                  {formatBytes(metrics.memory_requested || 0)}/{formatBytes(metrics.memory_capacity || 0)}
-                </div>
-              </div>
-
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2px' }}>
-                  <span style={{ fontSize: '0.625rem', textTransform: 'uppercase', color: 'var(--pf-t--global--text--color--subtle)', fontWeight: 600 }}>
-                    <VolumeIcon style={{ marginRight: '2px', fontSize: '0.75rem' }} />
-                    Storage
-                  </span>
-                  <span style={{ 
-                    fontSize: '0.75rem', 
-                    fontWeight: 700,
-                    color: storageUsagePercent < 60 ? 'var(--cluster-healthy)' : storageUsagePercent < 80 ? 'var(--cluster-degraded)' : 'var(--cluster-unhealthy)'
-                  }}>
-                    {Math.round(storageUsagePercent)}%
-                  </span>
-                </div>
-                <div style={{ fontSize: '0.625rem', color: 'var(--pf-t--global--text--color--subtle)' }}>
-                  {metrics.pvcs || 0} PVCs
-                </div>
-              </div>
-            </div>
-
-            {(metrics.statefulsets > 0 || metrics.daemonsets > 0) && (
-              <div style={{ 
-                marginTop: '8px',
-                paddingTop: '8px',
-                borderTop: '1px solid var(--pf-t--global--border--color--default)',
-                display: 'flex',
-                gap: '16px'
-              }}>
-                {metrics.statefulsets > 0 && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <DatabaseIcon style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }} />
-                    <span style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }}>
-                      {metrics.statefulsets} StatefulSets
-                    </span>
-                  </div>
-                )}
-                {metrics.daemonsets > 0 && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <BuildIcon style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }} />
-                    <span style={{ fontSize: '0.75rem', color: 'var(--pf-t--global--text--color--subtle)' }}>
-                      {metrics.daemonsets} DaemonSets
-                    </span>
-                  </div>
-                )}
-              </div>
-            )}
+            {/* Custom Metrics Section */}
+            <CustomMetricsSection
+              clusterName={clusterName}
+              onConfigureClick={onConfigureMetrics}
+            />
           </CardBody>
 
           <CardFooter>
@@ -754,34 +509,6 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
               <DescriptionListGroup>
                 <DescriptionListTerm>Platform</DescriptionListTerm>
                 <DescriptionListDescription>{clusterDetails.platform || 'OpenShift'}</DescriptionListDescription>
-              </DescriptionListGroup>
-              {clusterDetails.metrics && (
-                <>
-                  <DescriptionListGroup>
-                    <DescriptionListTerm>Total Nodes</DescriptionListTerm>
-                    <DescriptionListDescription>
-                      {clusterDetails.metrics.nodes || 0} ({clusterDetails.metrics.nodes_ready || 0} ready)
-                    </DescriptionListDescription>
-                  </DescriptionListGroup>
-                  <DescriptionListGroup>
-                    <DescriptionListTerm>Namespaces</DescriptionListTerm>
-                    <DescriptionListDescription>{clusterDetails.metrics.namespaces || 0}</DescriptionListDescription>
-                  </DescriptionListGroup>
-                  <DescriptionListGroup>
-                    <DescriptionListTerm>Pods</DescriptionListTerm>
-                    <DescriptionListDescription>
-                      {clusterDetails.metrics.pods || 0} total ({clusterDetails.metrics.pods_running || 0} running)
-                    </DescriptionListDescription>
-                  </DescriptionListGroup>
-                  <DescriptionListGroup>
-                    <DescriptionListTerm>Deployments</DescriptionListTerm>
-                    <DescriptionListDescription>{clusterDetails.metrics.deployments || 0}</DescriptionListDescription>
-                  </DescriptionListGroup>
-                </>
-              )}
-              <DescriptionListGroup>
-                <DescriptionListTerm>Operators</DescriptionListTerm>
-                <DescriptionListDescription>{clusterDetails.operator_count || 0}</DescriptionListDescription>
               </DescriptionListGroup>
               {clusterDetails.labels && (
                 <>

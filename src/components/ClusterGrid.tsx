@@ -4,6 +4,7 @@ import { motion, type Variants } from 'framer-motion';
 import { ClusterCard } from './ClusterCard';
 import { NodeDetailsModal } from './NodeDetailsModal';
 import { OperatorsView } from './OperatorsView';
+import { DashboardConfigPanel } from './DashboardConfigPanel';
 
 interface ClusterGridProps {
   clusters: any[];
@@ -27,6 +28,7 @@ export const ClusterGrid: React.FC<ClusterGridProps> = ({ clusters, onRefresh })
   const [selectedCluster, setSelectedCluster] = useState<any | null>(null);
   const [nodeModalOpen, setNodeModalOpen] = useState(false);
   const [operatorsViewOpen, setOperatorsViewOpen] = useState(false);
+  const [configPanelOpen, setConfigPanelOpen] = useState(false);
 
   const handleNodeClick = (cluster: any) => {
     setSelectedCluster(cluster);
@@ -36,6 +38,10 @@ export const ClusterGrid: React.FC<ClusterGridProps> = ({ clusters, onRefresh })
   const handleOperatorsClick = (cluster: any) => {
     setSelectedCluster(cluster);
     setOperatorsViewOpen(true);
+  };
+
+  const handleConfigureMetrics = () => {
+    setConfigPanelOpen(true);
   };
 
   return (
@@ -55,6 +61,7 @@ export const ClusterGrid: React.FC<ClusterGridProps> = ({ clusters, onRefresh })
                 onRefresh={onRefresh}
                 onNodeClick={() => handleNodeClick(cluster)}
                 onOperatorsClick={() => handleOperatorsClick(cluster)}
+                onConfigureMetrics={handleConfigureMetrics}
               />
             </motion.div>
           </GridItem>
@@ -77,6 +84,11 @@ export const ClusterGrid: React.FC<ClusterGridProps> = ({ clusters, onRefresh })
           clusterName={selectedCluster.name}
         />
       )}
+
+      <DashboardConfigPanel
+        isOpen={configPanelOpen}
+        onClose={() => setConfigPanelOpen(false)}
+      />
     </>
   );
 };

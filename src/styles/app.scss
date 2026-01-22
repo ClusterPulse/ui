@@ -166,44 +166,6 @@
     &:hover { transform: scale(1.05); }
   }
   
-  .quick-stats {
-    padding: var(--pf-t--global--spacer--sm) 0;
-    border-bottom: 1px solid var(--pf-t--global--border--color--default);
-    
-    .stat-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.75rem;
-      color: var(--pf-t--global--text--color--subtle);
-      
-      svg { width: 12px; height: 12px; }
-      &.clickable { cursor: pointer; &:hover { color: var(--pf-t--global--color--brand--default); } }
-      &.text-green { color: var(--cluster-healthy); }
-      &.text-orange { color: var(--cluster-degraded); }
-      &.text-red { color: var(--cluster-unhealthy); }
-    }
-  }
-  
-  .resource-bars {
-    .resource-bar {
-      .resource-label { font-size: 0.625rem; text-transform: uppercase; color: var(--pf-t--global--text--color--subtle); font-weight: 600; }
-      .resource-value {
-        font-size: 0.75rem;
-        font-weight: 600;
-        &.text-green { color: var(--cluster-healthy); }
-        &.text-orange { color: var(--cluster-degraded); }
-        &.text-red { color: var(--cluster-unhealthy); }
-      }
-      .compact-progress {
-        height: 4px !important;
-        margin-top: 2px;
-        .pf-v6-c-progress__bar { height: 4px !important; }
-        .pf-v6-c-progress__measure { display: none; }
-      }
-    }
-  }
-  
   .last-check { font-size: 0.75rem; color: var(--pf-t--global--text--color--subtle); }
 }
 
@@ -369,6 +331,80 @@
 // Console link
 .console-link-button:hover { color: var(--pf-t--global--color--brand--default) !important; }
 
+// Custom Metrics Section
+.custom-metrics-section {
+  .metric-tile {
+    transition: transform 0.15s, box-shadow 0.15s;
+    
+    &:hover {
+      transform: scale(1.02);
+      box-shadow: var(--pf-t--global--box-shadow--sm);
+    }
+  }
+  
+  .empty-metric-tile {
+    border: 2px dashed var(--pf-t--global--border--color--default);
+    background: var(--pf-t--global--background--color--secondary--default);
+    
+    &:hover {
+      border-color: var(--pf-t--global--color--brand--default);
+      background: color-mix(in srgb, var(--pf-t--global--color--brand--default) 5%, transparent);
+    }
+  }
+}
+
+// Dashboard Config Panel
+.dashboard-config-panel {
+  .tile-config-item {
+    background: var(--pf-t--global--background--color--secondary--default);
+    border-radius: var(--pf-t--global--border--radius--small);
+    padding: var(--pf-t--global--spacer--sm) var(--pf-t--global--spacer--md);
+    margin-bottom: var(--pf-t--global--spacer--sm);
+    
+    &:hover {
+      background: color-mix(in srgb, var(--pf-t--global--background--color--secondary--default) 80%, var(--pf-t--global--color--brand--default));
+    }
+    
+    .grip-handle {
+      cursor: grab;
+      color: var(--pf-t--global--text--color--subtle);
+      
+      &:active {
+        cursor: grabbing;
+      }
+    }
+  }
+}
+
+// Custom Resource Detail Modal
+.custom-resource-detail {
+  .resource-card {
+    background: var(--pf-t--global--background--color--primary--default);
+    border: 1px solid var(--pf-t--global--border--color--default);
+    border-radius: var(--pf-t--global--border--radius--small);
+    transition: border-color 0.15s;
+    
+    &:hover {
+      border-color: var(--pf-t--global--color--brand--default);
+    }
+  }
+  
+  .aggregation-summary {
+    background: color-mix(in srgb, var(--pf-t--global--color--brand--default) 8%, transparent);
+    border-radius: var(--pf-t--global--border--radius--small);
+  }
+}
+
+// Progress bar customization for metric tiles
+.pf-v6-c-progress {
+  &.metric-progress {
+    .pf-v6-c-progress__bar {
+      height: 4px;
+      border-radius: 2px;
+    }
+  }
+}
+
 // Animations
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
@@ -402,6 +438,5 @@
   .cluster-grid .pf-v6-l-grid__item { grid-column: span 12 !important; }
   .cluster-card {
     .cluster-title { font-size: 0.875rem; }
-    .quick-stats { flex-wrap: wrap; .stat-item { margin: 2px; } }
   }
 }
