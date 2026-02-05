@@ -116,7 +116,6 @@ export interface ErrorResponse {
 
 /**
  * Enhanced Node Type Definitions
- * Add these to your types/index.ts file
  */
 
 export interface NodeCondition {
@@ -336,3 +335,6 @@ export interface NodeDetailsResponse extends EnhancedNodeInfo {
     count?: number;
   }>;
 }
+
+// Re-export custom resource types
+export * from './customResources';

@@ -201,6 +201,61 @@ class APIClient {
     });
     return data;
   }
+
+  // Custom Resource endpoints
+  async getCustomResourceTypes(includeSourceDetails = false, includeClusterAvailability = false) {
+    const { data } = await this.client.get('/custom-types', {
+      params: {
+        include_source_details: includeSourceDetails,
+        include_cluster_availability: includeClusterAvailability,
+      },
+    });
+    return data;
+  }
+
+  async getCustomResourceCounts(
+    resourceTypeNames: string[],
+    clusters?: string[],
+    includeAggregations = true
+  ) {
+    const params = new URLSearchParams();
+    resourceTypeNames.forEach((type) => params.append('type', type));
+    if (clusters) {
+      clusters.forEach((c) => params.append('clusters', c));
+    }
+    params.append('include_aggregations', String(includeAggregations));
+
+    const { data } = await this.client.get(`/custom-types/clusters?${params.toString()}`);
+    return data;
+  }
+
+  async getCustomResources(
+    clusterName: string,
+    resourceTypeName: string,
+    options: {
+      page?: number;
+      pageSize?: number;
+      includeAggregations?: boolean;
+      namespace?: string;
+      sortBy?: string;
+      sortOrder?: 'asc' | 'desc';
+    } = {}
+  ) {
+    const { data } = await this.client.get(
+      `/clusters/${clusterName}/custom/${resourceTypeName}`,
+      {
+        params: {
+          page: options.page || 1,
+          page_size: options.pageSize || 100,
+          include_aggregations: options.includeAggregations ?? true,
+          namespace: options.namespace,
+          sort_by: options.sortBy,
+          sort_order: options.sortOrder || 'asc',
+        },
+      }
+    );
+    return data;
+  }
 }
 
 // Create and export a singleton instance

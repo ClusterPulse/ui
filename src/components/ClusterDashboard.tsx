@@ -17,10 +17,13 @@ import {
   Spinner,
   Alert,
   Bullseye,
+  Button,
+  Tooltip,
 } from '@patternfly/react-core';
 import {
   CubesIcon,
   FilterIcon,
+  CogIcon,
 } from '@patternfly/react-icons';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
@@ -28,7 +31,9 @@ import { useQuery } from '@tanstack/react-query';
 import { ClusterGrid } from './ClusterGrid';
 import { ClusterStats } from './ClusterStats';
 import { LoginBanner } from './LoginBanner';
+import { DashboardConfigPanel } from './DashboardConfigPanel';
 import { clusterAPI } from '../services/api';
+import { useDashboardConfigStore } from '../stores/dashboardConfigStore';
 
 const container = {
   hidden: { opacity: 0 },
@@ -48,6 +53,9 @@ export const ClusterDashboard: React.FC = () => {
   const [searchValue, setSearchValue] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
+
+  const { globalConfig } = useDashboardConfigStore();
 
   const { data: publicApiAvailable, isLoading: publicApiLoading } = useQuery({
     queryKey: ['publicApiAvailable'],
@@ -227,7 +235,35 @@ export const ClusterDashboard: React.FC = () => {
             </ToolbarGroup>
 
             <ToolbarItem variant="separator" />
-            
+
+            {isAuthenticated && (
+              <ToolbarItem>
+                <Tooltip content={`Configure metrics (${globalConfig.tiles.length} configured)`}>
+                  <Button
+                    variant="secondary"
+                    icon={<CogIcon />}
+                    onClick={() => setIsConfigPanelOpen(true)}
+                  >
+                    Configure Metrics
+                    {globalConfig.tiles.length > 0 && (
+                      <span 
+                        style={{ 
+                          marginLeft: '8px',
+                          background: 'var(--pf-t--global--color--brand--default)',
+                          color: 'white',
+                          borderRadius: '10px',
+                          padding: '2px 8px',
+                          fontSize: '0.75rem',
+                          fontWeight: 600
+                        }}
+                      >
+                        {globalConfig.tiles.length}
+                      </span>
+                    )}
+                  </Button>
+                </Tooltip>
+              </ToolbarItem>
+            )}
           </ToolbarContent>
         </Toolbar>
       </PageSection>
@@ -255,6 +291,12 @@ export const ClusterDashboard: React.FC = () => {
           />
         )}
       </PageSection>
+
+      {/* Global Config Panel */}
+      <DashboardConfigPanel
+        isOpen={isConfigPanelOpen}
+        onClose={() => setIsConfigPanelOpen(false)}
+      />
     </motion.div>
   );
 };
