@@ -64,7 +64,7 @@ interface AnonymousClusterCardProps {
 }
 
 const AnonymousClusterCard: React.FC<AnonymousClusterCardProps> = ({ cluster }) => {
-  const displayName = cluster.displayName || cluster.name;
+  const displayName = cluster.spec?.displayName || cluster.name;
   const health = cluster.status?.health || 'unknown';
   const status = healthConfig[health as keyof typeof healthConfig] || healthConfig.unknown;
   const StatusIcon = status.icon;
@@ -185,7 +185,7 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
   const [clusterDetails, setClusterDetails] = useState<any>(null);
   
   const clusterName = cluster.name;
-  const displayName = cluster.displayName || cluster.name;
+  const displayName = cluster.spec?.displayName || cluster.name;
   const health = cluster.status?.health || 'unknown';
   const status = healthConfig[health as keyof typeof healthConfig] || healthConfig.unknown;
   const StatusIcon = status.icon;
@@ -344,43 +344,43 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
               </div>
             </div>
 
-            {(cluster.version || cluster.channel || cluster.console_url) && (
-              <Flex 
-                alignItems={{ default: 'alignItemsCenter' }} 
+            {(cluster.info?.version || cluster.info?.channel || cluster.info?.console_url) && (
+              <Flex
+                alignItems={{ default: 'alignItemsCenter' }}
                 justifyContent={{ default: 'justifyContentSpaceBetween' }}
                 style={{ marginTop: '8px' }}
               >
                 <FlexItem>
                   <Flex spaceItems={{ default: 'spaceItemsSm' }}>
-                    {cluster.version && (
+                    {cluster.info?.version && (
                       <FlexItem>
                         <Label color="blue" isCompact icon={<TagIcon />}>
-                          {cluster.version}
+                          {cluster.info.version}
                         </Label>
                       </FlexItem>
                     )}
-                    {cluster.channel && (
+                    {cluster.info?.channel && (
                       <FlexItem>
                         <Label color="purple" isCompact icon={<CodeBranchIcon />}>
-                          {cluster.channel}
+                          {cluster.info.channel}
                         </Label>
                       </FlexItem>
                     )}
                   </Flex>
                 </FlexItem>
-                {cluster.console_url && (
+                {cluster.info?.console_url && (
                   <FlexItem>
                     <Tooltip content={`Open ${displayName} console`}>
                       <Button
                         variant="plain"
                         component="a"
-                        href={cluster.console_url}
+                        href={cluster.info.console_url}
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="Open console"
                         size="sm"
                         className="console-link-button"
-                        style={{ 
+                        style={{
                           padding: '6px',
                           color: 'var(--pf-t--global--text--color--subtle)',
                         }}
@@ -395,19 +395,19 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
           </CardHeader>
           
           <CardBody>
-            {cluster.labels && Object.keys(cluster.labels).length > 0 && (
+            {cluster.spec?.labels && Object.keys(cluster.spec.labels).length > 0 && (
               <LabelGroup numLabels={5} className="cluster-labels" style={{ marginBottom: '12px' }}>
-                {cluster.labels.environment && (
+                {cluster.spec.labels.environment && (
                   <Label color="blue" isCompact>
-                    {cluster.labels.environment}
+                    {cluster.spec.labels.environment}
                   </Label>
                 )}
-                {cluster.labels.region && (
+                {cluster.spec.labels.region && (
                   <Label color="purple" isCompact>
-                    {cluster.labels.region}
+                    {cluster.spec.labels.region}
                   </Label>
                 )}
-                {Object.entries(cluster.labels)
+                {Object.entries(cluster.spec.labels)
                   .filter(([key]) => key !== 'environment' && key !== 'region')
                   .slice(0, 3)
                   .map(([key, value]) => (
@@ -465,33 +465,33 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
                 <DescriptionListTerm>Display Name</DescriptionListTerm>
                 <DescriptionListDescription>{clusterDetails.spec?.displayName || clusterDetails.name}</DescriptionListDescription>
               </DescriptionListGroup>
-              {clusterDetails.version && (
+              {clusterDetails.info?.version && (
                 <DescriptionListGroup>
                   <DescriptionListTerm>Version</DescriptionListTerm>
                   <DescriptionListDescription>
-                    <Label color="blue" isCompact>{clusterDetails.version}</Label>
+                    <Label color="blue" isCompact>{clusterDetails.info.version}</Label>
                   </DescriptionListDescription>
                 </DescriptionListGroup>
               )}
-              {clusterDetails.channel && (
+              {clusterDetails.info?.channel && (
                 <DescriptionListGroup>
                   <DescriptionListTerm>Channel</DescriptionListTerm>
                   <DescriptionListDescription>
-                    <Label color="purple" isCompact>{clusterDetails.channel}</Label>
+                    <Label color="purple" isCompact>{clusterDetails.info.channel}</Label>
                   </DescriptionListDescription>
                 </DescriptionListGroup>
               )}
               <DescriptionListGroup>
                 <DescriptionListTerm>API URL</DescriptionListTerm>
-                <DescriptionListDescription>{clusterDetails.api_url || 'Not available'}</DescriptionListDescription>
+                <DescriptionListDescription>{clusterDetails.info?.api_url || 'Not available'}</DescriptionListDescription>
               </DescriptionListGroup>
-              {clusterDetails.console_url && (
+              {clusterDetails.info?.console_url && (
                 <DescriptionListGroup>
                   <DescriptionListTerm>Console URL</DescriptionListTerm>
                   <DescriptionListDescription>
-                    <a 
-                      href={clusterDetails.console_url} 
-                      target="_blank" 
+                    <a
+                      href={clusterDetails.info.console_url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       style={{
                         display: 'inline-flex',
@@ -500,7 +500,7 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
                         textDecoration: 'none'
                       }}
                     >
-                      {clusterDetails.console_url}
+                      {clusterDetails.info.console_url}
                       <ExternalLinkAltIcon className="pf-v6-u-ml-xs" style={{ fontSize: '0.875rem' }} />
                     </a>
                   </DescriptionListDescription>
@@ -508,17 +508,17 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({
               )}
               <DescriptionListGroup>
                 <DescriptionListTerm>Platform</DescriptionListTerm>
-                <DescriptionListDescription>{clusterDetails.platform || 'OpenShift'}</DescriptionListDescription>
+                <DescriptionListDescription>{clusterDetails.info?.platform || 'OpenShift'}</DescriptionListDescription>
               </DescriptionListGroup>
-              {clusterDetails.labels && (
+              {clusterDetails.spec?.labels && (
                 <>
                   <DescriptionListGroup>
                     <DescriptionListTerm>Environment</DescriptionListTerm>
-                    <DescriptionListDescription>{clusterDetails.labels.environment || 'N/A'}</DescriptionListDescription>
+                    <DescriptionListDescription>{clusterDetails.spec.labels.environment || 'N/A'}</DescriptionListDescription>
                   </DescriptionListGroup>
                   <DescriptionListGroup>
                     <DescriptionListTerm>Region</DescriptionListTerm>
-                    <DescriptionListDescription>{clusterDetails.labels.region || 'N/A'}</DescriptionListDescription>
+                    <DescriptionListDescription>{clusterDetails.spec.labels.region || 'N/A'}</DescriptionListDescription>
                   </DescriptionListGroup>
                 </>
               )}

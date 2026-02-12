@@ -131,7 +131,7 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Failed to fetch nodes');
       setNodes([]);
-      toast.error(`Failed to load nodes for ${cluster.displayName || cluster.name}`);
+      toast.error(`Failed to load nodes for ${cluster.spec?.displayName || cluster.name}`);
     } finally {
       setLoading(false);
     }
@@ -535,10 +535,10 @@ export const NodeDetailsModal: React.FC<NodeDetailsModalProps> = ({
       variant={ModalVariant.large}
       isOpen={isOpen}
       onClose={onClose}
-      aria-label={`Nodes - ${cluster.displayName || cluster.name}`}
+      aria-label={`Nodes - ${cluster.spec?.displayName || cluster.name}`}
     >
-      <ModalHeader 
-        title={`Nodes - ${cluster.displayName || cluster.name}`}
+      <ModalHeader
+        title={`Nodes - ${cluster.spec?.displayName || cluster.name}`}
         description={modalDescription}
       />
       <ModalBody>

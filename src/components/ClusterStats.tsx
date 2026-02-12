@@ -41,10 +41,7 @@ export const ClusterStats: React.FC<ClusterStatsProps> = ({ clusters }) => {
         default: unknown++; break;
       }
       
-      if (cluster.node_summary) {
-        totalNodes += cluster.node_summary.total || 0;
-        readyNodes += cluster.node_summary.ready || 0;
-      } else if (cluster.metrics) {
+      if (cluster.metrics) {
         totalNodes += cluster.metrics.nodes || 0;
         readyNodes += cluster.metrics.nodes_ready || 0;
       }

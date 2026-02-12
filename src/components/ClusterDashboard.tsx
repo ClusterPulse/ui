@@ -110,7 +110,7 @@ export const ClusterDashboard: React.FC = () => {
     return clusters.filter((cluster: any) => {
       const matchesSearch = 
         cluster.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-        cluster.displayName?.toLowerCase().includes(searchValue.toLowerCase());
+        cluster.spec?.displayName?.toLowerCase().includes(searchValue.toLowerCase());
       
       const health = getHealthStatus(cluster);
       const matchesStatus = statusFilter === 'all' || health === statusFilter;
