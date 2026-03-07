@@ -133,6 +133,25 @@ const AppContent: React.FC = () => {
           </AnimatePresence>
         </PageSection>
       </Page>
+      <div style={{
+        position: 'fixed',
+        bottom: 0,
+        right: 0,
+        padding: '0.2rem 0.75rem 0.2rem 1rem',
+        fontSize: '0.7rem',
+        color: 'var(--pf-t--global--text--color--subtle)',
+        background: 'var(--pf-t--global--background--color--secondary--default)',
+        borderTopLeftRadius: '0.5rem',
+        opacity: 0.7,
+        zIndex: 1,
+      }}>
+        {(() => {
+          const version = import.meta.env.VITE_APP_VERSION || 'dev';
+          const commit = import.meta.env.VITE_GIT_COMMIT;
+          const shortCommit = commit && commit !== 'unknown' ? commit.slice(0, 7) : '';
+          return shortCommit ? `v${version} (${shortCommit})` : `v${version}`;
+        })()}
+      </div>
       <Toaster
         position="top-right"
         toastOptions={{
