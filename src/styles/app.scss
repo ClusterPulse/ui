@@ -139,15 +139,13 @@
   &--unknown::after { background: var(--cluster-unknown); }
   
   .pf-v6-c-card__header {
-    padding: var(--pf-t--global--spacer--md) var(--pf-t--global--spacer--md) !important;
-    border-bottom: 1px solid var(--pf-t--global--border--color--default);
+    padding: var(--pf-t--global--spacer--md) var(--pf-t--global--spacer--sm) !important;
   }
   
   .pf-v6-c-card__body { padding: var(--pf-t--global--spacer--md) !important; }
   
   .pf-v6-c-card__footer {
     padding: var(--pf-t--global--spacer--sm) var(--pf-t--global--spacer--md) !important;
-    border-top: 1px solid var(--pf-t--global--border--color--default);
     background: var(--pf-t--global--background--color--secondary--default);
   }
   
@@ -351,6 +349,35 @@
       background: color-mix(in srgb, var(--pf-t--global--color--brand--default) 5%, transparent);
     }
   }
+}
+
+// Metric Catalog Card
+.metric-catalog-card {
+  --pf-v6-c-card--BorderWidth: 0;
+  border-radius: var(--pf-t--global--border--radius--medium);
+  box-shadow: var(--pf-t--global--box-shadow--sm);
+  transition: box-shadow 0.2s;
+
+  &:hover {
+    box-shadow: var(--pf-t--global--box-shadow--md);
+  }
+
+  &--added {
+    border-left: 3px solid var(--pf-t--global--color--status--success--default);
+    background: color-mix(in srgb, var(--pf-t--global--color--status--success--default) 4%, transparent);
+  }
+}
+
+// Metrics section header
+.metrics-section-header {
+  margin-bottom: 6px;
+}
+
+// Expanded detail section
+.metrics-expanded-section {
+  background: var(--pf-t--global--background--color--secondary--default);
+  border-radius: var(--pf-t--global--border--radius--small);
+  padding: 4px;
 }
 
 // Dashboard Config Panel

@@ -87,7 +87,7 @@ class APIClient {
   // Get public cluster health (no auth required)
   async getPublicClusterHealth() {
     const { data } = await this.publicClient.get('/public/clusters/health');
-    return data;
+    return Array.isArray(data) ? data.map((c: any) => this.normalizeCluster(c)) : data;
   }
 
   // Authentication endpoints
@@ -128,6 +128,33 @@ class APIClient {
     window.location.href = '/api/v1/auth/login';
   }
 
+  // Normalize cluster shape: flatten info/spec to top-level for component compatibility
+  private normalizeCluster(cluster: any): any {
+    if (!cluster) return cluster;
+    const { info, spec, ...rest } = cluster;
+    return {
+      ...rest,
+      // Flatten info fields
+      ...(info && {
+        api_url: info.api_url,
+        channel: info.channel,
+        cluster_id: info.cluster_id,
+        console_url: info.console_url,
+        platform: info.platform,
+        version: info.version,
+      }),
+      // Flatten spec fields
+      ...(spec && {
+        displayName: spec.displayName,
+        labels: spec.labels,
+        endpoint: spec.endpoint,
+      }),
+      // Keep originals for detail views
+      spec,
+      info,
+    };
+  }
+
   // Cluster endpoints (authenticated)
   async getClusters(includeStatus = true, includeMetrics = true) {
     const { data } = await this.client.get('/clusters', {
@@ -136,12 +163,12 @@ class APIClient {
         include_metrics: includeMetrics,
       },
     });
-    return data;
+    return Array.isArray(data) ? data.map((c: any) => this.normalizeCluster(c)) : data;
   }
 
   async getCluster(clusterName: string) {
     const { data } = await this.client.get(`/clusters/${clusterName}`);
-    return data;
+    return this.normalizeCluster(data);
   }
 
   async getClusterNodes(clusterName: string, role?: string, status?: string) {

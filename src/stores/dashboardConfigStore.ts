@@ -24,7 +24,10 @@ export interface ClusterDashboardConfig {
 interface DashboardConfigState {
   // Global config that applies to all clusters
   globalConfig: ClusterDashboardConfig;
-  
+
+  // Selectors
+  getResourceTypeTileCount: (resourceTypeName: string) => number;
+
   // Actions
   addTile: (tile: Omit<MetricTileConfig, 'id' | 'order'>) => void;
   removeTile: (tileId: string) => void;
@@ -45,6 +48,9 @@ export const useDashboardConfigStore = create<DashboardConfigState>()(
   persist(
     (set, get) => ({
       globalConfig: defaultConfig,
+
+      getResourceTypeTileCount: (resourceTypeName: string) =>
+        get().globalConfig.tiles.filter(t => t.resourceTypeName === resourceTypeName).length,
 
       addTile: (tile) => {
         set((state) => ({

@@ -284,10 +284,11 @@ export const ClusterDashboard: React.FC = () => {
             </EmptyStateBody>
           </EmptyState>
         ) : (
-          <ClusterGrid 
-            clusters={filteredClusters} 
-            onRefresh={refetch} 
+          <ClusterGrid
+            clusters={filteredClusters}
+            onRefresh={refetch}
             permissions={isAuthenticated ? permissions : undefined}
+            onConfigureMetrics={() => setIsConfigPanelOpen(true)}
           />
         )}
       </PageSection>
