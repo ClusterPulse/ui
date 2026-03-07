@@ -71,7 +71,7 @@ const tileColors: Record<string, { bg: string; text: string; progress: string }>
 };
 
 const formatValue = (value: number | string | null, displayType: TileDisplayType): string => {
-  if (value === null || value === undefined) return '--';
+  if (value === null || value === undefined) return '';
   if (typeof value === 'string') return value;
   
   if (displayType === 'percentage') {
