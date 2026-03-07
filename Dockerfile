@@ -1,6 +1,11 @@
 # Build stage
 FROM node:22-alpine AS builder
 
+ARG VERSION=dev
+ARG GIT_COMMIT=unknown
+ARG GIT_TREE_STATE=unknown
+ARG BUILD_DATE=unknown
+
 WORKDIR /app
 
 # Copy package files
@@ -15,6 +20,12 @@ COPY ./public ./public
 COPY ./index.html .
 COPY ./tsconfig*.json .
 COPY ./vite.config.ts .
+
+# Inject version info as env vars for Vite
+ENV VITE_APP_VERSION=${VERSION}
+ENV VITE_GIT_COMMIT=${GIT_COMMIT}
+ENV VITE_GIT_TREE_STATE=${GIT_TREE_STATE}
+ENV VITE_BUILD_DATE=${BUILD_DATE}
 
 # Build the application
 RUN npm run build
