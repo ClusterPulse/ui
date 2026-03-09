@@ -27,10 +27,20 @@ import { clusterAPI } from '../services/api';
 
 interface Registry {
   name: string;
-  display_name: string;
-  endpoint: string | null;
-  available: boolean;
-  error: string | null;
+  spec: {
+    displayName?: string;
+    endpoint?: string;
+    type?: string;
+  };
+  status: {
+    phase?: string;
+    health?: string;
+    available: boolean;
+    lastCheckTime?: string;
+    responseTime?: number;
+    error?: string;
+    message?: string;
+  };
 }
 
 export const RegistryStatus: React.FC = () => {
@@ -47,7 +57,7 @@ export const RegistryStatus: React.FC = () => {
     refetchInterval: 30000,
   });
 
-  const availableCount = registries.filter(r => r.available).length;
+  const availableCount = registries.filter(r => r.status.available).length;
   const totalCount = registries.length;
 
   const getStatusColor = () => {
@@ -58,7 +68,7 @@ export const RegistryStatus: React.FC = () => {
   };
 
   const handleRegistryClick = (registry: Registry) => {
-    if (!registry.available && registry.error) {
+    if (!registry.status.available && registry.status.error) {
       setSelectedRegistry(registry);
       setIsErrorModalOpen(true);
     }
@@ -138,11 +148,11 @@ export const RegistryStatus: React.FC = () => {
                     style={{ 
                       padding: '8px 12px',
                       borderRadius: 'var(--pf-t--global--border--radius--small)',
-                      background: registry.available 
-                        ? 'color-mix(in srgb, var(--cluster-healthy) 8%, transparent)' 
+                      background: registry.status.available
+                        ? 'color-mix(in srgb, var(--cluster-healthy) 8%, transparent)'
                         : 'color-mix(in srgb, var(--cluster-unhealthy) 8%, transparent)',
                       marginBottom: '8px',
-                      cursor: !registry.available ? 'pointer' : 'default',
+                      cursor: !registry.status.available ? 'pointer' : 'default',
                       transition: 'background 0.2s ease'
                     }}
                     onClick={() => handleRegistryClick(registry)}
@@ -150,7 +160,7 @@ export const RegistryStatus: React.FC = () => {
                     <FlexItem>
                       <Flex alignItems={{ default: 'alignItemsCenter' }} spaceItems={{ default: 'spaceItemsSm' }}>
                         <FlexItem>
-                          {registry.available ? (
+                          {registry.status.available ? (
                             <CheckCircleIcon color="var(--cluster-healthy)" />
                           ) : (
                             <ExclamationCircleIcon color="var(--cluster-unhealthy)" />
@@ -158,16 +168,16 @@ export const RegistryStatus: React.FC = () => {
                         </FlexItem>
                         <FlexItem>
                           <div>
-                            <strong>{registry.display_name}</strong>
-                            {registry.endpoint && (
-                              <div 
-                                style={{ 
-                                  fontSize: '0.75rem', 
+                            <strong>{registry.spec.displayName || registry.name}</strong>
+                            {registry.spec.endpoint && (
+                              <div
+                                style={{
+                                  fontSize: '0.75rem',
                                   color: 'var(--pf-t--global--text--color--subtle)',
                                   marginTop: '2px'
                                 }}
                               >
-                                {registry.endpoint}
+                                {registry.spec.endpoint}
                               </div>
                             )}
                           </div>
@@ -175,11 +185,11 @@ export const RegistryStatus: React.FC = () => {
                       </Flex>
                     </FlexItem>
                     <FlexItem>
-                      <Label 
-                        color={registry.available ? 'green' : 'red'} 
+                      <Label
+                        color={registry.status.available ? 'green' : 'red'}
                         isCompact
                       >
-                        {registry.available ? 'Available' : 'Unavailable'}
+                        {registry.status.available ? 'Available' : 'Unavailable'}
                       </Label>
                     </FlexItem>
                   </Flex>
@@ -202,9 +212,9 @@ export const RegistryStatus: React.FC = () => {
           setIsErrorModalOpen(false);
           setSelectedRegistry(null);
         }}
-        aria-label={`Registry Error - ${selectedRegistry?.display_name}`}
+        aria-label={`Registry Error - ${selectedRegistry?.spec.displayName || selectedRegistry?.name}`}
       >
-        <ModalHeader title={`Registry Error - ${selectedRegistry?.display_name}`} />
+        <ModalHeader title={`Registry Error - ${selectedRegistry?.spec.displayName || selectedRegistry?.name}`} />
         <ModalBody>
           {selectedRegistry && (
             <>
@@ -215,17 +225,17 @@ export const RegistryStatus: React.FC = () => {
                 className="pf-v6-u-mb-md"
               />
               <div>
-                <strong>Registry:</strong> {selectedRegistry.display_name}
+                <strong>Registry:</strong> {selectedRegistry.spec.displayName || selectedRegistry.name}
               </div>
-              {selectedRegistry.endpoint && (
+              {selectedRegistry.spec.endpoint && (
                 <div className="pf-v6-u-mt-sm">
-                  <strong>Endpoint:</strong> {selectedRegistry.endpoint}
+                  <strong>Endpoint:</strong> {selectedRegistry.spec.endpoint}
                 </div>
               )}
               <div className="pf-v6-u-mt-md">
                 <strong>Error Details:</strong>
-                <div 
-                  style={{ 
+                <div
+                  style={{
                     marginTop: '8px',
                     padding: '12px',
                     background: 'var(--pf-t--global--background--color--secondary--default)',
@@ -236,7 +246,7 @@ export const RegistryStatus: React.FC = () => {
                     wordBreak: 'break-word'
                   }}
                 >
-                  {selectedRegistry.error}
+                  {selectedRegistry.status.error}
                 </div>
               </div>
             </>
